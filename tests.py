@@ -61,8 +61,31 @@ class TestsGenotypeToPhenotype:
             ),
         ]
 
-        #  connections = [(1, 2, {"position": }]
-        #  gen = genotype.Genotype()
+        connections = [
+            (
+                1,
+                2,
+                {
+                    "position": (0, 1.4, -0.2),
+                    "orientation": None,
+                    "scale": None,
+                    "reflection": None,
+                    "terminal_only": True,
+                },
+            ),
+            (
+                1,
+                2,
+                {
+                    "position": (0, 1.4, 0.2),
+                    "orientation": None,
+                    "scale": None,
+                    "reflection": None,
+                    "terminal_only": True,
+                },
+            ),
+        ]
+        gen = genotype.Genotype(nodes, connections)
         # TODO establish rules for joint placement
         # and collision box reductions in procedural generation
         trunk = bone.Bone((0.3, 1.0, 1.0), chrono.ChVectorD(0, 1.9, 0))
