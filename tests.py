@@ -16,7 +16,8 @@ import pychrono as chrono
 import walkingsim.environment as environment
 import walkingsim.visualiser as visualiser
 import walkingsim.creature.genotype as genotype
-import walkingsim.creature.phenotype.bone as bone
+import walkingsim.creature.phenotype as phenotype
+import walkingsim.creature.bone as bone
 
 
 class TestsGenotypeToPhenotype:
@@ -86,51 +87,7 @@ class TestsGenotypeToPhenotype:
             ),
         ]
         gen = genotype.Genotype(nodes, connections)
-        # TODO establish rules for joint placement
-        # and collision box reductions in procedural generation
-        trunk = bone.Bone((0.3, 1.0, 1.0), chrono.ChVectorD(0, 1.9, 0))
-        trunk.SetBodyFixed(True)
-        self.env.Add(trunk)
-        # left leg
-        leg1 = bone.Bone((0.3, 1.4, 0.2), chrono.ChVectorD(0, 0.7, -0.2))
-        leg1.GetCollisionModel().ClearModel()
-        leg1.GetCollisionModel().AddBox(
-            bone.Bone.bone_material,
-            0.15,
-            0.35,
-            0.1,
-            chrono.ChVectorD(0, -0.35, 0),
-        )
-        leg1.GetCollisionModel().BuildModel()
-        self.env.Add(leg1)
-        link = chrono.ChLinkMotorRotationTorque()
-        frame = chrono.ChFrameD(chrono.ChVectorD(0, 1.4, -0.2))
-        link.Initialize(trunk, leg1, frame)
-        self.env.Add(link)
-        # The torque(time) function:
-        torquetime = chrono.ChFunction_Sine(
-            0, 2, 90  # phase [rad]  # frequency [Hz]
-        )  # amplitude [Nm]
-        link.SetTorqueFunction(torquetime)
-
-        # right leg
-        leg2 = bone.Bone((0.3, 1.4, 0.2), chrono.ChVectorD(0, 0.7, 0.2))
-        leg2.GetCollisionModel().ClearModel()
-        leg2.GetCollisionModel().AddBox(
-            bone.Bone.bone_material,
-            0.15,
-            0.35,
-            0.1,
-            chrono.ChVectorD(0, -0.35, 0),
-        )
-        leg2.GetCollisionModel().BuildModel()
-        self.env.Add(leg2)
-        link2 = chrono.ChLinkMotorRotationTorque()
-        frame2 = chrono.ChFrameD(chrono.ChVectorD(0, 1.4, 0.2))
-        link2.Initialize(trunk, leg2, frame2)
-        self.env.Add(link2)
-        action_b = chrono.ChFunction_Const(-30)
-        link2.SetTorqueFunction(action_b)
+        three_body_creature = phenotype.Phenotype(gen, self.env)
 
 
 if __name__ == "__main__":

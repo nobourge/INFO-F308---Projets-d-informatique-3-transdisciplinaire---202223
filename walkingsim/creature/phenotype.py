@@ -26,21 +26,29 @@ class Phenotype:
     def _create_morphology(self):
         # TODO how to choose automatically position of spawned creature wrt
         # the position of the ground?
+        # TODO establish rules for joint placement
+        # and collision box reductions in procedural generation
         for node in self.genotype.nodes():
+            parent_part = None
             if node == 1:  # Root node
-                root_part = bone.Bone(
+                parent_part = bone.Bone(
                     self.genotype.nodes[node]["dimensions"], chrono.ChVectorD(0, 1.9, 0)
                 )
-                root_part.SetBodyFixed(True)
-                self.bones.append(root_part)
-                self.env.Add(root_part)
+                parent_part.SetBodyFixed(True)
+                self.bones.append(parent_part)
+                self.env.Add(parent_part)
             for edge in self.genotype.edges(nbunch=node, data=True):
                 new_node = edge[1]
                 dimensions = self.genotype.nodes[new_node]["dimensions"]
+                new_joint = chrono.ChLinkMotorRotationTorque()
+                new_joint_pos = list(edge[2]["position"])
+                # TODO different types of joints?
+                joint_frame = chrono.ChFrameD(chrono.ChVectorD(*new_joint_pos))
                 # TODO how to find position of new part based on parent's pos?
-                pos = list(edge[2]["position"])
-                pos[1] -= dimensions[1] / 2
-                new_part = bone.Bone(dimensions, chrono.ChVectorD(*pos))
-                self.bones.append(new_part)
-                self.env.Add(new_part)
-                print(pos)
+                child_part_pos = new_joint_pos
+                child_part_pos[1] -= dimensions[1] / 2
+                child_part = bone.Bone(dimensions, chrono.ChVectorD(*child_part_pos))
+                self.bones.append(child_part)
+                self.env.Add(child_part)
+                new_joint.Initialize(parent_part, child_part, joint_frame)
+                self.env.Add(new_joint)
