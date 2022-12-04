@@ -45,5 +45,6 @@ class Genotype(nx.DiGraph):
             connections_list - a list of 3-tuples consisting of (father_node_nb,
                               child_node_nb, attributes_dict)
         """
+        super().__init__()
         self.add_nodes_from(nodes_list)
         self.add_edges_from(connections_list)
