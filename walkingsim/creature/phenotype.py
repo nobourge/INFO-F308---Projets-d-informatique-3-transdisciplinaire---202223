@@ -60,4 +60,13 @@ class Phenotype:
                 self.bones.append(child_part)
                 self.env.Add(child_part)
                 new_joint.Initialize(parent_part, child_part, joint_frame)
+                self.joints.append(new_joint)
                 self.env.Add(new_joint)
+
+        # XXX torque function test
+        for i in range(len(self.joints)):
+            mod = 1 if i % 2 == 0 else -1
+            sin_torque = chrono.ChFunction_Sine(
+                0, 1, mod * 90  # phase [rad]  # frequency [Hz]
+            )  # amplitude [Nm]
+            self.joints[i].SetTorqueFunction(sin_torque)
