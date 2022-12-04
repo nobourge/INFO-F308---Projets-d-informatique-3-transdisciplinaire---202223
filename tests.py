@@ -52,7 +52,7 @@ class TestsGenotypeToPhenotype:
                 2,
                 {
                     "dimensions": (0.3, 1.4, 0.2),
-                    "joint_type": None,
+                    "joint_type": "revolute",
                     "joint_limits": None,
                     "recursive_limit": 0,
                     "neurons": None,
@@ -60,7 +60,9 @@ class TestsGenotypeToPhenotype:
                 },
             ),
         ]
-        gen = genotype.Genotype()
+
+        #  connections = [(1, 2, {"position": }]
+        #  gen = genotype.Genotype()
         # TODO establish rules for joint placement
         # and collision box reductions in procedural generation
         trunk = bone.Bone((0.3, 1.0, 1.0), chrono.ChVectorD(0, 1.9, 0))
@@ -78,16 +80,15 @@ class TestsGenotypeToPhenotype:
         )
         leg1.GetCollisionModel().BuildModel()
         self.env.Add(leg1)
-        mlink = chrono.ChLinkMotorRotationTorque()
-        mframe = chrono.ChFrameD(chrono.ChVectorD(0, 1, -0.2))
-        mlink.Initialize(trunk, leg1, mframe)
-        self.env.Add(mlink)
+        link = chrono.ChLinkMotorRotationTorque()
+        frame = chrono.ChFrameD(chrono.ChVectorD(0, 1.4, -0.2))
+        link.Initialize(trunk, leg1, frame)
+        self.env.Add(link)
         # The torque(time) function:
-        mtorquetime = chrono.ChFunction_Sine(
+        torquetime = chrono.ChFunction_Sine(
             0, 2, 90  # phase [rad]  # frequency [Hz]
         )  # amplitude [Nm]
-        action_a = chrono.ChFunction_Const(-30)
-        mlink.SetTorqueFunction(mtorquetime)
+        link.SetTorqueFunction(torquetime)
 
         # right leg
         leg2 = bone.Bone((0.3, 1.4, 0.2), chrono.ChVectorD(0, 0.7, 0.2))
@@ -101,12 +102,12 @@ class TestsGenotypeToPhenotype:
         )
         leg2.GetCollisionModel().BuildModel()
         self.env.Add(leg2)
-        mlink2 = chrono.ChLinkMotorRotationTorque()
-        mframe2 = chrono.ChFrameD(chrono.ChVectorD(0, 1, 0.2))
-        mlink2.Initialize(trunk, leg2, mframe2)
-        self.env.Add(mlink2)
-        action_b = chrono.ChFunction_Const(30)
-        mlink2.SetTorqueFunction(action_b)
+        link2 = chrono.ChLinkMotorRotationTorque()
+        frame2 = chrono.ChFrameD(chrono.ChVectorD(0, 1.4, 0.2))
+        link2.Initialize(trunk, leg2, frame2)
+        self.env.Add(link2)
+        action_b = chrono.ChFunction_Const(-30)
+        link2.SetTorqueFunction(action_b)
 
 
 if __name__ == "__main__":
