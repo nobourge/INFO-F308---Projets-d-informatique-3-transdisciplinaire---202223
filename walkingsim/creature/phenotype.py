@@ -48,6 +48,15 @@ class Phenotype:
                 child_part_pos = new_joint_pos
                 child_part_pos[1] -= dimensions[1] / 2
                 child_part = bone.Bone(dimensions, chrono.ChVectorD(*child_part_pos))
+                child_part.GetCollisionModel().ClearModel()
+                child_part.GetCollisionModel().AddBox(
+                    bone.Bone.bone_material,
+                    dimensions[0] / 2,
+                    dimensions[1] / 4,
+                    dimensions[2] / 2,
+                    chrono.ChVectorD(0, -dimensions[1] / 4, 0),
+                )
+                child_part.GetCollisionModel().BuildModel()
                 self.bones.append(child_part)
                 self.env.Add(child_part)
                 new_joint.Initialize(parent_part, child_part, joint_frame)
