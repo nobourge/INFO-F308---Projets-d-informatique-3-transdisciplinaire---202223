@@ -35,6 +35,7 @@ class Phenotype:
                     self.genotype.nodes[node]["dimensions"], chrono.ChVectorD(0, 1.9, 0)
                 )
                 parent_part.SetBodyFixed(True)
+                parent_part.GetCollisionModel().SetFamilyGroup(0)
                 self.bones.append(parent_part)
                 self.env.Add(parent_part)
             for edge in self.genotype.edges(nbunch=node, data=True):
@@ -48,15 +49,7 @@ class Phenotype:
                 child_part_pos = new_joint_pos
                 child_part_pos[1] -= dimensions[1] / 2
                 child_part = bone.Bone(dimensions, chrono.ChVectorD(*child_part_pos))
-                child_part.GetCollisionModel().ClearModel()
-                child_part.GetCollisionModel().AddBox(
-                    bone.Bone.bone_material,
-                    dimensions[0] / 2,
-                    dimensions[1] / 4,
-                    dimensions[2] / 2,
-                    chrono.ChVectorD(0, -dimensions[1] / 4, 0),
-                )
-                child_part.GetCollisionModel().BuildModel()
+                child_part.GetCollisionModel().SetFamilyGroup(0)
                 self.bones.append(child_part)
                 self.env.Add(child_part)
                 new_joint.Initialize(parent_part, child_part, joint_frame)
