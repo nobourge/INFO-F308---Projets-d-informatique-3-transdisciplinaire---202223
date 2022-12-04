@@ -35,6 +35,32 @@ class TestsGenotypeToPhenotype:
         self.env.Add(b)
 
     def build_creature_with_two_legs(self):
+        # TODO make a class/struct for nodes and connetions
+        nodes = [
+            (
+                1,
+                {
+                    "dimensions": (0.3, 1.0, 1.0),
+                    "joint_type": None,
+                    "joint_limits": None,
+                    "recursive_limit": 0,
+                    "neurons": None,
+                    "connections": [],
+                },
+            ),
+            (
+                2,
+                {
+                    "dimensions": (0.3, 1.4, 0.2),
+                    "joint_type": None,
+                    "joint_limits": None,
+                    "recursive_limit": 0,
+                    "neurons": None,
+                    "connections": [],
+                },
+            ),
+        ]
+        gen = genotype.Genotype()
         # TODO establish rules for joint placement
         # and collision box reductions in procedural generation
         trunk = bone.Bone((0.3, 1.0, 1.0), chrono.ChVectorD(0, 1.9, 0))
