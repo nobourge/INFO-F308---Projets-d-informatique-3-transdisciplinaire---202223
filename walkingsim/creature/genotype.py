@@ -13,7 +13,7 @@ Description:
 import networkx as nx
 
 
-class Genotype(nx.DiGraph):
+class Genotype(nx.MultiDiGraph):
     """
     Representing a creature genotype as a directed graph.
 
