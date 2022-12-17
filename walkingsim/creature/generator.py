@@ -114,21 +114,21 @@ class CreatureGenerator:
     Nodes describe bones and have the following attributes:
     - dimensions: 3-tuple with 3d size of the body part
     - joint_type: joint type that sets constraints on relative motion between
-    the part and its parent
+                  the part and its parent
     - recursive_limit: int stating how many times a phenotype should
-    add this part if adding it several times recursively
+                       add this part if adding it several times recursively
     - neurons
 
     Edges describe connections between a parent and a child node and have the
     following attributes:
     - position: 3d position of attachment of a child to its parent, constrained
-    to be on the parent's surface
+                to be on the parent's surface
     - orientation: an orientation matrix based on the child's parent
     - scale: a scale matrix based on the child's parent
     - reflection: a reflection matrix based on the child's parent
     - terminal_only: boolean flag, which when set to True allows the connection
-    to be applied only when the recursive_limit of a node is reached, for hand 
-    or tail-like parts
+                     to be applied only when the recursive_limit of a node is
+                     reached, for hand or tail-like parts
     """
 
     def __init__(self, __datapath: str, __engine: str) -> None:
