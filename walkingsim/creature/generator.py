@@ -32,7 +32,7 @@ class ChronoCreature:
 
         return bone
 
-    def _create_body(self, index: int, pos: chrono.ChVectorD):
+    def _create_body(self, index: int, pos: chrono.ChVectorD, recursive_cnt: int = 0):
         meta = self.__graph.nodes[index]
         body_part = self._create_bone(meta['dimensions'])
         body_part.GetCollisionModel().SetFamily(self._collision_family)
@@ -44,20 +44,27 @@ class ChronoCreature:
         if index == 0:
             body_part.SetBodyFixed(True)
 
-        print('Node {}, Pos: {}, Edges: {}'.format(index, pos, self.__graph.edges(nbunch=index)))
         for (edge_node1, edge_node2, edge_meta) in self.__graph.edges(nbunch=index, data=True):
             # TODO different types of joints?
+            # TODO: Add constraints on the joints
             joint = chrono.ChLinkMotorRotationTorque()
-            joint_pos = edge_meta['position']
+            joint_pos = (pos.x + edge_meta['position'][0], pos.y + edge_meta['position'][1], pos.z + edge_meta['position'][2])
             joint_frame = chrono.ChFrameD(chrono.ChVectorD(*joint_pos))
 
-            # TODO how to find position of new part based on parent's pos?
-            node2_dim = self.__graph.nodes[edge_node2]['dimensions']
-            node2_body_part_pos = (joint_pos[0], joint_pos[1] - node2_dim[1] / 2, joint_pos[2])
-            node2_body_part = self._create_body(edge_node2, chrono.ChVectorD(*node2_body_part_pos), body_part)
+            do_create_body = True
+            recursive_limit = self.__graph.nodes[edge_node2]['recursive_limit']
+            if edge_node1 == edge_node2 and recursive_cnt >= recursive_limit:
+                do_create_body = False
 
-            joint.Initialize(body_part, node2_body_part, joint_frame)
-            self.__joints.append(joint)
+            if do_create_body:
+                _recursive_cnt = recursive_cnt + 1 if edge_node1 == edge_node2 else 0
+
+                node2_dim = self.__graph.nodes[edge_node2]['dimensions']
+                node2_body_part_pos = (joint_pos[0], joint_pos[1] - node2_dim[1] / 2, joint_pos[2])
+                node2_body_part = self._create_body(edge_node2, chrono.ChVectorD(*node2_body_part_pos), _recursive_cnt)
+
+                joint.Initialize(body_part, node2_body_part, joint_frame)
+                self.__joints.append(joint)
 
         return body_part
 
