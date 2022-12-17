@@ -13,29 +13,30 @@ Description:
 
 import pychrono as chrono
 
-from walkingsim.environment import EnvironmentLoader
+from walkingsim.simulation import ChronoSimulation
 
-import walkingsim.visualiser as visualiser
+import walkingsim.ground as ground
 import walkingsim.creature.genotype as genotype
 import walkingsim.creature.phenotype as phenotype
 import walkingsim.creature.bone as bone
 
-loader = EnvironmentLoader('./environments', 'chrono')
 
 class TestsGenotypeToPhenotype:
     def __init__(self):
-        self.env = loader.load_environment('default')
+        self.sim = ChronoSimulation('./environments', 'default')
+        self.sim.environment.Add(ground.Ground())
 
     def run_tests(self):
-        self.visuals = visualiser.Visualiser(self.env)
-        self.visuals.run()
+        self.sim.init()
+        self.sim.run()
 
     def build_creature_with_one_part(self):
         #  g = genotype.Genotype()
         #  g.add_node(genotype.GenotypeNode((20, 20, 40)))
         b = bone.Bone((0.3, 1.80, 0.7))
         #  b.SetMass(80)
-        self.env.Add(b)
+        self.sim.environment.Add(b)
+        # self.env.Add(b)
 
     def build_creature_with_two_legs(self):
         # TODO make a class/struct for nodes and connetions
@@ -89,7 +90,7 @@ class TestsGenotypeToPhenotype:
             ),
         ]
         gen = genotype.Genotype(nodes, connections)
-        three_body_creature = phenotype.Phenotype(gen, self.env)
+        three_body_creature = phenotype.Phenotype(gen, self.sim.environment)
 
 
 if __name__ == "__main__":
