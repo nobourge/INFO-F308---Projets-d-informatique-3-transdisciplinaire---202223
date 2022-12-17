@@ -32,7 +32,7 @@ class ChronoCreature:
 
         return bone
 
-    def _create_body(self, index: int, pos: chrono.ChVectorD, parent=None):
+    def _create_body(self, index: int, pos: chrono.ChVectorD):
         meta = self.__graph.nodes[index]
         body_part = self._create_bone(meta['dimensions'])
         body_part.GetCollisionModel().SetFamily(self._collision_family)
