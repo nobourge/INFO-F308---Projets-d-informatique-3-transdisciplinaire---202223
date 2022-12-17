@@ -9,3 +9,9 @@ The following command will create a virtual environment named `infof308-chrono` 
 ```shell
 conda env create -f environment.yml
 ```
+
+## Run the simulation
+
+```shell
+python -m walkingsim
+```
