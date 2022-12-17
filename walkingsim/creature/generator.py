@@ -1,3 +1,15 @@
+"""
+3D PyChrono muscle-based walking simulator
+File: phenotype.py
+Authors:
+    BECKER Robin-Gilles
+    BOURGEOIS Noé
+    HENRY DE FRAHAN Antoine
+    PALMISANO Luca
+Description:
+    Classes for generating creatures.
+"""
+
 import os
 import json
 
@@ -7,6 +19,9 @@ import pychrono as chrono
 
 
 class ChronoCreature:
+    """Class to create a creature for the `chrono` engine based on a directed
+    graph, which represents the creature genotype.
+    """
     _collision_family = 2
 
     def __init__(self, __creature: str, __graph: nx.Graph, pos: tuple) -> None:
@@ -92,6 +107,30 @@ class ChronoCreature:
 
 
 class CreatureGenerator:
+    """Class to generate creatures based on a JSON file. 
+
+    Each JSON file describes a creature genotype as a directed graph.
+
+    Nodes describe bones and have the following attributes:
+    - dimensions: 3-tuple with 3d size of the body part
+    - joint_type: joint type that sets constraints on relative motion between
+    the part and its parent
+    - recursive_limit: int stating how many times a phenotype should
+    add this part if adding it several times recursively
+    - neurons
+
+    Edges describe connections between a parent and a child node and have the
+    following attributes:
+    - position: 3d position of attachment of a child to its parent, constrained
+    to be on the parent's surface
+    - orientation: an orientation matrix based on the child's parent
+    - scale: a scale matrix based on the child's parent
+    - reflection: a reflection matrix based on the child's parent
+    - terminal_only: boolean flag, which when set to True allows the connection
+    to be applied only when the recursive_limit of a node is reached, for hand 
+    or tail-like parts
+    """
+
     def __init__(self, __datapath: str, __engine: str) -> None:
         self.__datapath = __datapath
         self.__engine = __engine
