@@ -14,23 +14,6 @@ import os
 
 import pychrono.core as chrono
 
-import walkingsim.ground as ground
-
-
-class Environment(chrono.ChSystemNSC):
-    """
-    Represents an instance of the simulation's
-    physics, as a non-smooth mechanics system.
-    """
-
-    def __init__(self):
-        super().__init__()
-        self.Add(ground.Ground())
-        self.Set_G_acc(chrono.ChVectorD(0, -9.81, 0))
-        chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(0.001)
-        chrono.ChCollisionModel.SetDefaultSuggestedMargin(0.001)
-
-
 class EnvironmentLoader:
 
     def __init__(self, __datapath: str, __engine: str):
