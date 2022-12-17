@@ -39,6 +39,7 @@ class Visualiser(chronoirr.ChVisualSystemIrrlicht):
         while self.Run():
             self.BeginScene()
             self.Render()
+            self.ShowInfoPanel(True)
             #  chronoirr.drawAllCOGs(self, 2)  # Draw coord systems
             #  chronoirr.drawAllLinkframes(self, 2)
             chronoirr.drawAllLinks(self, 2)

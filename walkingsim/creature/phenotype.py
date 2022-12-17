@@ -34,6 +34,7 @@ class Phenotype:
                 parent_part = bone.Bone(
                     self.genotype.nodes[node]["dimensions"], chrono.ChVectorD(0, 1.9, 0)
                 )
+                parent_part.GetCollisionModel().SetFamily(2)
                 parent_part.SetBodyFixed(True)
                 self.bones.append(parent_part)
                 self.env.Add(parent_part)
@@ -52,10 +53,12 @@ class Phenotype:
                 child_part.GetCollisionModel().AddBox(
                     bone.Bone.bone_material,
                     dimensions[0] / 2,
-                    dimensions[1] / 4,
+                    dimensions[1] / 2,
                     dimensions[2] / 2,
-                    chrono.ChVectorD(0, -dimensions[1] / 4, 0),
+                    chrono.ChVectorD(0, 0, 0),
                 )
+                child_part.GetCollisionModel().SetFamily(2)
+                child_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(2)
                 child_part.GetCollisionModel().BuildModel()
                 self.bones.append(child_part)
                 self.env.Add(child_part)
