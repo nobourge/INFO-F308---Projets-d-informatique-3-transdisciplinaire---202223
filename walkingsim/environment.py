@@ -7,7 +7,7 @@ Authors:
     HENRY DE FRAHAN Antoine
     PALMISANO Luca
 Description:
-    Class for the complete physics system.
+    Class for loading and creating the physics system (= Environment).
 """
 import json
 import os
@@ -15,6 +15,13 @@ import os
 import pychrono.core as chrono
 
 class EnvironmentLoader:
+    """Class to load environments from JSON files. 
+    
+    Environments can be described in JSON files in an agnostic way, completely
+    independently of the physics engine used.
+
+    The available engines are: 'chrono'
+    """
 
     def __init__(self, __datapath: str, __engine: str):
         self.__datapath = __datapath
