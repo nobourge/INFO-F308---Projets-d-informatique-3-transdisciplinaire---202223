@@ -1,9 +1,12 @@
+import walkingsim.ground as ground
 from walkingsim.simulation import ChronoSimulation
 
 def main():
-    sim = ChronoSimulation('./environments', 'default')
+    sim = ChronoSimulation('./environments', 'default', './creatures')
+    sim.environment.Add(ground.Ground())
 
-    # TODO: Do something
+    creature = sim.generator.generate_creature('bipede')
+    creature.add(sim.environment)
 
     sim.init()
     sim.run()
