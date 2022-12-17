@@ -1,0 +1,70 @@
+{
+    "nodes": [
+        {
+            "id": 0,
+            "meta": {
+                "dimensions": [
+                    0.3,
+                    1.0,
+                    1.0
+                ],
+                "joint_type": null,
+                "joint_limits": null,
+                "recursive_limit": 0,
+                "neurons": null,
+                "connections": []
+            }
+        },
+        {
+            "id": 1,
+            "meta": {
+                "dimensions": [
+                    0.3,
+                    1.4,
+                    0.2
+                ],
+                "joint_type": "revolute",
+                "joint_limits": null,
+                "recursive_limit": 0,
+                "neurons": null,
+                "connections": []
+            }
+        }
+    ],
+    "edges": [
+        {
+            "nodes": [
+                0,
+                1
+            ],
+            "meta": {
+                "position": [
+                    0,
+                    1.4,
+                    -0.2
+                ],
+                "orientation": null,
+                "scale": null,
+                "reflection": null,
+                "terminal_only": true
+            }
+        },
+        {
+            "nodes": [
+                0,
+                1
+            ],
+            "meta": {
+                "position": [
+                    0,
+                    1.4,
+                    0.2
+                ],
+                "orientation": null,
+                "scale": null,
+                "reflection": null,
+                "terminal_only": true
+            }
+        }
+    ]
+}

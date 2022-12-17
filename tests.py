@@ -23,8 +23,11 @@ import walkingsim.creature.bone as bone
 
 class TestsGenotypeToPhenotype:
     def __init__(self):
-        self.sim = ChronoSimulation('./environments', 'default')
+        self.sim = ChronoSimulation('./environments', 'default', './creatures')
         self.sim.environment.Add(ground.Ground())
+
+        creature = self.sim.generator.generate_creature('bipede')
+        creature.add(self.sim.environment)
 
     def run_tests(self):
         self.sim.init()
@@ -96,5 +99,5 @@ class TestsGenotypeToPhenotype:
 if __name__ == "__main__":
     t = TestsGenotypeToPhenotype()
     #  t.build_creature_with_one_part()
-    t.build_creature_with_two_legs()
+    # t.build_creature_with_two_legs()
     t.run_tests()
