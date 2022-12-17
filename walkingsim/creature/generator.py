@@ -24,7 +24,8 @@ class ChronoCreature:
     """
     _collision_family = 2
 
-    def __init__(self, __creature: str, __graph: nx.Graph, pos: tuple) -> None:
+    def __init__(self, __creature: str, __graph: nx.Graph,
+                 pos: tuple) -> None:
         self.__creature = __creature
         self.__graph = __graph
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
@@ -41,33 +42,42 @@ class ChronoCreature:
         #  bone_material.SetCompliance(0.0005)
         #  bone_material.SetComplianceT(0.0005)
 
-        bone = chrono.ChBodyEasyBox(size[0], size[1], size[2], 1000, True, True, bone_material)
+        bone = chrono.ChBodyEasyBox(size[0], size[1], size[2], 1000,
+                                    True, True, bone_material)
         bone.SetBodyFixed(False)
         bone.GetVisualShape(0).SetColor(chrono.ChColor(0.5, 0.7, 0.5))
 
         return bone
 
-    def _create_body(self, index: int, pos: chrono.ChVectorD, recursive_cnt: int = 0):
+    def _create_body(self
+                     , index: int
+                     , pos: chrono.ChVectorD
+                     , recursive_cnt: int = 0):
         meta = self.__graph.nodes[index]
         body_part = self._create_bone(meta['dimensions'])
         body_part.GetCollisionModel().SetFamily(self._collision_family)
-        body_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(self._collision_family)
+        body_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
+            self._collision_family)
         body_part.SetPos(pos)
         self.__bodies.append(body_part)
-        
+
         # FIXME: For debug purposes
         if index == 0:
             body_part.SetBodyFixed(True)
 
-        for (edge_node1, edge_node2, edge_meta) in self.__graph.edges(nbunch=index, data=True):
+        for (edge_node1, edge_node2, edge_meta) in self.__graph.edges(
+                nbunch=index, data=True):
             # TODO different types of joints?
             # TODO: Add constraints on the joints
             joint = chrono.ChLinkMotorRotationTorque()
-            joint_pos = (pos.x + edge_meta['position'][0], pos.y + edge_meta['position'][1], pos.z + edge_meta['position'][2])
+            joint_pos = (pos.x + edge_meta['position'][0],
+                         pos.y + edge_meta['position'][1],
+                         pos.z + edge_meta['position'][2])
             joint_frame = chrono.ChFrameD(chrono.ChVectorD(*joint_pos))
 
             do_create_body = True
-            recursive_limit = self.__graph.nodes[edge_node2]['recursive_limit']
+            recursive_limit = self.__graph.nodes[edge_node2][
+                'recursive_limit']
             if edge_node1 == edge_node2 and recursive_cnt >= recursive_limit:
                 do_create_body = False
 
@@ -75,10 +85,16 @@ class ChronoCreature:
                 _recursive_cnt = recursive_cnt + 1 if edge_node1 == edge_node2 else 0
 
                 node2_dim = self.__graph.nodes[edge_node2]['dimensions']
-                node2_body_part_pos = (joint_pos[0], joint_pos[1] - node2_dim[1] / 2, joint_pos[2])
-                node2_body_part = self._create_body(edge_node2, chrono.ChVectorD(*node2_body_part_pos), _recursive_cnt)
+                node2_body_part_pos = (
+                joint_pos[0], joint_pos[1] - node2_dim[1] / 2,
+                joint_pos[2])
+                node2_body_part = self._create_body(edge_node2,
+                                                    chrono.ChVectorD(
+                                                        *node2_body_part_pos),
+                                                    _recursive_cnt)
 
-                joint.Initialize(body_part, node2_body_part, joint_frame)
+                joint.Initialize(body_part, node2_body_part,
+                                 joint_frame)
                 self.__joints.append(joint)
 
         return body_part
@@ -145,15 +161,19 @@ class CreatureGenerator:
             creature_spec = json.load(fp)
 
         nodes = [
-            (node['id'], node['meta']) for node in creature_spec['nodes']
+            (node['id'], node['meta']) for node in
+            creature_spec['nodes']
         ]
 
         edges = [
-            (*edge['nodes'], edge['meta']) for edge in creature_spec['edges']
+            (*edge['nodes'], edge['meta']) for edge in
+            creature_spec['edges']
         ]
 
         creature_graph = nx.MultiDiGraph()
         creature_graph.add_nodes_from(nodes)
         creature_graph.add_edges_from(edges)
 
-        return self.__creature[self.__engine](__creature, creature_graph, (0, 1.9, 0))
+        return self.__creature[self.__engine](__creature,
+                                              creature_graph,
+                                              (0, 1.9, 0))

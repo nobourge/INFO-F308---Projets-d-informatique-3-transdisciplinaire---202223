@@ -9,8 +9,14 @@ Authors:
 Description:
     Classes for a genotype, represented as a directed graph.
 """
-
 import networkx as nx
+
+from auto_indent import *
+
+from walkingsim_logging import logger
+logger.debug("Starting genotype.py")
+
+sys.stdout = AutoIndent(sys.stdout)
 
 
 class Genotype(nx.MultiDiGraph):
@@ -46,5 +52,11 @@ class Genotype(nx.MultiDiGraph):
                               child_node_nb, attributes_dict)
         """
         super().__init__()
+        print("Genotype.__init__")
+        logger.debug("Genotype.__init__")
+
+        # logger.debug(["node: {}", node] for node in nodes_list)
         self.add_nodes_from(nodes_list)
+        # logger.debug("connection: {}".format(
+        #     connection for connection in connections_list))
         self.add_edges_from(connections_list)
