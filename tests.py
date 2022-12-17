@@ -13,16 +13,18 @@ Description:
 
 import pychrono as chrono
 
-import walkingsim.environment as environment
+from walkingsim.environment import EnvironmentLoader
+
 import walkingsim.visualiser as visualiser
 import walkingsim.creature.genotype as genotype
 import walkingsim.creature.phenotype as phenotype
 import walkingsim.creature.bone as bone
 
+loader = EnvironmentLoader('./environments', 'chrono')
 
 class TestsGenotypeToPhenotype:
     def __init__(self):
-        self.env = environment.Environment()
+        self.env = loader.load_environment('default')
 
     def run_tests(self):
         self.visuals = visualiser.Visualiser(self.env)
