@@ -1,3 +1,15 @@
+"""
+3D PyChrono muscle-based walking simulator
+File: simulation.py
+Authors:
+    BECKER Robin-Gilles
+    BOURGEOIS Noé
+    HENRY DE FRAHAN Antoine
+    PALMISANO Luca
+Description:
+    Classes for the simulations
+"""
+
 import abc
 
 from walkingsim.environment import EnvironmentLoader
@@ -9,6 +21,15 @@ import pychrono.irrlicht as chronoirr
 
 
 class Simulation(abc.ABC):
+    """Abstract class used to create simulations. This class is used by
+    `ChronoSimulation`.
+
+    This class initiates the `EnvironmentLoader` and the `CreatureGenerator`
+    for the given engine. It also loads the given environment.
+
+    :var environment: The environment system specific to the engine
+    :var generator: The creature generator specific to the engine
+    """
 
     def __init__(self, __engine: str, __env_datapath: str, __env: str, __creatures_datapath: str) -> None:
         self.__engine = __engine
@@ -33,6 +54,9 @@ class Simulation(abc.ABC):
 
 
 class ChronoSimulation(Simulation):
+    """Simulation class for `chrono`. This classes creates an irrlicht 
+    visualizer and attach the `chrono` system to the visualizer.
+    """
 
     def __init__(self, __env_datapath: str, __env: str, __creatures_datapath: str) -> None:
         super().__init__('chrono', __env_datapath, __env, __creatures_datapath)
