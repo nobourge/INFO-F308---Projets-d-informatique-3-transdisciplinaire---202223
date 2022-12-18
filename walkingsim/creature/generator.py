@@ -156,7 +156,7 @@ class CreatureGenerator:
         }
 
     def generate_creature(self, __creature: str):
-        filename = os.path.join(self.__datapath, f'{__creature}.json')
+        filename = os.path.join(self.__datapath,f'{__creature}.json')
         with open(filename, 'r') as fp:
             creature_spec = json.load(fp)
 

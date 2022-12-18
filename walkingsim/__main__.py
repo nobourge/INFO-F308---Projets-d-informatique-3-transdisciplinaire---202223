@@ -2,6 +2,7 @@ import sys
 
 import walkingsim.ground as ground
 from walkingsim.simulation import ChronoSimulation
+import walkingsim._logging
 
 def main():
     environment, creature_name = 'default', 'bipede'
@@ -10,7 +11,16 @@ def main():
     if len(sys.argv) >= 3:
         creature_name = sys.argv[2]
 
-    sim = ChronoSimulation('./environments', environment, './creatures')
+
+    environments_path = './environments'
+    creatures_path = './creatures'
+
+    # sim = ChronoSimulation('./environments', environment,
+    # './creatures')
+    sim = ChronoSimulation(environments_path
+                           , environment
+                           , creatures_path
+                           )
     sim.environment.Add(ground.Ground())
 
     creature = sim.generator.generate_creature(creature_name)

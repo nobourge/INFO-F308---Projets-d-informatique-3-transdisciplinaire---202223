@@ -13,6 +13,8 @@ import json
 import os
 
 import pychrono.core as chrono
+from walkingsim._logging import logger
+
 
 class EnvironmentLoader:
     """Class to load environments from JSON files. 
@@ -32,7 +34,33 @@ class EnvironmentLoader:
         }
 
     def load_environment(self, __env: str):
+        """Loads an environment from a JSON file.
+
+        :param __env: The name of the environment to load
+        :return: The environment system
+        """
+        # try:
+        #     with open(os.path.join(self.__datapath, __env + '.json'), 'r') as _file:
+        #         _config = json.load(_file)
+        # except FileNotFoundError:
+        #     logger.error(f'Environment "{__env}" not found.')
+        #     # raise FileNotFoundError
+        #     # if windows condition:
+        #     if os.path.exists(os.path.join(self.__datapath, __env + '.json')):
+        #         logger.error(f'Environment "{__env}" not found.')
+        #     else:
+        #         pass
+        #         # adapt path:
+        #         # os.path.join(os.getcwd(), 'walkingsim', 'data', 'environments', __env + '.json')
+        #     # else
+        #         # raise FileNotFoundError
         filename = os.path.join(self.__datapath, f'{__env}.json')
+
+        logger.info(f'Loading environment from {filename}')
+        # filename = "../environments/default.json"
+        # logger.info(f'Loading environment from {filename}')
+
+
         with open(filename, 'r') as fp:
             config = json.load(fp)
 
