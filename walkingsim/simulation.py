@@ -14,8 +14,7 @@ import abc
 
 from walkingsim.environment import EnvironmentLoader
 from walkingsim.creature.generator import CreatureGenerator
-from walkingsim._logging import logger
-# from loguru import logger
+from loguru import logger
 
 
 import pychrono as chrono
@@ -34,8 +33,6 @@ class Simulation(abc.ABC):
     """
 
     def __init__(self, __engine: str, __env_datapath: str, __env: str, __creatures_datapath: str) -> None:
-        logger.debug(f'Initializing simulation with engine "{__engine}"')
-        # logger.info(f'Initializing simulation with engine "{__engine}"')
         self.__engine = __engine
         self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
         self.__environment = self.__loader.load_environment(__env)
@@ -67,6 +64,7 @@ class ChronoSimulation(Simulation):
         self.__renderer = chronoirr.ChVisualSystemIrrlicht()
 
     def init(self):
+        logger.info('Initializing chrono simulation')
         self.__renderer.AttachSystem(self.environment)
         self.__renderer.SetWindowSize(1024, 768)
         self.__renderer.SetWindowTitle("3D muscle-based walking sim")
@@ -79,6 +77,7 @@ class ChronoSimulation(Simulation):
         self.__renderer.AddTypicalLights()
 
     def run(self):
+        logger.info('Running chrono simulation')
         while self.__renderer.Run():
             self.__renderer.BeginScene()
             self.__renderer.Render()
