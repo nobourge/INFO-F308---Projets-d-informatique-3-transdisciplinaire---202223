@@ -13,7 +13,7 @@ import json
 import os
 
 import pychrono.core as chrono
-from walkingsim._logging import logger
+from loguru import logger
 
 
 class EnvironmentLoader:
@@ -39,31 +39,17 @@ class EnvironmentLoader:
         :param __env: The name of the environment to load
         :return: The environment system
         """
-        # try:
-        #     with open(os.path.join(self.__datapath, __env + '.json'), 'r') as _file:
-        #         _config = json.load(_file)
-        # except FileNotFoundError:
-        #     logger.error(f'Environment "{__env}" not found.')
-        #     # raise FileNotFoundError
-        #     # if windows condition:
-        #     if os.path.exists(os.path.join(self.__datapath, __env + '.json')):
-        #         logger.error(f'Environment "{__env}" not found.')
-        #     else:
-        #         pass
-        #         # adapt path:
-        #         # os.path.join(os.getcwd(), 'walkingsim', 'data', 'environments', __env + '.json')
-        #     # else
-        #         # raise FileNotFoundError
         filename = os.path.join(self.__datapath, f'{__env}.json')
 
-        logger.info(f'Loading environment from {filename}')
-        # filename = "../environments/default.json"
-        # logger.info(f'Loading environment from {filename}')
-
+        # We do not stop the code here so that `open` will
+        # raise an exception when opening the file.
+        if not os.path.exists(filename):
+            logger.error(f'Environment "{__env}" not found !')
 
         with open(filename, 'r') as fp:
             config = json.load(fp)
 
+        logger.success(f'Environment "{__env}" loaded successfully !')
         return self.__loaders[self.__engine](config)
 
     def _load_environment_chrono(self, __config: dict):
