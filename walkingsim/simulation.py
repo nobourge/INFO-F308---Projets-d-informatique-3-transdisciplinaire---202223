@@ -57,9 +57,7 @@ class Simulation(abc.ABC):
 
 
 class ChronoSimulation(Simulation):
-    """Simulation class for `chrono`. This classes creates an irrlicht
-    visualizer and attach the `chrono` system to the visualizer.
-    """
+    """Simulation class for `chrono`."""
 
     def __init__(
         self, __env_datapath: str, __env: str, __creatures_datapath: str
@@ -69,12 +67,16 @@ class ChronoSimulation(Simulation):
         self.__renderer = chronoirr.ChVisualSystemIrrlicht()
         self.__is_over = False
 
+    def add_creature(self, creature_name):
+        creature = self.generator.generate_creature(creature_name)
+        creature.add_to_env(self.environment)
+
     def do_step(self):
         """
         Performs one step of the current simulation (compute and apply forces,
         do the engine dynamics
         Computes reward/fitness
-        Should observation input come from here? (e.g. position, CoM, etc.) for 
+        Should observation input come from here? (e.g. position, CoM, etc.) for
         the next forces to be computed
         """
         self._evaluate_status()

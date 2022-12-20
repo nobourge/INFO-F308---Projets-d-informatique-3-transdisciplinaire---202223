@@ -24,9 +24,7 @@ def main():
 
     sim = ChronoSimulation(environments_path, environment, creatures_path)
     sim.environment.Add(ground.Ground())
-
-    creature = sim.generator.generate_creature(creature_name)
-    creature.add(sim.environment)
+    sim.add_creature(creature_name)
 
     sim.render()
 

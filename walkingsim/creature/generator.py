@@ -114,7 +114,7 @@ class ChronoCreature:
             )  # amplitude [Nm]
             joint.SetTorqueFunction(sin_torque)
 
-    def add(self, __env):
+    def add_to_env(self, __env):
         for body in self.__bodies:
             __env.Add(body)
 
