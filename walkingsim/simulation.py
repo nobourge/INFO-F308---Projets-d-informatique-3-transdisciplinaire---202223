@@ -63,6 +63,7 @@ class ChronoSimulation(Simulation):
         self, __env_datapath: str, __env: str, __creatures_datapath: str
     ) -> None:
         super().__init__("chrono", __env_datapath, __env, __creatures_datapath)
+        self.__time_step = 1e-3
         # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
         self.__renderer = chronoirr.ChVisualSystemIrrlicht()
         self.__is_over = False
@@ -82,7 +83,7 @@ class ChronoSimulation(Simulation):
         the next forces to be computed
         """
         self._evaluate_status()
-        self.environment.DoStepDynamics(1e-3)
+        self.environment.DoStepDynamics(self.__time_step)
 
     @property
     def is_over(self):
@@ -109,6 +110,8 @@ class ChronoSimulation(Simulation):
             # chronoirr.drawAllLinks(self.__renderer, 2)
             # chronoirr.drawAllBoundingBoxes(self.__renderer)
             self.__renderer.EndScene()
+            # FIXME do_step shouldn't be done here, the method should just
+            # render one time step
             self.do_step()
 
     def _render_setup(self):
