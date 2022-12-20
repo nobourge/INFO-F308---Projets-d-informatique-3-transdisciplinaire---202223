@@ -61,20 +61,23 @@ class ChronoSimulation(Simulation):
 
     def __init__(self, __env_datapath: str, __env: str, __creatures_datapath: str) -> None:
         super().__init__('chrono', __env_datapath, __env, __creatures_datapath)
+        # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
         self.__renderer = chronoirr.ChVisualSystemIrrlicht()
+        self.__is_over = False
 
-    def _render_setup(self):
-        logger.info('Initializing chrono simulation')
-        self.__renderer.AttachSystem(self.environment)
-        self.__renderer.SetWindowSize(1024, 768)
-        self.__renderer.SetWindowTitle("3D muscle-based walking sim")
-        # todo ? self.__renderer.SetWindowTitle("3D actuator-based
-        #  walking sim")
-        self.__renderer.Initialize()
-        self.__renderer.AddSkyBox()
-        self.__renderer.AddCamera(chrono.ChVectorD(2, 10, 3))
-        #  self.__renderer.AddLight(chrono.ChVectorD(0, 10, -20), 1000)
-        self.__renderer.AddTypicalLights()
+
+    @property
+    def is_over(self):
+        return self.__is_over
+
+    def _evaluate_status(self):
+        # FIXME list conditions for the sim to be over here and
+        # change self.__is_over accordingly
+        #
+        # e.g. max nb of steps reached, distance target reached, body 
+        # fell of the ground, etc.
+        pass
+
 
     def render(self):
         logger.info('Setting up renderer')
@@ -90,3 +93,16 @@ class ChronoSimulation(Simulation):
             # chronoirr.drawAllBoundingBoxes(self.__renderer)
             self.__renderer.EndScene()
             self.environment.DoStepDynamics(1e-3)
+
+    def _render_setup(self):
+        logger.info('Initializing chrono simulation')
+        self.__renderer.AttachSystem(self.environment)
+        self.__renderer.SetWindowSize(1024, 768)
+        self.__renderer.SetWindowTitle("3D muscle-based walking sim")
+        # todo ? self.__renderer.SetWindowTitle("3D actuator-based
+        #  walking sim")
+        self.__renderer.Initialize()
+        self.__renderer.AddSkyBox()
+        self.__renderer.AddCamera(chrono.ChVectorD(2, 10, 3))
+        #  self.__renderer.AddLight(chrono.ChVectorD(0, 10, -20), 1000)
+        self.__renderer.AddTypicalLights()
