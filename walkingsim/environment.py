@@ -17,8 +17,8 @@ from loguru import logger
 
 
 class EnvironmentLoader:
-    """Class to load environments from JSON files. 
-    
+    """
+    Class to load environments from JSON files.
     Environments can be described in JSON files in an agnostic way, completely
     independently of the physics engine used.
 
@@ -34,7 +34,8 @@ class EnvironmentLoader:
         }
 
     def load_environment(self, __env: str):
-        """Loads an environment from a JSON file.
+        """
+        Loads an environment from a JSON file.
 
         :param __env: The name of the environment to load
         :return: The environment system

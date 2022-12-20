@@ -50,7 +50,7 @@ class Simulation(abc.ABC):
     def init(self):
         raise NotImplementedError
 
-    def run(self):
+    def render(self):
         raise NotImplementedError
 
 
@@ -63,7 +63,7 @@ class ChronoSimulation(Simulation):
         super().__init__('chrono', __env_datapath, __env, __creatures_datapath)
         self.__renderer = chronoirr.ChVisualSystemIrrlicht()
 
-    def init(self):
+    def _render_setup(self):
         logger.info('Initializing chrono simulation')
         self.__renderer.AttachSystem(self.environment)
         self.__renderer.SetWindowSize(1024, 768)
@@ -76,8 +76,10 @@ class ChronoSimulation(Simulation):
         #  self.__renderer.AddLight(chrono.ChVectorD(0, 10, -20), 1000)
         self.__renderer.AddTypicalLights()
 
-    def run(self):
-        logger.info('Running chrono simulation')
+    def render(self):
+        logger.info('Setting up renderer')
+        self._render_setup()
+        logger.info('Rendering chrono simulation')
         while self.__renderer.Run():
             self.__renderer.BeginScene()
             self.__renderer.Render()

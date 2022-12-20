@@ -28,8 +28,8 @@ def main():
     creature = sim.generator.generate_creature(creature_name)
     creature.add(sim.environment)
 
-    sim.init()
-    sim.run()
+    sim.render()
+
 
 if __name__ == '__main__':
     main()
