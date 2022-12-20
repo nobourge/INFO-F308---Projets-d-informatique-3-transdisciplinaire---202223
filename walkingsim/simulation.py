@@ -32,7 +32,9 @@ class Simulation(abc.ABC):
     :var generator: The creature generator specific to the engine
     """
 
-    def __init__(self, __engine: str, __env_datapath: str, __env: str, __creatures_datapath: str) -> None:
+    def __init__(
+        self, __engine: str, __env_datapath: str, __env: str, __creatures_datapath: str
+    ) -> None:
         self.__engine = __engine
         self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
         self.__environment = self.__loader.load_environment(__env)
@@ -55,16 +57,28 @@ class Simulation(abc.ABC):
 
 
 class ChronoSimulation(Simulation):
-    """Simulation class for `chrono`. This classes creates an irrlicht 
+    """Simulation class for `chrono`. This classes creates an irrlicht
     visualizer and attach the `chrono` system to the visualizer.
     """
 
-    def __init__(self, __env_datapath: str, __env: str, __creatures_datapath: str) -> None:
-        super().__init__('chrono', __env_datapath, __env, __creatures_datapath)
+    def __init__(
+        self, __env_datapath: str, __env: str, __creatures_datapath: str
+    ) -> None:
+        super().__init__("chrono", __env_datapath, __env, __creatures_datapath)
         # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
         self.__renderer = chronoirr.ChVisualSystemIrrlicht()
         self.__is_over = False
 
+    def do_step(self):
+        """
+        Performs one step of the current simulation (compute and apply forces,
+        do the engine dynamics
+        Computes reward/fitness
+        Should observation input come from here? (e.g. position, CoM, etc.) for 
+        the next forces to be computed
+        """
+        self._evaluate_status()
+        self.environment.DoStepDynamics(1e-3)
 
     @property
     def is_over(self):
@@ -74,15 +88,14 @@ class ChronoSimulation(Simulation):
         # FIXME list conditions for the sim to be over here and
         # change self.__is_over accordingly
         #
-        # e.g. max nb of steps reached, distance target reached, body 
+        # e.g. max nb of steps reached, distance target reached, body
         # fell of the ground, etc.
-        pass
-
+        self.__is_over = False
 
     def render(self):
-        logger.info('Setting up renderer')
+        logger.info("Setting up renderer")
         self._render_setup()
-        logger.info('Rendering chrono simulation')
+        logger.info("Rendering chrono simulation")
         while self.__renderer.Run():
             self.__renderer.BeginScene()
             self.__renderer.Render()
@@ -92,10 +105,10 @@ class ChronoSimulation(Simulation):
             # chronoirr.drawAllLinks(self.__renderer, 2)
             # chronoirr.drawAllBoundingBoxes(self.__renderer)
             self.__renderer.EndScene()
-            self.environment.DoStepDynamics(1e-3)
+            self.do_step()
 
     def _render_setup(self):
-        logger.info('Initializing chrono simulation')
+        logger.info("Initializing chrono simulation")
         self.__renderer.AttachSystem(self.environment)
         self.__renderer.SetWindowSize(1024, 768)
         self.__renderer.SetWindowTitle("3D muscle-based walking sim")
