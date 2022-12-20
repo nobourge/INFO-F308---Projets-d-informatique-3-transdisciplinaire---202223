@@ -66,10 +66,12 @@ class ChronoSimulation(Simulation):
         # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
         self.__renderer = chronoirr.ChVisualSystemIrrlicht()
         self.__is_over = False
+        self.__creature = None
 
     def add_creature(self, creature_name):
         creature = self.generator.generate_creature(creature_name)
         creature.add_to_env(self.environment)
+        self.__creature = creature
 
     def do_step(self):
         """
