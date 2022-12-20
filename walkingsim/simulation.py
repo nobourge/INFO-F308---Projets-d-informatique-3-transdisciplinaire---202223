@@ -68,7 +68,7 @@ class ChronoSimulation(Simulation):
         self.__is_over = False
         self.__creature = None
 
-    def add_creature(self, creature_name):
+    def add_creature(self, creature_name: str):
         creature = self.generator.generate_creature(creature_name)
         creature.add_to_env(self.environment)
         self.__creature = creature

@@ -122,6 +122,10 @@ class ChronoCreature:
         for joint in self.__joints:
             __env.Add(joint)
 
+    def get_sensor_data(self):
+        # FIXME return meaningful data about the current step state (speeds, positions, etc)
+        pass
+
 
 class CreatureGenerator:
     """Class to generate creatures based on a JSON file.
