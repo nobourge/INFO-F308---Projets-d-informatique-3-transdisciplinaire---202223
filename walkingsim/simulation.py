@@ -118,8 +118,8 @@ class ChronoSimulation(Simulation):
             # chronoirr.drawAllLinks(self.__renderer, 2)
             # chronoirr.drawAllBoundingBoxes(self.__renderer)
             self.__renderer.EndScene()
-            # FIXME do_step shouldn't be done here, the method should just
-            # render one time step
+            # FIXME do_step() shouldn't be done here, the method should just
+            # render one time step. Use a boolean class attribute to control rendering
             self.do_step()
 
     def _render_setup(self):
