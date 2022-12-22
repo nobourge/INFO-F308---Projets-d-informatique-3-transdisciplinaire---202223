@@ -68,6 +68,7 @@ class ChronoSimulation(Simulation):
         self.__renderer = chronoirr.ChVisualSystemIrrlicht()
         self.__is_over = False
         self.__creature = None
+        self.__total_reward = 0.0
 
     def add_creature(self, creature_name: str):
         creature = self.generator.generate_creature(creature_name)
@@ -91,6 +92,10 @@ class ChronoSimulation(Simulation):
     @property
     def is_over(self):
         return self.__is_over
+
+    @property
+    def total_reward(self):
+        return self.__total_reward
 
     def _evaluate_status(self):
         # FIXME list conditions for the sim to be over here and
