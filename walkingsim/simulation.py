@@ -76,14 +76,17 @@ class ChronoSimulation(Simulation):
 
     def do_step(self):
         """
-        Performs one step of the current simulation (compute and apply forces,
-        do the engine dynamics
-        Computes reward/fitness
-        Should observation input come from here? (e.g. position, CoM, etc.) for
-        the next forces to be computed
+        Performs one step of the current simulation.
         """
-        self._evaluate_status()
+        # FIXME Pseudocode for this method:
+        # 1) Get observations from creature sensors (position, angles, CoM, etc.)
+        # 2) Get action from brain/controller based on sensors input
+        # 3) Apply action to environment
+        # 4) Compute reward and add it to total reward/fitness
+        # 5) Do timestep in environment
+        # 6) Evaluate if simulation is over or not
         self.environment.DoStepDynamics(self.__time_step)
+        self._evaluate_status()
 
     @property
     def is_over(self):
@@ -94,7 +97,7 @@ class ChronoSimulation(Simulation):
         # change self.__is_over accordingly
         #
         # e.g. max nb of steps reached, distance target reached, body
-        # fell of the ground, etc.
+        # fell on the ground, etc.
         self.__is_over = False
 
     def render(self):
