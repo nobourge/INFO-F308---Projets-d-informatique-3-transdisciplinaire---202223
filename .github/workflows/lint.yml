@@ -7,6 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        cache: 'pip'
+    - name: Install black & isort
+      runs: |
+        pip install isort~=5.11 black~=22.12
     - name: isort --check
       runs: |
         isort --check .
