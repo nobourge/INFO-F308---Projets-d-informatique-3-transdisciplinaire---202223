@@ -12,11 +12,11 @@ jobs:
         python-version: '3.9'
         cache: 'pip'
     - name: Install black & isort
-      runs: |
+      run: |
         pip install isort~=5.11 black~=22.12
     - name: isort --check
-      runs: |
+      run: |
         isort --check .
     - name: black --check
-      runs: |
+      run: |
         black --check .
