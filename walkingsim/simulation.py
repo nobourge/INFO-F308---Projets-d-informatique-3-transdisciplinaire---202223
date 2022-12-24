@@ -126,13 +126,18 @@ class ChronoSimulation(Simulation):
         # 4) Compute reward and add it to total reward/fitness
         # 5) Do timestep in environment
         # 6) Evaluate if simulation is over or not
+        sensor_data = self.creature.sensor_data
+        if len(sensor_data) > 0:
+            print(sensor_data[-1]['position'], sensor_data[-1]['distance'], sensor_data[-1]['total_distance'])
+        
         return False, 0
 
     def do_run(self):
+        is_over = self._evaluate()[0]
         if self._visualize:
             return self.__renderer.Run()
 
-        return self._evaluate()[0]
+        return is_over
 
     def run(self):
         logger.info("Starting simulation")
@@ -144,6 +149,7 @@ class ChronoSimulation(Simulation):
                 if self._visualize:
                     self._render_step()
 
+                self.creature.capture_sensor_data()
                 self.environment.DoStepDynamics(self.__time_step)
         except KeyboardInterrupt:
             logger.info("Simulation was stopped by user")
