@@ -50,13 +50,15 @@ class Simulation(abc.ABC):
     def add_creature(self, creature_name: str, genome: dict = None):
         # FIXME: This function can be removed and done in the __init__ method
         if self.__creature is not None:
-            raise RuntimeError('Creature already exists in simulation')
+            logger.error("Cannot add a new creature to the simulation, one already exists !")
+            raise RuntimeError("Creature already exists in simulation")
 
         # FIXME: Pass the genome when creating the creature
         creature = self.generator.generate_creature(creature_name)
         creature.add_to_env(self.environment)
         self.__creature = creature
         self.__genome = genome
+        logger.debug(f"Creature '{creature}' added to the simulation")
 
     @property
     def environment(self):
@@ -129,7 +131,8 @@ class ChronoSimulation(Simulation):
         sensor_data = self.creature.sensor_data
         if len(sensor_data) > 0:
             print(sensor_data[-1]['position'], sensor_data[-1]['distance'], sensor_data[-1]['total_distance'])
-        
+
+        # TODO: Using those sensor data, we could calculate som fitness value
         return False, 0
 
     def do_run(self):
