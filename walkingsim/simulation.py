@@ -109,7 +109,7 @@ class ChronoSimulation:
         self.__creature = Quadrupede((0, 1.9, 0))
         self.__creature.add_to_env(self.environment)
         self.__genome = None
-        self.__fitness = 0
+        self.__total_reward = 0
 
     # Visualize
     def _render_setup(self):
@@ -142,9 +142,7 @@ class ChronoSimulation:
         return 0
 
     def _simulation_step(self):
-        """This function returns wether or not the simulation is done, and the
-        result (fitness) of this simulation.
-        """
+        """This function returns wether or not the simulation is done"""
         # Pseudocode for this method:
         # 1) Apply action to environment
         # 2) Get observations from creature sensors (position, angles, CoM, etc.)
@@ -154,7 +152,7 @@ class ChronoSimulation:
         # FIXME here we must apply forces in our genome matrix that correspond with
         # the current timestep
         #  self.creature.apply_forces()
-        self.__fitness += self._compute_step_reward()
+        self.__total_reward += self._compute_step_reward()
         self.environment.DoStepDynamics(self.__time_step)
 
     def is_over(self):
@@ -177,11 +175,10 @@ class ChronoSimulation:
                 self._simulation_step()
                 if self._visualize:
                     self._render_step()
-
         except KeyboardInterrupt:
             logger.info("Simulation was stopped by user")
 
-        return self.__fitness
+        return self.__total_reward
 
     @property
     def environment(self):
