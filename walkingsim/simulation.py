@@ -84,8 +84,10 @@ from walkingsim.environment import EnvironmentLoader
 #          raise NotImplementedError
 
 
-class ChronoSimulation(Simulation):
+class ChronoSimulation():
     """Simulation class for `chrono`."""
+
+    _MAX_TIME_STEPS = 6e4   # 10s with 1e-2 timestep
 
     def __init__(
         self,
@@ -94,11 +96,14 @@ class ChronoSimulation(Simulation):
         __creatures_datapath: str,
         __visualize: bool = False,
     ) -> None:
-        super().__init__(
-            "chrono", __env_datapath, __env, __creatures_datapath, __visualize
-        )
+        self.__loader = EnvironmentLoader(__env_datapath, "chrono")
+        self._visualize = __visualize
+        self.__environment = self.__loader.load_environment(__env)
         self.__time_step = 1e-2
         self.__renderer = None
+        self.__creature = Quadrupede((0, 1.9, 0))
+        self.__creature.add_to_env(self.environment)
+        self.__genome = None
         if self._visualize is True:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
@@ -171,3 +176,15 @@ class ChronoSimulation(Simulation):
             logger.info("Simulation was stopped by user")
 
         return self._simulation_step()[1]
+
+    @property
+    def environment(self):
+        return self.__environment
+
+    @property
+    def creature(self):
+        return self.__creature
+
+    @property
+    def genome(self):
+        return self.__genome
