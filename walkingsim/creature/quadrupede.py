@@ -40,22 +40,8 @@ class Quadrupede:
 
         self._create_trunk()
         self._create_legs()
+        # XXX debug purposes
         self._apply_forces()
-
-    def _create_bone(self, size: tuple):
-        bone_material = chrono.ChMaterialSurfaceNSC()
-        bone_material.SetFriction(0.5)
-        bone_material.SetDampingF(0.2)
-        #  bone_material.SetCompliance(0.0005)
-        #  bone_material.SetComplianceT(0.0005)
-
-        bone = chrono.ChBodyEasyBox(
-            size[0], size[1], size[2], 1000, True, True, bone_material
-        )
-        bone.SetBodyFixed(False)
-        bone.GetVisualShape(0).SetColor(chrono.ChColor(0.5, 0.7, 0.5))
-
-        return bone
 
     def _create_trunk(self):
         trunk_part = self._create_bone(self._trunk_dimensions)
@@ -100,6 +86,21 @@ class Quadrupede:
         joint_frame = chrono.ChFrameD(chrono.ChVectorD(*pos))
         joint.Initialize(self.__bodies[0], leg_part, joint_frame)
         self.__joints.append(joint)
+
+    def _create_bone(self, size: tuple):
+        bone_material = chrono.ChMaterialSurfaceNSC()
+        bone_material.SetFriction(0.5)
+        bone_material.SetDampingF(0.2)
+        #  bone_material.SetCompliance(0.0005)
+        #  bone_material.SetComplianceT(0.0005)
+
+        bone = chrono.ChBodyEasyBox(
+            size[0], size[1], size[2], 1000, True, True, bone_material
+        )
+        bone.SetBodyFixed(False)
+        bone.GetVisualShape(0).SetColor(chrono.ChColor(0.5, 0.7, 0.5))
+
+        return bone
 
     def _apply_forces(self):
         for i, joint in enumerate(self.__joints):

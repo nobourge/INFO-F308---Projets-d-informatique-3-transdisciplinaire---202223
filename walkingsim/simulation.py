@@ -127,7 +127,7 @@ class ChronoSimulation(Simulation):
         self.__renderer.EndScene()
 
     # Run Simulation
-    def _evaluate(self):
+    def _simulation_step(self):
         """This function returns wether or not the simulation is done, and the
         result (fitness) of this simulation.
         """
@@ -151,7 +151,7 @@ class ChronoSimulation(Simulation):
         return False, 0
 
     def do_run(self):
-        is_over = self._evaluate()[0]
+        is_over = self._simulation_step()[0]
         if self._visualize:
             return self.__renderer.Run()
 
@@ -172,4 +172,4 @@ class ChronoSimulation(Simulation):
         except KeyboardInterrupt:
             logger.info("Simulation was stopped by user")
 
-        return self._evaluate()[1]
+        return self._simulation_step()[1]
