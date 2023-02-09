@@ -127,11 +127,10 @@ class ChronoSimulation(Simulation):
         """
         # FIXME Pseudocode for this method:
         # 1) Get observations from creature sensors (position, angles, CoM, etc.)
-        # 2) Get action from brain/controller based on sensors input
-        # 3) Apply action to environment
-        # 4) Compute reward and add it to total reward/fitness
-        # 5) Do timestep in environment
-        # 6) Evaluate if simulation is over or not
+        # 2) Apply action to environment
+        # 3) Compute reward and add it to total reward/fitness
+        # 4) Do timestep in environment
+        # 5) Evaluate if simulation is over or not
 
         sensor_data = self.creature.sensor_data
         if len(sensor_data) > 0:
@@ -144,10 +143,12 @@ class ChronoSimulation(Simulation):
         # TODO: Using those sensor data, we could calculate som fitness value
         return False, 0
 
-    def do_run(self):
+    def is_over(self):
         is_over = self._simulation_step()[0]
         if self._visualize:
-            return self.__renderer.Run()
+            device_state = self.__renderer.Run()
+            if not device_state:
+                is_over = True
 
         return is_over
 
@@ -157,7 +158,7 @@ class ChronoSimulation(Simulation):
             self._render_setup()
 
         try:
-            while self.do_run():
+            while not self.is_over():
                 if self._visualize:
                     self._render_step()
 
