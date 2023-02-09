@@ -9,6 +9,7 @@ Authors:
 Description:
     Class for loading and creating the physics system (= Environment).
 """
+import walkingsim.ground as ground
 import json
 import os
 
@@ -66,3 +67,11 @@ class Environment(chrono.ChSystemNSC):
         self.Set_G_acc(chrono.ChVectorD(*config.get("gravity")))
         chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(0.001)
         chrono.ChCollisionModel.SetDefaultSuggestedMargin(0.001)
+        self._add_ground()
+
+    def _add_ground(self):
+        self.Add(ground.Ground())
+
+    def reset(self):
+        self.Clear()
+        self._add_ground()

@@ -37,7 +37,6 @@ def main():
     sim = ChronoSimulation(
         environments_path, environment, creatures_path, True
     )
-    sim.environment.Add(ground.Ground())
     sim.add_creature(creature_name)
 
     sim.run()
