@@ -112,18 +112,12 @@ class ChronoSimulation(Simulation):
         self.__renderer.Initialize()
         self.__renderer.AddSkyBox()
         self.__renderer.AddCamera(chrono.ChVectorD(2, 10, 3))
-        #  self.__renderer.AddLight(chrono.ChVectorD(0, 10, -20), 1000)
         self.__renderer.AddTypicalLights()
 
     def _render_step(self):
-        logger.debug("Rendering step in chrono simulation")
         self.__renderer.BeginScene()
         self.__renderer.Render()
         self.__renderer.ShowInfoPanel(True)
-        #  chronoirr.drawAllCOGs(self.__renderer, 2)  # Draw coord systems
-        #  chronoirr.drawAllLinkframes(self.__renderer, 2)
-        # chronoirr.drawAllLinks(self.__renderer, 2)
-        # chronoirr.drawAllBoundingBoxes(self.__renderer)
         self.__renderer.EndScene()
 
     # Run Simulation
@@ -139,13 +133,13 @@ class ChronoSimulation(Simulation):
         # 5) Do timestep in environment
         # 6) Evaluate if simulation is over or not
 
-        #  sensor_data = self.creature.sensor_data
-        #  if len(sensor_data) > 0:
-        #      print(
-        #          sensor_data[-1]["position"],
-        #          sensor_data[-1]["distance"],
-        #          sensor_data[-1]["total_distance"],
-        #      )
+        sensor_data = self.creature.sensor_data
+        if len(sensor_data) > 0:
+            print(
+                sensor_data[-1]["position"],
+                sensor_data[-1]["distance"],
+                sensor_data[-1]["total_distance"],
+            )
 
         # TODO: Using those sensor data, we could calculate som fitness value
         return False, 0

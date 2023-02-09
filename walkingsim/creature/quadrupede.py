@@ -10,6 +10,9 @@ Description:
     Class for basic quadruped creature.
 """
 
+import walkingsim.utils as utils
+
+import functools
 import pychrono as chrono
 
 
@@ -34,9 +37,12 @@ class Quadrupede:
     def __init__(self, pos: tuple) -> None:
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
 
-        self.__joints = []
+        # first elem 0 is the trunk, the rest are the legs
         self.__bodies = []
+        self.__joints = []
         self.__sensor_data = []
+
+        self.__x_distance_target = 100
 
         self._create_trunk()
         self._create_legs()
@@ -103,6 +109,7 @@ class Quadrupede:
         return bone
 
     def _apply_forces(self):
+        # FIXME apply computed forces instead of random forces
         for i, joint in enumerate(self.__joints):
             mod = 1 if i % 2 == 0 else -1
             sin_torque = chrono.ChFunction_Sine(
@@ -123,10 +130,10 @@ class Quadrupede:
         self.__sensor_data.append({"position": (pos.x, pos.y, pos.z)})
 
         # We compute additional information (distance, total distance, etc.)
-        distance = 0
+        step_distance = 0
         total_distance = 0
         if len(self.__sensor_data) > 1:
-            distance = _distance(
+            step_distance = utils.distance(
                 self.__sensor_data[-1]["position"],
                 self.__sensor_data[0]["position"],
             )
@@ -135,7 +142,7 @@ class Quadrupede:
                     prev[0]
                     if prev[1] is None
                     else prev[0]
-                    + _distance(curr["position"], prev[1]["position"]),
+                    + utils.distance(curr["position"], prev[1]["position"]),
                     curr,
                 ),
                 self.__sensor_data,
@@ -144,7 +151,7 @@ class Quadrupede:
 
         # We update the last sensor data added with those additional information
         self.__sensor_data[-1].update(
-            {"distance": distance, "total_distance": total_distance}
+            {"distance": step_distance, "total_distance": total_distance}
         )
 
     @property
