@@ -84,10 +84,10 @@ from walkingsim.environment import EnvironmentLoader
 #          raise NotImplementedError
 
 
-class ChronoSimulation():
+class ChronoSimulation:
     """Simulation class for `chrono`."""
 
-    _MAX_TIME_STEPS = 6e4   # 10s with 1e-2 timestep
+    _MAX_TIME_STEPS = 6e4  # 10s with 1e-2 timestep
 
     def __init__(
         self,
@@ -96,17 +96,20 @@ class ChronoSimulation():
         __creatures_datapath: str,
         __visualize: bool = False,
     ) -> None:
+        # Environment params
         self.__loader = EnvironmentLoader(__env_datapath, "chrono")
-        self._visualize = __visualize
         self.__environment = self.__loader.load_environment(__env)
         self.__time_step = 1e-2
         self.__renderer = None
-        self.__creature = Quadrupede((0, 1.9, 0))
-        self.__creature.add_to_env(self.environment)
-        self.__genome = None
+        self._visualize = __visualize
         if self._visualize is True:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
+        # Creature attributes
+        self.__creature = Quadrupede((0, 1.9, 0))
+        self.__creature.add_to_env(self.environment)
+        self.__genome = None
+        self.__fitness = 0
 
     # Visualize
     def _render_setup(self):
@@ -127,7 +130,7 @@ class ChronoSimulation():
 
     # Run Simulation
     def _compute_step_reward(self):
-        pass
+        return 0
 
     def _simulation_step(self):
         """This function returns wether or not the simulation is done, and the
@@ -149,7 +152,7 @@ class ChronoSimulation():
             )
 
         # TODO: Using those sensor data, we could calculate som fitness value
-        return False, 0
+        return False
 
     def is_over(self):
         is_over = self._simulation_step()[0]
@@ -175,7 +178,7 @@ class ChronoSimulation():
         except KeyboardInterrupt:
             logger.info("Simulation was stopped by user")
 
-        return self._simulation_step()[1]
+        return self.__fitness
 
     @property
     def environment(self):
