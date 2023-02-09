@@ -47,7 +47,7 @@ class Quadrupede:
         self._create_trunk()
         self._create_legs()
         # XXX debug purposes
-        self._apply_forces()
+        self.apply_forces()
 
     def _create_trunk(self):
         trunk_part = self._create_bone(self._trunk_dimensions)
@@ -108,7 +108,7 @@ class Quadrupede:
 
         return bone
 
-    def _apply_forces(self):
+    def apply_forces(self):
         # FIXME apply computed forces instead of random forces
         for i, joint in enumerate(self.__joints):
             mod = 1 if i % 2 == 0 else -1

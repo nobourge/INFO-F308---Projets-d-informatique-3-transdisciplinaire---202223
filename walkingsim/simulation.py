@@ -130,19 +130,7 @@ class ChronoSimulation:
 
     # Run Simulation
     def _compute_step_reward(self):
-        return 0
-
-    def _simulation_step(self):
-        """This function returns wether or not the simulation is done, and the
-        result (fitness) of this simulation.
-        """
-        # FIXME Pseudocode for this method:
-        # 1) Get observations from creature sensors (position, angles, CoM, etc.)
-        # 2) Apply action to environment
-        # 3) Compute reward and add it to total reward/fitness
-        # 4) Do timestep in environment
-        # 5) Evaluate if simulation is over or not
-
+        # FIXME do calculation for current step and return
         sensor_data = self.creature.sensor_data
         if len(sensor_data) > 0:
             print(
@@ -151,11 +139,27 @@ class ChronoSimulation:
                 sensor_data[-1]["total_distance"],
             )
 
-        # TODO: Using those sensor data, we could calculate som fitness value
-        return False
+        return 0
+
+    def _simulation_step(self):
+        """This function returns wether or not the simulation is done, and the
+        result (fitness) of this simulation.
+        """
+        # Pseudocode for this method:
+        # 1) Apply action to environment
+        # 2) Get observations from creature sensors (position, angles, CoM, etc.)
+        # 3) Compute reward and add it to total reward/fitness
+        # 4) Do timestep in environment
+
+        # FIXME here we must apply forces in our genome matrix that correspond with
+        # the current timestep
+        #  self.creature.apply_forces()
+        self.__fitness += self._compute_step_reward()
+        self.environment.DoStepDynamics(self.__time_step)
 
     def is_over(self):
-        is_over = self._simulation_step()[0]
+        # FIXME set rules for deciding if sim is over or not
+        is_over = False
         if self._visualize:
             device_state = self.__renderer.Run()
             if not device_state:
@@ -170,11 +174,10 @@ class ChronoSimulation:
 
         try:
             while not self.is_over():
+                self._simulation_step()
                 if self._visualize:
                     self._render_step()
 
-                #  self.creature.capture_sensor_data()
-                self.environment.DoStepDynamics(self.__time_step)
         except KeyboardInterrupt:
             logger.info("Simulation was stopped by user")
 
