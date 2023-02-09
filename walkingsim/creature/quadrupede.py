@@ -14,6 +14,19 @@ import pychrono as chrono
 
 
 class Quadrupede:
+    """
+    Class for a basic quadrupede.
+
+    Class attributes:
+        collision_family
+        trunk_dimensions
+        legs_dimensions
+
+    Attributes:
+        joints
+        bodies
+        sensor_data
+    """
     _collision_family = 2
     _trunk_dimensions = (1.0, 0.5, 0.5)
     _legs_dimensions = (0.3, 0.7, 0.15)
@@ -103,36 +116,36 @@ class Quadrupede:
         for joint in self.__joints:
             __env.Add(joint)
 
-    #  def capture_sensor_data(self):
-    #      # We capture the information from basic sensors (position, rotation, etc.)
-    #      pos = self.__bodies[0].GetPos()
-    #      self.__sensor_data.append({"position": (pos.x, pos.y, pos.z)})
-    #
-    #      # We compute additional information (distance, total distance, etc.)
-    #      distance = 0
-    #      total_distance = 0
-    #      if len(self.__sensor_data) > 1:
-    #          distance = _distance(
-    #              self.__sensor_data[-1]["position"],
-    #              self.__sensor_data[0]["position"],
-    #          )
-    #          total_distance = functools.reduce(
-    #              lambda prev, curr: (
-    #                  prev[0]
-    #                  if prev[1] is None
-    #                  else prev[0]
-    #                  + _distance(curr["position"], prev[1]["position"]),
-    #                  curr,
-    #              ),
-    #              self.__sensor_data,
-    #              (0, None),
-    #          )[0]
-    #
-    #      # We update the last sensor data added with those additional information
-    #      self.__sensor_data[-1].update(
-    #          {"distance": distance, "total_distance": total_distance}
-    #      )
-    #
-    #  @property
-    #  def sensor_data(self):
-    #      return self.__sensor_data
+    def capture_sensor_data(self):
+        # We capture the information from basic sensors (position, rotation, etc.)
+        pos = self.__bodies[0].GetPos()
+        self.__sensor_data.append({"position": (pos.x, pos.y, pos.z)})
+
+        # We compute additional information (distance, total distance, etc.)
+        distance = 0
+        total_distance = 0
+        if len(self.__sensor_data) > 1:
+            distance = _distance(
+                self.__sensor_data[-1]["position"],
+                self.__sensor_data[0]["position"],
+            )
+            total_distance = functools.reduce(
+                lambda prev, curr: (
+                    prev[0]
+                    if prev[1] is None
+                    else prev[0]
+                    + _distance(curr["position"], prev[1]["position"]),
+                    curr,
+                ),
+                self.__sensor_data,
+                (0, None),
+            )[0]
+
+        # We update the last sensor data added with those additional information
+        self.__sensor_data[-1].update(
+            {"distance": distance, "total_distance": total_distance}
+        )
+
+    @property
+    def sensor_data(self):
+        return self.__sensor_data
