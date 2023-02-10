@@ -175,7 +175,7 @@ class ChronoSimulation:
 
         # FIXME here we must apply forces in our genome matrix that correspond with
         # the current timestep
-        #  self.creature.apply_forces()
+        self.creature.apply_forces([])
         self.__total_reward += self._compute_step_reward()
         self.environment.DoStepDynamics(self._TIME_STEP)
 

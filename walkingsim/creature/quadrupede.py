@@ -108,14 +108,17 @@ class Quadrupede:
 
         return bone
 
-    def apply_forces(self):
-        # FIXME apply computed forces instead of random forces
+    def apply_forces(self, forces: list = []):
         for i, joint in enumerate(self.__joints):
-            mod = 1 if i % 2 == 0 else -1
-            sin_torque = chrono.ChFunction_Sine(
-                0, 1, mod * 90  # phase [rad]  # frequency [Hz]
-            )  # amplitude [Nm]
-            joint.SetTorqueFunction(sin_torque)
+            # XXX debug, periodic torque function
+            #  mod = 1 if i % 2 == 0 else -1
+            #  sin_torque = chrono.ChFunction_Sine(
+            #      0, 1, mod * 90  # phase [rad]  # frequency [Hz]
+            #  )  # amplitude [Nm]
+            #  joint.SetTorqueFunction(sin_torque)
+
+            current_torque = chrono.ChFunction_Const(1.0)
+            joint.SetTorqueFunction(current_torque)
 
     def add_to_env(self, __env):
         for body in self.__bodies:
