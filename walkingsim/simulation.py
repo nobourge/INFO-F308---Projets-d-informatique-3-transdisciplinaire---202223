@@ -132,7 +132,7 @@ class ChronoSimulation:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
         # Creature attributes
-        self.__creature = Quadrupede((0, 1.9, 0))
+        self.__creature = Quadrupede((0, 2.4, 0))
         self.__creature.add_to_env(self.environment)
         self.__genome = np.zeros((4, self._GENOME_DISCRETE_INTERVALS))
         self.__total_reward = 0
@@ -205,17 +205,17 @@ class ChronoSimulation:
         return current_sim_time > self._SIM_DURATION_IN_SECS
 
     def is_creature_fallen(self):
+        # FIXME hacky. Is there a way to detect collision between shapes?
         try:
             trunk_y = self.__creature.sensor_data[-1]["position"][1]
         except IndexError:
             trunk_y = 1
 
         height_limit = (
-            -self.__creature._trunk_dimensions[2] / 2
-            + self.__creature._legs_dimensions[2]
+            self.__creature._trunk_dimensions[2] / 2
         )
         print(f"trunk y: {trunk_y}, trunk height: {height_limit}")
-        return trunk_y < height_limit
+        return trunk_y < 1.2 * height_limit
 
     def run(self):
         logger.info("Starting simulation")
