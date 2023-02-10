@@ -87,7 +87,10 @@ from walkingsim.environment import EnvironmentLoader
 class ChronoSimulation:
     """Simulation class for `chrono`."""
 
-    _MAX_TIME_STEPS = 6e4  # 10s with 1e-2 timestep
+    _TIME_STEP = 1e-2
+    _TIME_STEPS_TO_SECOND = 60 // _TIME_STEP
+    _SIM_DURATION_IN_SECS = 10
+    _FORCES_DELAY_IN_TIMESTEPS = 4  # applying the same force during set timesteps
 
     def __init__(
         self,
@@ -99,7 +102,6 @@ class ChronoSimulation:
         # Environment params
         self.__loader = EnvironmentLoader(__env_datapath, "chrono")
         self.__environment = self.__loader.load_environment(__env)
-        self.__time_step = 1e-2
         self.__renderer = None
         self._visualize = __visualize
         if self._visualize is True:
