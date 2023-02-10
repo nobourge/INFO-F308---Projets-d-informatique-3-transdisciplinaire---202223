@@ -181,15 +181,17 @@ class ChronoSimulation:
         self.environment.DoStepDynamics(self._TIME_STEP)
 
     def is_over(self):
-        # FIXME set rules for deciding if sim is over or not
-        current_sim_time = self.__environment.GetChTime()
-        is_over = True if current_sim_time > self._SIM_DURATION_IN_SECS else False
+        is_over = True if self.is_time_limit_reached() else False
         if self._visualize:
             device_state = self.__renderer.Run()
             if not device_state:
                 is_over = True
 
         return is_over
+
+    def is_time_limit_reached(self):
+        current_sim_time = self.__environment.GetChTime()
+        return current_sim_time > self._SIM_DURATION_IN_SECS
 
     def run(self):
         logger.info("Starting simulation")
