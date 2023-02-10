@@ -132,12 +132,7 @@ class ChronoSimulation:
         # Creature attributes
         self.__creature = Quadrupede((0, 1.9, 0))
         self.__creature.add_to_env(self.environment)
-        self.__genome = np.zeros(
-            (
-                4,
-                (),
-            )
-        )
+        self.__genome = np.zeros((4, self._GENOME_DISCRETE_INTERVALS))
         self.__total_reward = 0
 
     # Visualize
