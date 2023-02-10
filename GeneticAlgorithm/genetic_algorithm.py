@@ -4,12 +4,14 @@ genetic algorithm class, of quadrupede learning to walk, that receives sensor da
 
 import sys
 
+from utils._logging import logger
+
 import numpy as np
 import pygad as pygad_
-from walkingsim.simulation import ChronoSimulation
 
-# from _logging import logger :
-from utils._logging import logger
+from walkingsim.simulation import ChronoSimulation
+from walkingsim.__main__ import main as chrono_main
+
 # todo from creature.genotype import Genotype
 
 from utils.auto_indent import AutoIndent
@@ -104,21 +106,29 @@ class GeneticAlgorithm:
     #
     #     # TODO: Using those sensor data, we could calculate som fitness value
     #     return False, 0
+
     def fitness_function(self
                          , individual
                          , solution_idx
                          ):
-        # Calculate the fitness of an individual based on the sensor data
-        # and the matrix of movements represented by the individual
         """
+        Calculate the fitness of an individual based on the sensor data
+         and the matrix of movements represented by the individual
+
         ValueError: The fitness function must accept 2 parameters:
             1) A solution to calculate its fitness value.
             2) The solution's index within the population.
 
         """
-        # todo in sim or GA?
+        movement_matrix = np.array(individual).reshape(self.num_joints,
+                                                       self.num_steps)
+        # Simulate the movement of the quadruped based on the movement matrix
+        # and the sensor data
+        distance, speed = chrono_main(movement_matrix,
+                                            self.sensor_data)
+        fitness = distance + speed
 
-        # return fitness
+        return fitness
 
     def walk_learn(self):
         best_solution, best_fitness = self.ga.run()
