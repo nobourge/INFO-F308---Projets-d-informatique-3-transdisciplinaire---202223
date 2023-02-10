@@ -123,7 +123,6 @@ class Quadrupede:
     def add_to_env(self, __env):
         for body in self.__bodies:
             __env.Add(body)
-
         for joint in self.__joints:
             __env.Add(joint)
 

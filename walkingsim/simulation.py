@@ -175,13 +175,15 @@ class ChronoSimulation:
 
         # FIXME here we must apply forces in our genome matrix that correspond with
         # the current timestep
-        self.creature.apply_forces([])
+        self.creature.apply_forces()
+        print(self.__environment.GetChTime())
         self.__total_reward += self._compute_step_reward()
         self.environment.DoStepDynamics(self._TIME_STEP)
 
     def is_over(self):
         # FIXME set rules for deciding if sim is over or not
-        is_over = False
+        current_sim_time = self.__environment.GetChTime()
+        is_over = True if current_sim_time > self._SIM_DURATION_IN_SECS else False
         if self._visualize:
             device_state = self.__renderer.Run()
             if not device_state:
