@@ -12,6 +12,7 @@ Description:
 
 import abc
 
+import numpy as np
 import pychrono as chrono
 import pychrono.irrlicht as chronoirr
 from loguru import logger
@@ -85,12 +86,33 @@ from walkingsim.environment import EnvironmentLoader
 
 
 class ChronoSimulation:
-    """Simulation class for `chrono`."""
+    """
+    Simulation class for `chrono`.
+    The genome used for the simulation is an m*n matrix, where
+    m is the number of joints of the creature, and n is the amount of
+    intervals chosen to discretise the time space. Each element represents
+    a force to be applied on the joint corresponding to its related row.
+
+    Class attributes:
+        TIME_STEP - physics engine timestep
+        TIME_STEPS_TO_SECOND - # of timesteps in 1 sec
+        SIM_DURATION_IN_SECS - length of simulation
+        FORCES_DELAY_IN_TIMESTEPS - # of timesteps during we apply
+                                    a same force
+        GENOME_DISCRETE_INTERVALS - the interval of the discretised
+                                    genome matrix
+    """
 
     _TIME_STEP = 1e-2
     _TIME_STEPS_TO_SECOND = 60 // _TIME_STEP
-    _SIM_DURATION_IN_SECS = 10
-    _FORCES_DELAY_IN_TIMESTEPS = 4  # applying the same force during set timesteps
+    _SIM_DURATION_IN_SECS = 5
+    # applying the same force during set timesteps
+    _FORCES_DELAY_IN_TIMESTEPS = 4
+    _GENOME_DISCRETE_INTERVALS = (
+        _TIME_STEPS_TO_SECOND
+        * _SIM_DURATION_IN_SECS
+        // _FORCES_DELAY_IN_TIMESTEPS
+    )
 
     def __init__(
         self,
@@ -110,7 +132,12 @@ class ChronoSimulation:
         # Creature attributes
         self.__creature = Quadrupede((0, 1.9, 0))
         self.__creature.add_to_env(self.environment)
-        self.__genome = None
+        self.__genome = np.zeros(
+            (
+                4,
+                (),
+            )
+        )
         self.__total_reward = 0
 
     # Visualize
@@ -155,7 +182,7 @@ class ChronoSimulation:
         # the current timestep
         #  self.creature.apply_forces()
         self.__total_reward += self._compute_step_reward()
-        self.environment.DoStepDynamics(self.__time_step)
+        self.environment.DoStepDynamics(self._TIME_STEP)
 
     def is_over(self):
         # FIXME set rules for deciding if sim is over or not
