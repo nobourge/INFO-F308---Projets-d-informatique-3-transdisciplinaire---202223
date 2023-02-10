@@ -16,8 +16,8 @@ import pychrono as chrono
 import pychrono.irrlicht as chronoirr
 from loguru import logger
 
-from walkingsim.creature.quadrupede.quadrupede import Quadrupede
-# from walkingsim.creature.bipede.bipede import Bipede
+# from walkingsim.creature.quadrupede.quadrupede import Quadrupede
+from walkingsim.creature.bipede.bipede import Bipede
 from walkingsim.environment import EnvironmentLoader
 
 
@@ -59,8 +59,8 @@ class Simulation(abc.ABC):
             raise RuntimeError("Creature already exists in simulation")
 
         # FIXME: Pass the genome when creating the creature
-        creature = Quadrupede((0, 1.9, 0))
-        # creature = Bipede((0, 1.9, 0))
+        # creature = Quadrupede((0, 1.9, 0))
+        creature = Bipede((0, 1.9, 0))
         creature.add_to_env(self.environment)
         self.__creature = creature
         self.__genome = genome

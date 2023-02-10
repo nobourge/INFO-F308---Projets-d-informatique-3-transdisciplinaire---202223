@@ -4,7 +4,6 @@ import walkingsim.ground as ground
 from walkingsim.simulation import ChronoSimulation
 
 # Import before everything else, this module configures the loguru logger
-import walkingsim._logging
 
 # todo : for each creature generation group : parallelize the creation
 #  of each creature
@@ -12,7 +11,7 @@ import walkingsim._logging
 #  - simulation pychrono
 
 # The programs has 2 steps:
-# 1. Training ours models and get the results
+# 1. Training our models and get the results
 # 2. Visualize those results
 
 # Training (with PyGad)
@@ -28,6 +27,7 @@ import walkingsim._logging
 
 
 def main():
+
     environment, creature_name = "default", "bipede"
     if len(sys.argv) >= 2:
         environment = sys.argv[1]
