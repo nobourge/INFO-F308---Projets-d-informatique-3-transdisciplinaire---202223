@@ -117,6 +117,7 @@ class Quadrupede:
             #  )  # amplitude [Nm]
             #  joint.SetTorqueFunction(sin_torque)
 
+            # FIXME not the proper way, check chrono docs about motors
             current_torque = chrono.ChFunction_Const(1.0)
             joint.SetTorqueFunction(current_torque)
 

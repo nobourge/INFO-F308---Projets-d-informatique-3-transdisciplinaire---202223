@@ -108,11 +108,13 @@ class ChronoSimulation:
     _SIM_DURATION_IN_SECS = 5
     # applying the same force during set timesteps
     _FORCES_DELAY_IN_TIMESTEPS = 4
-    _GENOME_DISCRETE_INTERVALS = int((
-        _TIME_STEPS_TO_SECOND
-        * _SIM_DURATION_IN_SECS
-        // _FORCES_DELAY_IN_TIMESTEPS
-    ))
+    _GENOME_DISCRETE_INTERVALS = int(
+        (
+            _TIME_STEPS_TO_SECOND
+            * _SIM_DURATION_IN_SECS
+            // _FORCES_DELAY_IN_TIMESTEPS
+        )
+    )
 
     def __init__(
         self,
@@ -156,12 +158,12 @@ class ChronoSimulation:
     def _compute_step_reward(self):
         # FIXME do calculation for current step and return
         sensor_data = self.creature.sensor_data
-        if len(sensor_data) > 0:
-            print(
-                sensor_data[-1]["position"],
-                sensor_data[-1]["distance"],
-                sensor_data[-1]["total_distance"],
-            )
+        #  if len(sensor_data) > 0:
+        #      print(
+        #          sensor_data[-1]["position"],
+        #          sensor_data[-1]["distance"],
+        #          sensor_data[-1]["total_distance"],
+        #      )
 
         return 0
 
@@ -175,13 +177,22 @@ class ChronoSimulation:
 
         # FIXME here we must apply forces in our genome matrix that correspond with
         # the current timestep
+        self.creature.capture_sensor_data()
         self.creature.apply_forces()
-        print(self.__environment.GetChTime())
+        try:
+            pass
+            #  print(self.creature.sensor_data[-1])
+        except IndexError:
+            print("no position in sensor data")
         self.__total_reward += self._compute_step_reward()
         self.environment.DoStepDynamics(self._TIME_STEP)
 
     def is_over(self):
-        is_over = True if self.is_time_limit_reached() else False
+        is_over = False
+
+        if self.is_time_limit_reached() or self.is_creature_fallen():
+            is_over = True
+
         if self._visualize:
             device_state = self.__renderer.Run()
             if not device_state:
@@ -192,6 +203,19 @@ class ChronoSimulation:
     def is_time_limit_reached(self):
         current_sim_time = self.__environment.GetChTime()
         return current_sim_time > self._SIM_DURATION_IN_SECS
+
+    def is_creature_fallen(self):
+        try:
+            trunk_y = self.__creature.sensor_data[-1]["position"][1]
+        except IndexError:
+            trunk_y = 1
+
+        height_limit = (
+            -self.__creature._trunk_dimensions[2] / 2
+            + self.__creature._legs_dimensions[2]
+        )
+        print(f"trunk y: {trunk_y}, trunk height: {height_limit}")
+        return trunk_y < height_limit
 
     def run(self):
         logger.info("Starting simulation")
