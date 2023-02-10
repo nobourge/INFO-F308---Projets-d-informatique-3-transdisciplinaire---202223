@@ -108,11 +108,11 @@ class ChronoSimulation:
     _SIM_DURATION_IN_SECS = 5
     # applying the same force during set timesteps
     _FORCES_DELAY_IN_TIMESTEPS = 4
-    _GENOME_DISCRETE_INTERVALS = (
+    _GENOME_DISCRETE_INTERVALS = int((
         _TIME_STEPS_TO_SECOND
         * _SIM_DURATION_IN_SECS
         // _FORCES_DELAY_IN_TIMESTEPS
-    )
+    ))
 
     def __init__(
         self,
