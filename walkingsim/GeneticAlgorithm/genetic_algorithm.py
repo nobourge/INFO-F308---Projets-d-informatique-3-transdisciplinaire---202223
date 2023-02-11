@@ -9,9 +9,8 @@ from utils._logging import logger
 import numpy as np
 import pygad as pygad_
 
+import walkingsim.ground as ground
 from walkingsim.simulation import ChronoSimulation
-from walkingsim.__main__ import main as chrono_main
-
 # todo from creature.genotype import Genotype
 
 from utils.auto_indent import AutoIndent
@@ -105,9 +104,23 @@ class GeneticAlgorithm:
                                                            self.num_steps)
             # Simulate the movement of the quadruped based on the movement matrix
             # and the sensor data
-            distance, speed = chrono_main(movement_matrix)
-            fitness = distance + speed
 
+            environment, creature_name = "default", "bipede"
+
+            environments_path = "./environments"
+            creatures_path = "./creatures"
+
+
+            simulation = ChronoSimulation(
+                                            environments_path
+                                           , environment
+                                           , creatures_path
+                                           , True
+                            ,movement_matrix
+            )
+            simulation.environment.Add(ground.Ground())
+            simulation.add_creature(creature_name="bipede")
+            fitness = simulation.run()
             return fitness
 
         return fitness_function

@@ -1,8 +1,12 @@
 import sys
 
 import walkingsim.ground as ground
+from walkingsim.GeneticAlgorithm.genetic_algorithm import \
+    GeneticAlgorithm
+
 from walkingsim.simulation import ChronoSimulation
 
+# from GeneticAlgorithm
 # Import before everything else, this module configures the loguru logger
 
 # todo : for each creature generation group : parallelize the creation
@@ -26,25 +30,59 @@ from walkingsim.simulation import ChronoSimulation
 # giving us more possibility on how to compute the fitness value
 
 
-def main():
+# def main():
+#
+#     environment, creature_name = "default", "bipede"
+#     if len(sys.argv) >= 2:
+#         environment = sys.argv[1]
+#     if len(sys.argv) >= 3:
+#         creature_name = sys.argv[2]
+#
+#     environments_path = "./environments"
+#     creatures_path = "./creatures"
+#
+#     sim = ChronoSimulation(environments_path
+#                            , environment
+#                            , creatures_path
+#                            , True
+#                            , __movement_matrix=None
+#     )
+#     sim.environment.Add(ground.Ground())
+#     sim.add_creature(creature_name)
+#
+#     sim.run()
+#
+#
 
-    environment, creature_name = "default", "bipede"
-    if len(sys.argv) >= 2:
-        environment = sys.argv[1]
-    if len(sys.argv) >= 3:
-        creature_name = sys.argv[2]
 
-    environments_path = "./environments"
-    creatures_path = "./creatures"
-
-    sim = ChronoSimulation(
-        environments_path, environment, creatures_path, True
-    )
-    sim.environment.Add(ground.Ground())
-    sim.add_creature(creature_name)
-
-    sim.run()
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+
+    GA = GeneticAlgorithm(
+        population_size=100,
+        num_generations=100,
+        num_parents_mating=10,
+        fitness_func=None,
+        num_genes=10,
+        gene_type=int,
+        gene_space=[0, 1],
+        init_range_low=0,
+        init_range_high=1,
+        mutation_percent_genes=10,
+        mutation_type="random",
+        mutation_num_genes=2,
+        mutation_by_replacement=True,
+        mutation_range_low=0,
+        mutation_range_high=1,
+        crossover_type="single_point",
+        crossover_percent_parents=0.5,
+        on_generation=None,
+        keep_parents=1,
+        num_joints=4,
+        num_steps=1,
+        sensor_data=None,
+    )
+
+    GA.run()

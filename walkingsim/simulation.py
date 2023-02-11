@@ -41,6 +41,7 @@ class Simulation(abc.ABC):
         __env: str,
         __creatures_datapath: str,
         __visualize: bool = False,
+        __movement_matrix = None
     ) -> None:
         self.__engine = __engine
         self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
@@ -49,6 +50,7 @@ class Simulation(abc.ABC):
 
         self.__creature = None
         self.__genome = None
+        self.__movement_matrix = __movement_matrix
 
     def add_creature(self
                      , creature_name: str
@@ -98,9 +100,11 @@ class ChronoSimulation(Simulation):
         __env: str,
         __creatures_datapath: str,
         __visualize: bool = False,
+        __movement_matrix = None
     ) -> None:
         super().__init__(
-            "chrono", __env_datapath, __env, __creatures_datapath, __visualize
+            "chrono", __env_datapath, __env, __creatures_datapath,
+            __visualize, __movement_matrix
         )
         # self.__time_step = 1e-2
         self.__time_step = 1e-3
