@@ -84,7 +84,12 @@ class ChronoCreature:
 
     _collision_family = 2
 
-    def __init__(self, __creature: str, __graph: nx.Graph, pos: tuple) -> None:
+    def __init__(self
+                 , __creature: str
+                 , __graph: nx.Graph
+                 , pos: tuple
+                 , movement_matrix
+                 ) -> None:
         self.__creature = __creature
         self.__graph = __graph
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
@@ -92,6 +97,8 @@ class ChronoCreature:
         self.__joints = []
         self.__bodies = []
         self.__sensor_data = []
+
+        self.__movement_matrix = movement_matrix
 
         self._create_morphology()
 
@@ -174,7 +181,8 @@ class ChronoCreature:
         self._create_body(0, self.__pos)
 
         # XXX torque function test
-        for i, joint in enumerate(self.__joints):
+        # for i, joint in enumerate(self.__joints):
+        for i, joint in enumerate(self.movement_matrix):
             mod = 1 if i % 2 == 0 else -1
             sin_torque = chrono.ChFunction_Sine(
                 0, 1, mod * 90  # phase [rad]  # frequency [Hz]
@@ -221,4 +229,3 @@ class ChronoCreature:
     @property
     def sensor_data(self):
         return self.__sensor_data
-

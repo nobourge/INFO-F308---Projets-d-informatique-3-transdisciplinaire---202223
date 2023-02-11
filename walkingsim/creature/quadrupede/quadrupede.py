@@ -18,15 +18,17 @@ class Quadrupede:
     _collision_family = 2
     _trunk_dimensions = (1.0, 0.5, 0.5)
     _legs_dimensions = (0.3, 0.7, 0.15)
-    # _upper_legs_dimensions = (0.3, 0.7, 0.15)
-    # _lower_legs_dimensions = (0.3, 0.7, 0.15)
+    # _upper_leg_dimension = (0.3, 0.7, 0.15)
+    # _lower_leg_dimension = (0.3, 0.7, 0.15)
 
-    def __init__(self, pos: tuple) -> None:
+    def __init__(self, pos: tuple, movement_matrix) -> None:
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
 
         self.__joints = []
         self.__bodies = []
         self.__sensor_data = []
+
+        self.__movement_matrix = movement_matrix
 
         self._create_trunk()
         self._create_legs()
@@ -99,6 +101,11 @@ class Quadrupede:
                 0, 1, mod * 90  # phase [rad]  # frequency [Hz]
             )  # amplitude [Nm]
             joint.SetTorqueFunction(sin_torque)
+
+    def _movement_matrix_apply_forces(self):
+        for i, joint in enumerate(self.__joints):
+            joint.SetTorqueFunction(self.__movement_matrix[i])
+
 
     def add_to_env(self, __env):
         for body in self.__bodies:

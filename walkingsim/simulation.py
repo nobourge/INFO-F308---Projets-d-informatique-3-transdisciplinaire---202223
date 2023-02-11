@@ -50,7 +50,10 @@ class Simulation(abc.ABC):
         self.__creature = None
         self.__genome = None
 
-    def add_creature(self, creature_name: str, genome: dict = None):
+    def add_creature(self
+                     , creature_name: str
+                     , genome: dict = None
+                     , movement_matrix = None):
         # FIXME: This function can be removed and done in the __init__ method
         if self.__creature is not None:
             logger.error(
@@ -60,7 +63,7 @@ class Simulation(abc.ABC):
 
         # FIXME: Pass the genome when creating the creature
         # creature = Quadrupede((0, 1.9, 0))
-        creature = Bipede((0, 1.9, 0))
+        creature = Bipede((0, 1.9, 0), movement_matrix)
         creature.add_to_env(self.environment)
         self.__creature = creature
         self.__genome = genome

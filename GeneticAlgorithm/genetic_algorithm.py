@@ -81,54 +81,36 @@ class GeneticAlgorithm:
                             sol_per_pop=50,
                             num_genes=num_joints * num_steps,
                             mutation_percent_genes=30,
-                            fitness_func=self.fitness_function,
+                            fitness_func=self.fitness_function_factory(10),
+                            # fitness_func=self.fitness_func(),
+                            # fitness_func=self.fitness_function,
+
                             )
 
-    # def _evaluate(self):
-    #     """This function returns wether or not the simulation is done, and the
-    #     result (fitness) of this simulation.
-    #     """
-    #     # FIXME Pseudocode for this method:
-    #     # 1) Get observations from creature sensors (position, angles, CoM, etc.)
-    #     # 2) Get action from brain/controller based on sensors input
-    #     # 3) Apply action to environment
-    #     # 4) Compute reward and add it to total reward/fitness
-    #     # 5) Do timestep in environment
-    #     # 6) Evaluate if simulation is over or not
-    #
-    #     #  sensor_data = self.creature.sensor_data
-    #     #  if len(sensor_data) > 0:
-    #     #      print(
-    #     #          sensor_data[-1]["position"],
-    #     #          sensor_data[-1]["distance"],
-    #     #          sensor_data[-1]["total_distance"],
-    #     #      )
-    #
-    #     # TODO: Using those sensor data, we could calculate som fitness value
-    #     return False, 0
 
-    def fitness_function(self
-                         , individual
-                         , solution_idx
-                         ):
-        """
-        Calculate the fitness of an individual based on the sensor data
-         and the matrix of movements represented by the individual
+    def fitness_function_factory(self,num):
+        def fitness_function(individual
+                             , solution_idx
+                             ):
+            """
+            Calculate the fitness of an individual based on the sensor data
+             and the matrix of movements represented by the individual
 
-        ValueError: The fitness function must accept 2 parameters:
-            1) A solution to calculate its fitness value.
-            2) The solution's index within the population.
+            ValueError: The fitness function must accept 2 parameters:
+                1) A solution to calculate its fitness value.
+                2) The solution's index within the population.
 
-        """
-        movement_matrix = np.array(individual).reshape(self.num_joints,
-                                                       self.num_steps)
-        # Simulate the movement of the quadruped based on the movement matrix
-        # and the sensor data
-        distance, speed = chrono_main(movement_matrix,
-                                            self.sensor_data)
-        fitness = distance + speed
+            """
+            movement_matrix = np.array(individual).reshape(self.num_joints,
+                                                           self.num_steps)
+            # Simulate the movement of the quadruped based on the movement matrix
+            # and the sensor data
+            distance, speed = chrono_main(movement_matrix)
+            fitness = distance + speed
 
-        return fitness
+            return fitness
+
+        return fitness_function
 
     def walk_learn(self):
         best_solution, best_fitness = self.ga.run()
