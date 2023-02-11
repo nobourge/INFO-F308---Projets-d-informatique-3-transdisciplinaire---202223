@@ -12,8 +12,23 @@ Description:
 
 import walkingsim.utils as utils
 
+from copy import deepcopy
 import functools
 import pychrono as chrono
+
+
+class CustomTorqueFunction(chrono.ChFunction):
+    def __init__(self, forces: list):
+        super().__init__()
+        self.__forces = forces
+
+    def Clone(self):
+        return deepcopy(self)
+
+    def Get_y(self, x):
+        # We want to keep x between 0 and len(self.__forces) - 1 => run a cycle multiple times
+        x = int(x) % len(self.__forces)
+        return self.__forces[x]
 
 
 class Quadrupede:
@@ -41,13 +56,30 @@ class Quadrupede:
         self.__bodies = []
         self.__joints = []
         self.__sensor_data = []
+        self.__joints_forces = []
 
         self.__x_distance_target = 100
 
         self._create_trunk()
         self._create_legs()
         # XXX debug purposes
-        self.apply_forces()
+        # TODO: Remove following line, replaced by set_forces
+        # self.apply_forces()
+
+    def set_forces(self, forces: list):
+        if len(forces) < len(self.__joints):
+            raise RuntimeError('Forces for joints are not enough')
+
+        # Store the forces for later use
+        self.__joints_forces = forces
+        
+        # NOTE: Important to store the function otherwise they are destroyed
+        # when function is terminated, so chrono cannot access them anymore
+        self.__joints_funcs = []
+
+        for i, joint in enumerate(self.__joints):
+            self.__joints_funcs.append(CustomTorqueFunction(forces[i]))
+            joint.SetTorqueFunction(self.__joints_funcs[i])
 
     def _create_trunk(self):
         trunk_part = self._create_bone(self._trunk_dimensions)
