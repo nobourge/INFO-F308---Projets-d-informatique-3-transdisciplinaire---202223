@@ -35,13 +35,13 @@ class Simulation(abc.ABC):
     """
 
     def __init__(
-        self,
-        __engine: str,
-        __env_datapath: str,
-        __env: str,
-        __creatures_datapath: str,
-        __visualize: bool = False,
-        __movement_matrix = None
+            self,
+            __engine: str,
+            __env_datapath: str,
+            __env: str,
+            __creatures_datapath: str,
+            __visualize: bool = False,
+            __movement_matrix=None
     ) -> None:
         self.__engine = __engine
         self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
@@ -55,7 +55,7 @@ class Simulation(abc.ABC):
     def add_creature(self
                      , creature_name: str
                      , genome: dict = None
-                     , movement_matrix = None):
+                     , movement_matrix=None):
         # FIXME: This function can be removed and done in the __init__ method
         if self.__creature is not None:
             logger.error(
@@ -95,24 +95,31 @@ class ChronoSimulation(Simulation):
     """Simulation class for `chrono`."""
 
     def __init__(
-        self,
-        __env_datapath: str,
-        __env: str,
-        __creatures_datapath: str,
-        __visualize: bool = False,
-        __movement_matrix = None
+            self,
+            __env_datapath: str,
+            __env: str,
+            __creatures_datapath: str,
+            __visualize: bool = False,
+            __movement_matrix=None,
+            __duration_limit: float = 10
     ) -> None:
         super().__init__(
             "chrono", __env_datapath, __env, __creatures_datapath,
             __visualize, __movement_matrix
         )
         # self.__time_step = 1e-2
+        self.duration = None
         self.__time_step = 1e-3
         self.__renderer = None
         if self._visualize is True:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
 
+        # Initialize the Chrono simulation
+        self.system = chrono.ChSystemNSC()
+
+        # Set the end time for the simulation
+        self.system.SetEndTime(self.duration)
     # Visualize
     def _render_setup(self):
         logger.info("Initializing chrono simulation renderer")
@@ -170,13 +177,17 @@ class ChronoSimulation(Simulation):
 
     def run(self):
         logger.info("Starting simulation")
+        self.environment.SetStepsize(self.__time_step)
+        self.environment.SetMaxPenetrationRecoverySpeed(1.0)
         if self._visualize:
             self._render_setup()
 
         try:
-            while self.do_run():
+            while self.do_run() \
+                    and self.system.GetChTime() < self.system.GetEndTime():
                 if self._visualize:
                     self._render_step()
+
 
                 #  self.creature.capture_sensor_data()
                 self.environment.DoStepDynamics(self.__time_step)
