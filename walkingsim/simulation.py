@@ -159,12 +159,37 @@ class ChronoSimulation:
     def _compute_step_reward(self):
         # FIXME do calculation for current step and return
         sensor_data = self.creature.sensor_data
-        #  if len(sensor_data) > 0:
-        #      print(
-        #          sensor_data[-1]["position"],
-        #          sensor_data[-1]["distance"],
-        #          sensor_data[-1]["total_distance"],
-        #      )
+        if len(sensor_data) > 0:
+                # The distance is simply the actual distance
+                # from the start point to the current position
+                distance = sensor_data[-1]["distance"]
+
+                # The walk straight reward is a value that tells
+                # if the creature is walking straight or not. If the
+                # creature is walking straight the value will be close to 0
+                # FIXME: Why 3 ?
+                walk_straight = -3 * (sensor_data[-1]["position"][2] ** 2)
+
+                # The speed is how much distance the creature did in one step
+                # If the creature went backwards, the speed is negative
+                # this has a negative impact on the fitness value
+                # FIXME: Should we keep the distance positive (absolute value) ?
+                if len(sensor_data) >= 2:
+                    speed = (sensor_data[-1]['distance'] - sensor_data[-2]['distance'])
+                else:
+                    speed = 0
+
+                reward = distance + walk_straight + speed
+                print(
+                    sensor_data[-1]["position"],
+                    sensor_data[-1]["distance"],
+                    sensor_data[-1]["total_distance"],
+                    distance,
+                    walk_straight,
+                    speed,
+                    reward
+                )
+                return reward
 
         return 0
 
@@ -188,6 +213,7 @@ class ChronoSimulation:
             print("no position in sensor data")
         self.__total_reward += self._compute_step_reward()
         self.environment.DoStepDynamics(self._TIME_STEP)
+        print('current reward', self.__total_reward)
 
     def is_over(self):
         is_over = False

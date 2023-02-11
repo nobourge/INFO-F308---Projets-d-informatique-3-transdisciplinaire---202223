@@ -172,17 +172,15 @@ class Quadrupede:
                 self.__sensor_data[-1]["position"],
                 self.__sensor_data[0]["position"],
             )
-            total_distance = functools.reduce(
-                lambda prev, curr: (
-                    prev[0]
-                    if prev[1] is None
-                    else prev[0]
-                    + utils.distance(curr["position"], prev[1]["position"]),
-                    curr,
-                ),
-                self.__sensor_data,
-                (0, None),
-            )[0]
+
+            # FIXME: Total distance is not calculated correctly
+            for i, data in enumerate(self.__sensor_data[1:]):
+                prev_pos = self.__sensor_data[i]
+                distance_from_prev_pos = utils.distance(
+                    data['position'],
+                    prev_pos['position']
+                )
+                total_distance += distance_from_prev_pos
 
         # We update the last sensor data added with those additional information
         self.__sensor_data[-1].update(
