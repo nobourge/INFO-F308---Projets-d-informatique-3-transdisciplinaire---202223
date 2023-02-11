@@ -101,14 +101,14 @@ class ChronoSimulation(Simulation):
             __creatures_datapath: str,
             __visualize: bool = False,
             __movement_matrix=None,
-            __duration_limit: float = 10
+            __duration: float = 10
     ) -> None:
         super().__init__(
             "chrono", __env_datapath, __env, __creatures_datapath,
             __visualize, __movement_matrix
         )
         # self.__time_step = 1e-2
-        self.duration = None
+        self.duration = __duration
         self.__time_step = 1e-3
         self.__renderer = None
         if self._visualize is True:
@@ -116,10 +116,11 @@ class ChronoSimulation(Simulation):
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
 
         # Initialize the Chrono simulation
-        self.system = chrono.ChSystemNSC()
+        self.system = chrono.ChSystemNSC() # NSC for non-smooth contact
 
         # Set the end time for the simulation
-        self.system.SetEndTime(self.duration)
+        # self.system.SetEndTime(self.duration)
+        # self.system.
     # Visualize
     def _render_setup(self):
         logger.info("Initializing chrono simulation renderer")
@@ -177,14 +178,21 @@ class ChronoSimulation(Simulation):
 
     def run(self):
         logger.info("Starting simulation")
-        self.environment.SetStepsize(self.__time_step)
-        self.environment.SetMaxPenetrationRecoverySpeed(1.0)
+        # Create a timer object
+        # timer = chrono.ChTimer()
+
+
+        # Start the timer
+        timer = 0
         if self._visualize:
             self._render_setup()
 
         try:
-            while self.do_run() \
-                    and self.system.GetChTime() < self.system.GetEndTime():
+
+            while self.do_run() and timer < self.duration:
+                timer += self.__time_step
+                logger.debug(f"Simulation time: {timer}")
+                    # and self.system.GetChTime() < self.system.GetEndTime():
                 if self._visualize:
                     self._render_step()
 
