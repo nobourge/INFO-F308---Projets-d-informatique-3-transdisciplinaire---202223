@@ -108,7 +108,6 @@ class GeneticAlgorithm:
 
             environments_path = "./environments"
             creatures_path = "./creatures"
-            duration_limit=10
 
 
             simulation = ChronoSimulation(
@@ -117,7 +116,6 @@ class GeneticAlgorithm:
                                            , creatures_path
                                            , True
                             ,movement_matrix
-            ,duration_limit
             )
             simulation.environment.Add(ground.Ground())
             simulation.add_creature(creature_name="bipede")

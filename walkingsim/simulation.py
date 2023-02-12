@@ -115,12 +115,7 @@ class ChronoSimulation(Simulation):
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
 
-        # Initialize the Chrono simulation
-        self.system = chrono.ChSystemNSC() # NSC for non-smooth contact
 
-        # Set the end time for the simulation
-        # self.system.SetEndTime(self.duration)
-        # self.system.
     # Visualize
     def _render_setup(self):
         logger.info("Initializing chrono simulation renderer")
@@ -178,21 +173,13 @@ class ChronoSimulation(Simulation):
 
     def run(self):
         logger.info("Starting simulation")
-        # Create a timer object
-        # timer = chrono.ChTimer()
 
-
-        # Start the timer
-        timer = 0
         if self._visualize:
             self._render_setup()
 
         try:
 
-            while self.do_run() and timer < self.duration:
-                timer += self.__time_step
-                logger.debug(f"Simulation time: {timer}")
-                    # and self.system.GetChTime() < self.system.GetEndTime():
+            while self.do_run() :
                 if self._visualize:
                     self._render_step()
 
