@@ -117,17 +117,21 @@ class ChronoSimulation:
     )
 
     def __init__(
-        self,
-        __env_datapath: str,
-        __env: str,
-        __creatures_datapath: str,
-        __visualize: bool = False,
+            self,
+            __engine: str,
+            __env_datapath: str,
+            __env: str,
+            __creatures_datapath: str,
+            __visualize: bool = False,
+            __movement_matrix=None
     ) -> None:
-        # Environment params
-        self.__loader = EnvironmentLoader(__env_datapath, "chrono")
+        self.__engine = __engine
+        self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
+        self._visualize = __visualize
         self.__environment = self.__loader.load_environment(__env)
         self.__renderer = None
         self._visualize = __visualize
+        self.__time_step = 1e-3
         if self._visualize is True:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
@@ -137,6 +141,7 @@ class ChronoSimulation:
         self.__genome = np.zeros((4, self._GENOME_DISCRETE_INTERVALS))
         self.__creature.set_forces(self.__genome)
         self.__total_reward = 0
+        self.__movement_matrix = __movement_matrix
 
     # Visualize
     def _render_setup(self):
@@ -150,6 +155,7 @@ class ChronoSimulation:
         self.__renderer.AddTypicalLights()
 
     def _render_step(self):
+        logger.debug("Rendering step in chrono simulation")
         self.__renderer.BeginScene()
         self.__renderer.Render()
         self.__renderer.ShowInfoPanel(True)
@@ -255,6 +261,8 @@ class ChronoSimulation:
                 self._simulation_step()
                 if self._visualize:
                     self._render_step()
+                #  self.creature.capture_sensor_data()
+                self.environment.DoStepDynamics(self.__time_step)
         except KeyboardInterrupt:
             logger.info("Simulation was stopped by user")
 
