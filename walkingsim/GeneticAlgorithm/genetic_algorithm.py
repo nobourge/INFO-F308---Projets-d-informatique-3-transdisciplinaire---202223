@@ -125,7 +125,8 @@ class GeneticAlgorithm:
         return fitness_function
 
     def walk_learn(self):
-        best_solution, best_fitness = self.ga.run()
+        self.ga.run()
+        best_solution, best_fitness, solution_idx = self.ga.best_solution()
 
         self.steps = np.array(best_solution).reshape(self.num_joints,
                                                      self.num_steps)
