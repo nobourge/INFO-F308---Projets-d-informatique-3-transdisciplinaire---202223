@@ -181,8 +181,7 @@ class ChronoCreature:
         self._create_body(0, self.__pos)
 
         # XXX torque function test
-        # for i, joint in enumerate(self.__joints):
-        for i, joint in enumerate(self.movement_matrix):
+        for i, joint in enumerate(self.__joints):
             mod = 1 if i % 2 == 0 else -1
             sin_torque = chrono.ChFunction_Sine(
                 0, 1, mod * 90  # phase [rad]  # frequency [Hz]
