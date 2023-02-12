@@ -49,7 +49,7 @@ class Quadrupede:
     _trunk_dimensions = (1.0, 0.5, 0.5)
     _legs_dimensions = (0.3, 0.7, 0.15)
 
-    def __init__(self, pos: tuple) -> None:
+    def __init__(self, pos: tuple, movement_matrix) -> None:
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
 
         # first elem 0 is the trunk, the rest are the legs
@@ -57,7 +57,7 @@ class Quadrupede:
         self.__joints = []
         self.__sensor_data = []
         self.__joints_forces = []
-
+        self.__movement_matrix = movement_matrix
         self.__x_distance_target = 100
 
         self._create_trunk()
@@ -65,7 +65,10 @@ class Quadrupede:
         # XXX debug purposes
         # TODO: Remove following line, replaced by set_forces
         # self.apply_forces()
-
+    
+    
+    
+    
     def set_forces(self, forces: list):
         if len(forces) < len(self.__joints):
             raise RuntimeError('Forces for joints are not enough')
@@ -152,6 +155,10 @@ class Quadrupede:
             # FIXME not the proper way, check chrono docs about motors
             current_torque = chrono.ChFunction_Const(1.0)
             joint.SetTorqueFunction(current_torque)
+    
+    def _movement_matrix_apply_forces(self):
+        for i, joint in enumerate(self.__joints):
+            joint.SetTorqueFunction(self.__movement_matrix[i])
 
     def add_to_env(self, __env):
         for body in self.__bodies:
