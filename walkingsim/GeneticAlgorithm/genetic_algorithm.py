@@ -139,9 +139,9 @@ class GeneticAlgorithm:
         return self.steps
 
     def plot(self):
-        pygad_.plot_fitness()
-        pygad_.plot_genes()
-        pygad_.plot_new_solution_rate()
+        self.ga.plot_fitness()
+        self.ga.plot_genes()
+        self.ga.plot_new_solution_rate()
 
     def run(self):
         self.walk_learn()
