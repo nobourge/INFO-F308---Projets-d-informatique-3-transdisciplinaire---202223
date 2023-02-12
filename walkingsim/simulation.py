@@ -17,7 +17,8 @@ import pychrono as chrono
 import pychrono.irrlicht as chronoirr
 from loguru import logger
 
-from walkingsim.creature.quadrupede import Quadrupede
+from walkingsim.creature.quadrupede.quadrupede import Quadrupede
+from walkingsim.creature.bipede.bipede import Bipede
 from walkingsim.environment import EnvironmentLoader
 
 
@@ -118,14 +119,13 @@ class ChronoSimulation:
 
     def __init__(
             self,
-            __engine: str,
             __env_datapath: str,
             __env: str,
             __creatures_datapath: str,
             __visualize: bool = False,
             __movement_matrix=None
     ) -> None:
-        self.__engine = __engine
+        self.__engine = "chrono"
         self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
         self._visualize = __visualize
         self.__environment = self.__loader.load_environment(__env)
@@ -136,12 +136,13 @@ class ChronoSimulation:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
         # Creature attributes
-        self.__creature = Quadrupede((0, 2.4, 0))
+        self.__creature = Quadrupede((0, 2.4, 0), __movement_matrix)
         self.__creature.add_to_env(self.environment)
         self.__genome = np.zeros((4, self._GENOME_DISCRETE_INTERVALS))
         self.__creature.set_forces(self.__genome)
         self.__total_reward = 0
         self.__movement_matrix = __movement_matrix
+
 
     # Visualize
     def _render_setup(self):
@@ -253,6 +254,7 @@ class ChronoSimulation:
 
     def run(self):
         logger.info("Starting simulation")
+
         if self._visualize:
             self._render_setup()
 

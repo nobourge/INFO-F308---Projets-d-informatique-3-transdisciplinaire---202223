@@ -16,6 +16,7 @@ from copy import deepcopy
 import functools
 import pychrono as chrono
 
+# files in which the Quadrupede is imported:
 
 class CustomTorqueFunction(chrono.ChFunction):
     def __init__(self, forces: list):
@@ -48,6 +49,8 @@ class Quadrupede:
     _collision_family = 2
     _trunk_dimensions = (1.0, 0.5, 0.5)
     _legs_dimensions = (0.3, 0.7, 0.15)
+    # _upper_leg_dimension = (0.3, 0.7, 0.15)
+    # _lower_leg_dimension = (0.3, 0.7, 0.15)
 
     def __init__(self, pos: tuple, movement_matrix) -> None:
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
@@ -59,6 +62,8 @@ class Quadrupede:
         self.__joints_forces = []
         self.__movement_matrix = movement_matrix
         self.__x_distance_target = 100
+
+        self.__movement_matrix = movement_matrix
 
         self._create_trunk()
         self._create_legs()
@@ -114,6 +119,7 @@ class Quadrupede:
         self._create_single_leg(x_back_legs, y_legs, z_right_legs)
 
     def _create_single_leg(self, *pos):
+        # leg_part = self._create_bone(self._upper_legs_dimensions)
         leg_part = self._create_bone(self._legs_dimensions)
         leg_part.GetCollisionModel().SetFamily(self._collision_family)
         leg_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
@@ -159,6 +165,11 @@ class Quadrupede:
     def _movement_matrix_apply_forces(self):
         for i, joint in enumerate(self.__joints):
             joint.SetTorqueFunction(self.__movement_matrix[i])
+
+    def _movement_matrix_apply_forces(self):
+        for i, joint in enumerate(self.__joints):
+            joint.SetTorqueFunction(self.__movement_matrix[i])
+
 
     def add_to_env(self, __env):
         for body in self.__bodies:
