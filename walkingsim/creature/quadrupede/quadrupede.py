@@ -166,10 +166,6 @@ class Quadrupede:
         for i, joint in enumerate(self.__joints):
             joint.SetTorqueFunction(self.__movement_matrix[i])
 
-    def _movement_matrix_apply_forces(self):
-        for i, joint in enumerate(self.__joints):
-            joint.SetTorqueFunction(self.__movement_matrix[i])
-
     def add_to_env(self, __env):
         for body in self.__bodies:
             __env.Add(body)
