@@ -75,7 +75,7 @@ if __name__ == "__main__":
         on_generation=None,
         keep_parents=1,
         num_joints=4,
-        num_steps=1,
+        num_steps=5,
         sensor_data=None,
     )
 

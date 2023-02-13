@@ -2,6 +2,7 @@
 genetic algorithm class, of quadrupede learning to walk, that receives sensor data and update steps matrix
 """
 
+import pickle
 import sys
 
 import numpy as np
@@ -30,7 +31,7 @@ def fitness_function(individual, solution_idx):
 
     """
     logger.info(f"===== NEW FITNESS FUNC CALL ====")
-    movement_matrix = np.array(individual).reshape(4, 1)
+    movement_matrix = np.array(individual).reshape(4, 5)
     # Simulate the movement of the quadruped based on the movement matrix
     # and the sensor data
 
@@ -43,7 +44,7 @@ def fitness_function(individual, solution_idx):
         environments_path,
         environment,
         creatures_path,
-        True,
+        False,
         movement_matrix,
     )
     # simulation.add_creature(creature_name="bipede")
@@ -114,8 +115,8 @@ class GeneticAlgorithm:
 
         self.ga = pygad_.GA(
             num_parents_mating=2,
-            num_generations=100,
-            sol_per_pop=50,
+            num_generations=10,
+            sol_per_pop=10,
             num_genes=num_joints * num_steps,
             mutation_percent_genes=30,
             # fitness_func=self.fitness_function_factory(10),
@@ -170,7 +171,9 @@ class GeneticAlgorithm:
         logger.debug(f"Best solution: {best_solution}")
         logger.debug(f"Best solution fitness: {best_fitness}")
 
-        plot = self.plot()
+        # plot = self.plot()
+        with open("solution.dat", "wb") as fp:
+            pickle.dump(best_solution, fp)
 
         return self.steps
 

@@ -139,7 +139,7 @@ class ChronoSimulation:
         self.__creature = Quadrupede((0, 2.4, 0), __movement_matrix)
         self.__creature.add_to_env(self.environment)
         self.__genome = np.zeros((4, self._GENOME_DISCRETE_INTERVALS))
-        self.__creature.set_forces(self.__genome)
+        self.__creature.set_forces(__movement_matrix)
         self.__total_reward = 0
         self.__movement_matrix = __movement_matrix
 
