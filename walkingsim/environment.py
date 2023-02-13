@@ -70,8 +70,8 @@ class Environment(chrono.ChSystemNSC):
         chrono.ChCollisionModel.SetDefaultSuggestedMargin(0.001)
         self._add_ground()
 
-        logger.info("Initializing environment with the following config")
-        logger.info("\n" + json.dumps(config, indent=4))
+        logger.debug("Initializing environment with the following config")
+        logger.debug("\n" + json.dumps(config, indent=4))
 
     def _add_ground(self):
         # FIXME: This should add an infinite ground

@@ -30,13 +30,13 @@ def fitness_function(individual, solution_idx):
         2) The solution's index within the population.
 
     """
-    logger.info(f"===== NEW FITNESS FUNC CALL ====")
+    logger.info("Starting simulation {}", solution_idx)
+    logger.debug("Creature genome: {}", individual)
     movement_matrix = np.array(individual).reshape(4, 5)
     # Simulate the movement of the quadruped based on the movement matrix
     # and the sensor data
 
     environment = "default"
-
     environments_path = "./environments"
     creatures_path = "./creatures"
 
@@ -49,6 +49,8 @@ def fitness_function(individual, solution_idx):
     )
     # simulation.add_creature(creature_name="bipede")
     fitness = simulation.run()
+    logger.info("Simulation {} ended", solution_idx)
+    logger.debug("Creature fitness: {}", fitness)
     return fitness
 
 
@@ -167,14 +169,15 @@ class GeneticAlgorithm:
         self.steps = np.array(best_solution).reshape(
             self.num_joints, self.num_steps
         )
-        print(self.steps)
-        logger.debug(f"Best solution: {best_solution}")
-        logger.debug(f"Best solution fitness: {best_fitness}")
+        logger.info("Genetic Algorithm ended")
+        logger.info("Best genome: {}", best_solution)
+        logger.info("Best fitness: {}", best_fitness)
 
         # plot = self.plot()
         with open("solution.dat", "wb") as fp:
             pickle.dump(best_solution, fp)
 
+        logger.success("Best genome was successfully written in solution.dat")
         return self.steps
 
     def plot(self):
