@@ -268,6 +268,9 @@ class ChronoSimulation:
         except KeyboardInterrupt:
             logger.info("Simulation was stopped by user")
 
+        if self.__renderer:
+            self.__renderer.GetDevice().closeDevice()
+
         return self.__total_reward
 
     @property
