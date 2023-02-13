@@ -17,8 +17,8 @@ import pychrono as chrono
 import pychrono.irrlicht as chronoirr
 from loguru import logger
 
-from walkingsim.creature.bipede.bipede import Bipede
-from walkingsim.creature.quadrupede.quadrupede import Quadrupede
+from walkingsim.creature.bipede import Bipede
+from walkingsim.creature.quadrupede import Quadrupede
 from walkingsim.environment import EnvironmentLoader
 
 #  class Simulation(abc.ABC):
