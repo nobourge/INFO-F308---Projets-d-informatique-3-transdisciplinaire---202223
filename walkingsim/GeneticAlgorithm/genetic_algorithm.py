@@ -118,7 +118,7 @@ class GeneticAlgorithm:
                             ,movement_matrix
             )
             simulation.environment.Add(ground.Ground())
-            simulation.add_creature(creature_name="bipede")
+            # simulation.add_creature(creature_name="bipede")
             fitness = simulation.run()
             return fitness
 
