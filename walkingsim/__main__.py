@@ -1,7 +1,7 @@
 import sys
 
 import walkingsim.ground as ground
-from walkingsim.GeneticAlgorithm.genetic_algorithm import GeneticAlgorithm
+from walkingsim.algorithms.ga import GeneticAlgorithm
 from walkingsim.simulation import ChronoSimulation
 
 # from GeneticAlgorithm
