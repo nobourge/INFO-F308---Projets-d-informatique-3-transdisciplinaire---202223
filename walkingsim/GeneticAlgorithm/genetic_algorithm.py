@@ -34,7 +34,7 @@ def fitness_function(individual, solution_idx):
     # Simulate the movement of the quadruped based on the movement matrix
     # and the sensor data
 
-    environment, creature_name = "default", "bipede"
+    environment = "default"
 
     environments_path = "./environments"
     creatures_path = "./creatures"
@@ -46,7 +46,6 @@ def fitness_function(individual, solution_idx):
         True,
         movement_matrix,
     )
-    simulation.environment.Add(ground.Ground())
     # simulation.add_creature(creature_name="bipede")
     fitness = simulation.run()
     return fitness
