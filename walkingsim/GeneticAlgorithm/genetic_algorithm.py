@@ -4,16 +4,16 @@ genetic algorithm class, of quadrupede learning to walk, that receives sensor da
 
 import sys
 
-from utils._logging import logger
-
 import numpy as np
 import pygad as pygad_
 
 import walkingsim.ground as ground
+from utils._logging import logger
+from utils.auto_indent import AutoIndent
 from walkingsim.simulation import ChronoSimulation
+
 # todo from creature.genotype import Genotype
 
-from utils.auto_indent import AutoIndent
 
 logger.debug("Starting genetic_algorithm.py")
 sys.stdout = AutoIndent(sys.stdout)
@@ -22,29 +22,29 @@ sys.stdout = AutoIndent(sys.stdout)
 class GeneticAlgorithm:
     # pygad.set_seed(42)
     def __init__(
-            self,
-            population_size,
-            num_generations,
-            num_parents_mating,
-            fitness_func,
-            num_genes,
-            gene_type,
-            gene_space,
-            init_range_low,
-            init_range_high,
-            mutation_percent_genes,
-            mutation_type,
-            mutation_num_genes,
-            mutation_by_replacement,
-            mutation_range_low,
-            mutation_range_high,
-            crossover_type,
-            crossover_percent_parents,
-            on_generation,
-            keep_parents,
-            num_joints,
-            num_steps,
-            sensor_data
+        self,
+        population_size,
+        num_generations,
+        num_parents_mating,
+        fitness_func,
+        num_genes,
+        gene_type,
+        gene_space,
+        init_range_low,
+        init_range_high,
+        mutation_percent_genes,
+        mutation_type,
+        mutation_num_genes,
+        mutation_by_replacement,
+        mutation_range_low,
+        mutation_range_high,
+        crossover_type,
+        crossover_percent_parents,
+        on_generation,
+        keep_parents,
+        num_joints,
+        num_steps,
+        sensor_data,
     ):
         self.population_size = population_size
         self.num_generations = num_generations
@@ -71,25 +71,28 @@ class GeneticAlgorithm:
         self.sensor_data = sensor_data
 
         self.search_space = [
-            {'low': -180, 'high': 180, 'type': 'continuous',
-             'name': f'joint_{i}'} for i in
-            range(num_joints * num_steps)]
+            {
+                "low": -180,
+                "high": 180,
+                "type": "continuous",
+                "name": f"joint_{i}",
+            }
+            for i in range(num_joints * num_steps)
+        ]
 
-        self.ga = pygad_.GA(num_parents_mating=2,
-                            num_generations=100,
-                            sol_per_pop=50,
-                            num_genes=num_joints * num_steps,
-                            mutation_percent_genes=30,
-                            fitness_func=self.fitness_function_factory(10),
-                            # fitness_func=self.fitness_func(),
-                            # fitness_func=self.fitness_function,
+        self.ga = pygad_.GA(
+            num_parents_mating=2,
+            num_generations=100,
+            sol_per_pop=50,
+            num_genes=num_joints * num_steps,
+            mutation_percent_genes=30,
+            fitness_func=self.fitness_function_factory(10),
+            # fitness_func=self.fitness_func(),
+            # fitness_func=self.fitness_function,
+        )
 
-                            )
-
-    def fitness_function_factory(self,num):
-        def fitness_function(individual
-                             , solution_idx
-                             ):
+    def fitness_function_factory(self, num):
+        def fitness_function(individual, solution_idx):
             """
             Calculate the fitness of an individual based on the sensor data
              and the matrix of movements represented by the individual
@@ -99,8 +102,9 @@ class GeneticAlgorithm:
                 2) The solution's index within the population.
 
             """
-            movement_matrix = np.array(individual).reshape(self.num_joints,
-                                                           self.num_steps)
+            movement_matrix = np.array(individual).reshape(
+                self.num_joints, self.num_steps
+            )
             # Simulate the movement of the quadruped based on the movement matrix
             # and the sensor data
 
@@ -109,13 +113,12 @@ class GeneticAlgorithm:
             environments_path = "./environments"
             creatures_path = "./creatures"
 
-
             simulation = ChronoSimulation(
-                                            environments_path
-                                           , environment
-                                           , creatures_path
-                                           , True
-                            ,movement_matrix
+                environments_path,
+                environment,
+                creatures_path,
+                True,
+                movement_matrix,
             )
             simulation.environment.Add(ground.Ground())
             # simulation.add_creature(creature_name="bipede")
@@ -128,8 +131,9 @@ class GeneticAlgorithm:
         self.ga.run()
         best_solution, best_fitness, solution_idx = self.ga.best_solution()
 
-        self.steps = np.array(best_solution).reshape(self.num_joints,
-                                                     self.num_steps)
+        self.steps = np.array(best_solution).reshape(
+            self.num_joints, self.num_steps
+        )
         print(self.steps)
         logger.debug(f"Best solution: {best_solution}")
         logger.debug(f"Best solution fitness: {best_fitness}")

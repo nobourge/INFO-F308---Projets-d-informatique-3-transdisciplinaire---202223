@@ -10,13 +10,15 @@ Description:
     Class for basic quadruped creature.
 """
 
-import walkingsim.utils as utils
-
-from copy import deepcopy
 import functools
+from copy import deepcopy
+
 import pychrono as chrono
 
+import walkingsim.utils as utils
+
 # files in which the Quadrupede is imported:
+
 
 class CustomTorqueFunction(chrono.ChFunction):
     def __init__(self, forces: list):
@@ -46,6 +48,7 @@ class Quadrupede:
         bodies
         sensor_data
     """
+
     _collision_family = 2
     _trunk_dimensions = (1.0, 0.5, 0.5)
     _legs_dimensions = (0.3, 0.7, 0.15)
@@ -70,17 +73,14 @@ class Quadrupede:
         # XXX debug purposes
         # TODO: Remove following line, replaced by set_forces
         # self.apply_forces()
-    
-    
-    
-    
+
     def set_forces(self, forces: list):
         if len(forces) < len(self.__joints):
-            raise RuntimeError('Forces for joints are not enough')
+            raise RuntimeError("Forces for joints are not enough")
 
         # Store the forces for later use
         self.__joints_forces = forces
-        
+
         # NOTE: Important to store the function otherwise they are destroyed
         # when function is terminated, so chrono cannot access them anymore
         self.__joints_funcs = []
@@ -161,15 +161,14 @@ class Quadrupede:
             # FIXME not the proper way, check chrono docs about motors
             current_torque = chrono.ChFunction_Const(1.0)
             joint.SetTorqueFunction(current_torque)
-    
-    def _movement_matrix_apply_forces(self):
-        for i, joint in enumerate(self.__joints):
-            joint.SetTorqueFunction(self.__movement_matrix[i])
 
     def _movement_matrix_apply_forces(self):
         for i, joint in enumerate(self.__joints):
             joint.SetTorqueFunction(self.__movement_matrix[i])
 
+    def _movement_matrix_apply_forces(self):
+        for i, joint in enumerate(self.__joints):
+            joint.SetTorqueFunction(self.__movement_matrix[i])
 
     def add_to_env(self, __env):
         for body in self.__bodies:
@@ -195,8 +194,7 @@ class Quadrupede:
             for i, data in enumerate(self.__sensor_data[1:]):
                 prev_pos = self.__sensor_data[i]
                 distance_from_prev_pos = utils.distance(
-                    data['position'],
-                    prev_pos['position']
+                    data["position"], prev_pos["position"]
                 )
                 total_distance += distance_from_prev_pos
 

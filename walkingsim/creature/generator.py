@@ -84,12 +84,9 @@ class ChronoCreature:
 
     _collision_family = 2
 
-    def __init__(self
-                 , __creature: str
-                 , __graph: nx.Graph
-                 , pos: tuple
-                 , movement_matrix
-                 ) -> None:
+    def __init__(
+        self, __creature: str, __graph: nx.Graph, pos: tuple, movement_matrix
+    ) -> None:
         self.__creature = __creature
         self.__graph = __graph
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])

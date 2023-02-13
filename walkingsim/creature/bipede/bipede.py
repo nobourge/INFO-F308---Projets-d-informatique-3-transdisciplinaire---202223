@@ -11,10 +11,10 @@ Description:
 """
 
 
-
 import pychrono as chrono
 
 # files in which the bipede is imported:
+
 
 class Bipede:
     _collision_family = 2
@@ -23,10 +23,7 @@ class Bipede:
     # _upper_legs_dimensions = (0.3, 0.7, 0.15)
     # _lower_legs_dimensions = (0.3, 0.7, 0.15)
 
-    def __init__(self
-                 , pos: tuple
-                 , movement_matrix
-                 ) -> None:
+    def __init__(self, pos: tuple, movement_matrix) -> None:
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
 
         self.__joints = []
@@ -80,12 +77,8 @@ class Bipede:
 
         # self._create_single_leg(x_front_legs, y_legs, z_left_legs)
         # self._create_single_leg(x_front_legs, y_legs, z_right_legs)
-        self._create_single_leg(x_back_legs,
-                                y_legs,
-                                z_left_legs)
-        self._create_single_leg(x_back_legs,
-                                y_legs,
-                                z_right_legs)
+        self._create_single_leg(x_back_legs, y_legs, z_left_legs)
+        self._create_single_leg(x_back_legs, y_legs, z_right_legs)
 
     def _create_single_leg(self, *pos):
         # leg_part = self._create_bone(self._upper_legs_dimensions)

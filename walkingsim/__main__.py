@@ -1,9 +1,7 @@
 import sys
 
 import walkingsim.ground as ground
-from walkingsim.GeneticAlgorithm.genetic_algorithm import \
-    GeneticAlgorithm
-
+from walkingsim.GeneticAlgorithm.genetic_algorithm import GeneticAlgorithm
 from walkingsim.simulation import ChronoSimulation
 
 # from GeneticAlgorithm
@@ -53,8 +51,6 @@ from walkingsim.simulation import ChronoSimulation
 #     sim.run()
 #
 #
-
-
 
 
 if __name__ == "__main__":

@@ -9,12 +9,13 @@ Authors:
 Description:
     Class for loading and creating the physics system (= Environment).
 """
-import walkingsim.ground as ground
 import json
 import os
 
 import pychrono.core as chrono
 from loguru import logger
+
+import walkingsim.ground as ground
 
 
 class EnvironmentLoader:
