@@ -128,13 +128,12 @@ class ChronoSimulation:
         self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
         self._visualize = __visualize
         self.__environment = self.__loader.load_environment(__env)
-        self.__renderer = None
-        self._visualize = __visualize
         self.__time_step = 1e-3
-        logger.info(f"CHRONO SIM ID: {id(self)}")
+        self.__renderer = None
         if self._visualize is True:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
+
         # Creature attributes
         self.__creature = Quadrupede((0, 2.4, 0), __movement_matrix)
         self.__creature.add_to_env(self.environment)
@@ -145,7 +144,7 @@ class ChronoSimulation:
 
     # Visualize
     def _render_setup(self):
-        logger.info("Initializing chrono simulation renderer")
+        logger.debug("Initializing chrono simulation renderer")
         self.__renderer.AttachSystem(self.environment)
         self.__renderer.SetWindowSize(1024, 768)
         self.__renderer.SetWindowTitle("3D muscle-based walking sim")
@@ -155,7 +154,7 @@ class ChronoSimulation:
         self.__renderer.AddTypicalLights()
 
     def _render_step(self):
-        # logger.debug("Rendering step in chrono simulation")
+        logger.debug("Rendering step in chrono simulation")
         self.__renderer.BeginScene()
         self.__renderer.Render()
         self.__renderer.ShowInfoPanel(True)
@@ -163,7 +162,6 @@ class ChronoSimulation:
 
     # Run Simulation
     def _compute_step_reward(self):
-        # FIXME do calculation for current step and return
         sensor_data = self.creature.sensor_data
         if len(sensor_data) > 0:
             # The distance is simply the actual distance
@@ -188,42 +186,22 @@ class ChronoSimulation:
                 speed = 0
 
             reward = distance + walk_straight + speed
-            # print(
-            #     sensor_data[-1]["position"],
-            #     sensor_data[-1]["distance"],
-            #     sensor_data[-1]["total_distance"],
-            #     distance,
-            #     walk_straight,
-            #     speed,
-            #     reward,
-            # )
             return reward
 
         return 0
 
     def _simulation_step(self):
-        """This function returns wether or not the simulation is done"""
         # Pseudocode for this method:
         # 1) Apply action to environment
         # 2) Get observations from creature sensors (position, angles, CoM, etc.)
         # 3) Compute reward and add it to total reward/fitness
         # 4) Do timestep in environment
-
-        # FIXME here we must apply forces in our genome matrix that correspond with
-        # the current timestep
         self.creature.capture_sensor_data()
-        # TODO: Remove following line, replaced by set_forces
-        # self.creature.apply_forces()
-        try:
-            pass
-            #  print(self.creature.sensor_data[-1])
-        except IndexError:
-            print("no position in sensor data")
         self.__total_reward += self._compute_step_reward()
         self.environment.DoStepDynamics(self._TIME_STEP)
-        # print("current reward", self.__total_reward)
 
     def is_over(self):
+        """This function returns wether or not the simulation is done"""
         is_over = False
 
         if self.is_time_limit_reached() or self.is_creature_fallen():
@@ -262,17 +240,16 @@ class ChronoSimulation:
                 self._simulation_step()
                 if self._visualize:
                     self._render_step()
-                #  self.creature.capture_sensor_data()
-                self.environment.DoStepDynamics(self.__time_step)
-            logger.info("==== SImulation is done =====")
+                # self.environment.DoStepDynamics(self.__time_step)
         except KeyboardInterrupt:
-            logger.info("Simulation was stopped by user")
+            logger.debug("Simulation was stopped by user")
 
         # FIXME: Cette solution n'est pas ideal, peut-etre essayer de creer
         # le visualizer une seul fois et ensuite reset l'environment
         if self.__renderer:
             self.__renderer.GetDevice().closeDevice()
 
+        logger.info("Simulation is done")
         return self.__total_reward
 
     @property
