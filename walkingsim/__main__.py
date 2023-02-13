@@ -29,28 +29,28 @@ from walkingsim.simulation import ChronoSimulation
 
 
 # def main():
-#
+
 #     environment, creature_name = "default", "bipede"
 #     if len(sys.argv) >= 2:
 #         environment = sys.argv[1]
 #     if len(sys.argv) >= 3:
 #         creature_name = sys.argv[2]
-#
+
 #     environments_path = "./environments"
 #     creatures_path = "./creatures"
-#
+
 #     sim = ChronoSimulation(environments_path
 #                            , environment
 #                            , creatures_path
 #                            , True
-#                            , __movement_matrix=None
+#                            , None
 #     )
 #     sim.environment.Add(ground.Ground())
-#     sim.add_creature(creature_name)
-#
+#     # sim.add_creature(creature_name)
+
 #     sim.run()
-#
-#
+
+
 
 
 if __name__ == "__main__":

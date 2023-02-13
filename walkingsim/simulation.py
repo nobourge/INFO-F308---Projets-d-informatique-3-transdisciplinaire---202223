@@ -131,6 +131,7 @@ class ChronoSimulation:
         self.__renderer = None
         self._visualize = __visualize
         self.__time_step = 1e-3
+        logger.info(f"CHRONO SIM ID: {id(self)}")
         if self._visualize is True:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
@@ -154,7 +155,7 @@ class ChronoSimulation:
         self.__renderer.AddTypicalLights()
 
     def _render_step(self):
-        logger.debug("Rendering step in chrono simulation")
+        # logger.debug("Rendering step in chrono simulation")
         self.__renderer.BeginScene()
         self.__renderer.Render()
         self.__renderer.ShowInfoPanel(True)
@@ -187,15 +188,15 @@ class ChronoSimulation:
                 speed = 0
 
             reward = distance + walk_straight + speed
-            print(
-                sensor_data[-1]["position"],
-                sensor_data[-1]["distance"],
-                sensor_data[-1]["total_distance"],
-                distance,
-                walk_straight,
-                speed,
-                reward,
-            )
+            # print(
+            #     sensor_data[-1]["position"],
+            #     sensor_data[-1]["distance"],
+            #     sensor_data[-1]["total_distance"],
+            #     distance,
+            #     walk_straight,
+            #     speed,
+            #     reward,
+            # )
             return reward
 
         return 0
@@ -220,7 +221,7 @@ class ChronoSimulation:
             print("no position in sensor data")
         self.__total_reward += self._compute_step_reward()
         self.environment.DoStepDynamics(self._TIME_STEP)
-        print("current reward", self.__total_reward)
+        # print("current reward", self.__total_reward)
 
     def is_over(self):
         is_over = False
@@ -247,7 +248,7 @@ class ChronoSimulation:
             trunk_y = 1
 
         height_limit = self.__creature._trunk_dimensions[2] / 2
-        print(f"trunk y: {trunk_y}, trunk height: {height_limit}")
+        # print(f"trunk y: {trunk_y}, trunk height: {height_limit}")
         return trunk_y < 1.2 * height_limit
 
     def run(self):
@@ -263,6 +264,7 @@ class ChronoSimulation:
                     self._render_step()
                 #  self.creature.capture_sensor_data()
                 self.environment.DoStepDynamics(self.__time_step)
+            logger.info("==== SImulation is done =====")
         except KeyboardInterrupt:
             logger.info("Simulation was stopped by user")
 

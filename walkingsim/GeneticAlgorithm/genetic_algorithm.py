@@ -19,6 +19,40 @@ logger.debug("Starting genetic_algorithm.py")
 sys.stdout = AutoIndent(sys.stdout)
 
 
+def fitness_function(individual, solution_idx):
+    """
+    Calculate the fitness of an individual based on the sensor data
+        and the matrix of movements represented by the individual
+
+    ValueError: The fitness function must accept 2 parameters:
+        1) A solution to calculate its fitness value.
+        2) The solution's index within the population.
+
+    """
+    logger.info(f"===== NEW FITNESS FUNC CALL ====")
+    movement_matrix = np.array(individual).reshape(4, 1)
+    # Simulate the movement of the quadruped based on the movement matrix
+    # and the sensor data
+
+    environment, creature_name = "default", "bipede"
+
+    environments_path = "./environments"
+    creatures_path = "./creatures"
+
+    simulation = ChronoSimulation(
+        environments_path,
+        environment,
+        creatures_path,
+        True,
+        movement_matrix,
+    )
+    simulation.environment.Add(ground.Ground())
+    # simulation.add_creature(creature_name="bipede")
+    fitness = simulation.run()
+    return fitness
+
+
+
 class GeneticAlgorithm:
     # pygad.set_seed(42)
     def __init__(
@@ -86,8 +120,8 @@ class GeneticAlgorithm:
             sol_per_pop=50,
             num_genes=num_joints * num_steps,
             mutation_percent_genes=30,
-            fitness_func=self.fitness_function_factory(10),
-            # fitness_func=self.fitness_func(),
+            # fitness_func=self.fitness_function_factory(10),
+            fitness_func=fitness_function,
             # fitness_func=self.fitness_function,
         )
 
