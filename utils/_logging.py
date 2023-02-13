@@ -1,8 +1,5 @@
-import sys
+# This file should contain any additionnal logger.
+# For more info checkout the documetation at:
+# https://loguru.readthedocs.io/en/stable/index.html
 
 from loguru import logger
-
-# logger.add("logs/genotype.log", format="{time} {level} {message}", level="DEBUG", rotation="1 MB")
-# logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
-logger.add(sys.stdout, format="{level} {message}", level="DEBUG")
-logger.add(sys.stdout, format="{level} {message}", level="INFO")
