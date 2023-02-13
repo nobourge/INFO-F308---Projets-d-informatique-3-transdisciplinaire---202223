@@ -51,8 +51,6 @@ from walkingsim.simulation import ChronoSimulation
 #     sim.run()
 
 
-
-
 if __name__ == "__main__":
     # main()
 

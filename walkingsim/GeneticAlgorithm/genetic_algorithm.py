@@ -52,7 +52,6 @@ def fitness_function(individual, solution_idx):
     return fitness
 
 
-
 class GeneticAlgorithm:
     # pygad.set_seed(42)
     def __init__(

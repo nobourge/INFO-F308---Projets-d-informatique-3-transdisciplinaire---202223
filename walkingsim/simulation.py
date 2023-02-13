@@ -268,6 +268,8 @@ class ChronoSimulation:
         except KeyboardInterrupt:
             logger.info("Simulation was stopped by user")
 
+        # FIXME: Cette solution n'est pas ideal, peut-etre essayer de creer
+        # le visualizer une seul fois et ensuite reset l'environment
         if self.__renderer:
             self.__renderer.GetDevice().closeDevice()
 
