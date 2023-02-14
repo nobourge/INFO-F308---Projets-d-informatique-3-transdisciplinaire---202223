@@ -137,7 +137,6 @@ class ChronoSimulation:
         # Creature attributes
         self.__creature = Quadrupede((0, 2.4, 0), __movement_matrix)
         self.__creature.add_to_env(self.environment)
-        self.__genome = np.zeros((4, self._GENOME_DISCRETE_INTERVALS))
         self.__creature.set_forces(__movement_matrix)
         self.__total_reward = 0
         self.__movement_matrix = __movement_matrix
@@ -259,7 +258,3 @@ class ChronoSimulation:
     @property
     def creature(self):
         return self.__creature
-
-    @property
-    def genome(self):
-        return self.__genome
