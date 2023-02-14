@@ -51,7 +51,6 @@ def fitness_function(individual, solution_idx):
 
 
 class GeneticAlgorithm:
-    # pygad.set_seed(42)
     def __init__(
         self,
         population_size,
@@ -77,23 +76,11 @@ class GeneticAlgorithm:
             fitness_func=fitness_function,
         )
 
-    def walk_learn(self):
-        self.ga.run()
-        best_solution, best_fitness, solution_idx = self.ga.best_solution()
-
-        self.steps = np.array(best_solution).reshape(
-            self.num_joints, self.num_steps
-        )
-        logger.info("Genetic Algorithm ended")
-        logger.info("Best genome: {}", best_solution)
-        logger.info("Best fitness: {}", best_fitness)
-
-        # plot = self.plot()
+    def save_sol(self, best_sol):
         with open("solution.dat", "wb") as fp:
-            pickle.dump(best_solution, fp)
+            pickle.dump(best_sol, fp)
 
         logger.success("Best genome was successfully written in solution.dat")
-        return self.steps
 
     def plot(self):
         self.ga.plot_fitness()
@@ -101,4 +88,9 @@ class GeneticAlgorithm:
         self.ga.plot_new_solution_rate()
 
     def run(self):
-        self.walk_learn()
+        self.ga.run()
+        best_solution, best_fitness, _ = self.ga.best_solution()
+        logger.info("Genetic Algorithm ended")
+        logger.info("Best genome: {}", best_solution)
+        logger.info("Best fitness: {}", best_fitness)
+        self.save_sol(best_solution)
