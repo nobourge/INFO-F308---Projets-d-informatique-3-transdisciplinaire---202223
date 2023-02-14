@@ -10,25 +10,10 @@ Description:
     Class for basic quadruped creature.
 """
 
-from copy import deepcopy
-
-import pychrono as chrono
 
 import walkingsim.utils as utils
 
-
-class CustomTorqueFunction(chrono.ChFunction):
-    def __init__(self, forces: list):
-        super().__init__()
-        self.__forces = forces
-
-    def Clone(self):
-        return deepcopy(self)
-
-    def Get_y(self, x):
-        # We want to keep x between 0 and len(self.__forces) - 1 => run a cycle multiple times
-        x = int(x) % len(self.__forces)
-        return self.__forces[x]
+import pychrono as chrono
 
 
 class Quadrupede:
@@ -83,7 +68,7 @@ class Quadrupede:
         self.__joints_funcs = []
 
         for i, joint in enumerate(self.__joints):
-            self.__joints_funcs.append(CustomTorqueFunction(forces[i]))
+            self.__joints_funcs.append(utils.CustomTorqueFunction(forces[i]))
             joint.SetTorqueFunction(self.__joints_funcs[i])
 
     def _create_trunk(self):
