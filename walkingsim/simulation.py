@@ -122,24 +122,25 @@ class ChronoSimulation:
         __env: str,
         __creatures_datapath: str,
         __visualize: bool = False,
-        __movement_matrix=None,
+        __movement_gene=None,
     ) -> None:
         self.__engine = "chrono"
         self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
         self._visualize = __visualize
         self.__environment = self.__loader.load_environment(__env)
-        self.__time_step = 1e-3
         self.__renderer = None
         if self._visualize is True:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
 
         # Creature attributes
-        self.__creature = Quadrupede((0, 2.4, 0), __movement_matrix)
+        movement_matrix = np.array(__movement_gene).reshape(
+            Quadrupede._nb_joints, self._GENOME_DISCRETE_INTERVALS
+        )
+        self.__creature = Quadrupede((0, 2.4, 0), movement_matrix)
         self.__creature.add_to_env(self.environment)
-        self.__creature.set_forces(__movement_matrix)
+        self.__creature.set_forces(movement_matrix)
         self.__total_reward = 0
-        self.__movement_matrix = __movement_matrix
 
     # Visualize
     def _render_setup(self):

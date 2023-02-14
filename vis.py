@@ -24,7 +24,7 @@ def main():
         environment,
         creatures_path,
         True,
-        np.array(mv_matrice).reshape(4, 5),
+        mv_matrice,
     )
     sim.run()
 

@@ -30,13 +30,13 @@ class GeneticAlgorithm:
         self.num_parents_mating = num_parents_mating
         self.mutation_percent_genes = mutation_percent_genes
         self.num_joints = num_joints
-        self.num_steps = num_steps
+        self.num_steps = ChronoSimulation._GENOME_DISCRETE_INTERVALS
 
         self.ga = pygad_.GA(
             num_parents_mating=self.num_parents_mating,
             num_generations=self.num_generations,
             sol_per_pop=self.population_size,
-            num_genes=num_joints * num_steps,
+            num_genes=self.num_joints * self.num_steps,
             mutation_percent_genes=self.mutation_percent_genes,
             fitness_func=self.fitness_function,
         )
@@ -54,7 +54,6 @@ class GeneticAlgorithm:
         """
         logger.info("Starting simulation {}", solution_idx)
         logger.debug("Creature genome: {}", individual)
-        movement_matrix = np.array(individual).reshape(4, 5)
         # Simulate the movement of the quadruped based on the movement matrix
         # and the sensor data
 
@@ -67,7 +66,7 @@ class GeneticAlgorithm:
             environment,
             creatures_path,
             False,
-            movement_matrix,
+            individual,
         )
         # simulation.add_creature(creature_name="bipede")
         fitness = simulation.run()

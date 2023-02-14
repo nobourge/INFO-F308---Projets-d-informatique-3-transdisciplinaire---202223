@@ -34,6 +34,7 @@ class Quadrupede:
     _collision_family = 2
     _trunk_dimensions = (1.0, 0.5, 0.5)
     _legs_dimensions = (0.3, 0.7, 0.15)
+    _nb_joints = 4
 
     def __init__(self, pos: tuple, movement_matrix) -> None:
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
