@@ -1,7 +1,6 @@
 import pickle
 import sys
 
-import numpy as np
 import pygad as pygad_
 
 from utils._logging import logger
@@ -23,7 +22,6 @@ class GeneticAlgorithm:
         num_parents_mating,
         mutation_percent_genes,
         num_joints,
-        num_steps,
     ):
         self.population_size = population_size
         self.num_generations = num_generations
