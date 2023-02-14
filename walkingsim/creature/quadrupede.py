@@ -34,8 +34,6 @@ class Quadrupede:
     _collision_family = 2
     _trunk_dimensions = (1.0, 0.5, 0.5)
     _legs_dimensions = (0.3, 0.7, 0.15)
-    # _upper_leg_dimension = (0.3, 0.7, 0.15)
-    # _lower_leg_dimension = (0.3, 0.7, 0.15)
 
     def __init__(self, pos: tuple, movement_matrix) -> None:
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
@@ -52,9 +50,6 @@ class Quadrupede:
 
         self._create_trunk()
         self._create_legs()
-        # XXX debug purposes
-        # TODO: Remove following line, replaced by set_forces
-        # self.apply_forces()
 
     def set_forces(self, forces: list):
         if len(forces) < len(self.__joints):
@@ -80,9 +75,6 @@ class Quadrupede:
         trunk_part.SetPos(self.__pos)
         self.__bodies.append(trunk_part)
 
-        # XXX: For debug purposes
-        #  trunk_part.SetBodyFixed(True)
-
     def _create_legs(self):
         x_trunk = self.__pos.x
         x_back_legs = x_trunk - 0.8 * (self._trunk_dimensions[0] / 2)
@@ -101,7 +93,6 @@ class Quadrupede:
         self._create_single_leg(x_back_legs, y_legs, z_right_legs)
 
     def _create_single_leg(self, *pos):
-        # leg_part = self._create_bone(self._upper_legs_dimensions)
         leg_part = self._create_bone(self._legs_dimensions)
         leg_part.GetCollisionModel().SetFamily(self._collision_family)
         leg_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
