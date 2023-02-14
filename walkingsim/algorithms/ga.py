@@ -1,4 +1,3 @@
-
 import pickle
 import sys
 
@@ -14,40 +13,6 @@ from walkingsim.simulation import ChronoSimulation
 
 logger.debug("Starting genetic_algorithm.py")
 sys.stdout = AutoIndent(sys.stdout)
-
-
-def fitness_function(individual, solution_idx):
-    """
-    Calculate the fitness of an individual based on the sensor data
-        and the matrix of movements represented by the individual
-
-    ValueError: The fitness function must accept 2 parameters:
-        1) A solution to calculate its fitness value.
-        2) The solution's index within the population.
-
-    """
-    logger.info("Starting simulation {}", solution_idx)
-    logger.debug("Creature genome: {}", individual)
-    movement_matrix = np.array(individual).reshape(4, 5)
-    # Simulate the movement of the quadruped based on the movement matrix
-    # and the sensor data
-
-    environment = "default"
-    environments_path = "./environments"
-    creatures_path = "./creatures"
-
-    simulation = ChronoSimulation(
-        environments_path,
-        environment,
-        creatures_path,
-        False,
-        movement_matrix,
-    )
-    # simulation.add_creature(creature_name="bipede")
-    fitness = simulation.run()
-    logger.info("Simulation {} ended", solution_idx)
-    logger.debug("Creature fitness: {}", fitness)
-    return fitness
 
 
 class GeneticAlgorithm:
@@ -73,8 +38,42 @@ class GeneticAlgorithm:
             sol_per_pop=self.population_size,
             num_genes=num_joints * num_steps,
             mutation_percent_genes=self.mutation_percent_genes,
-            fitness_func=fitness_function,
+            fitness_func=self.fitness_function,
         )
+
+    @staticmethod
+    def fitness_function(individual, solution_idx):
+        """
+        Calculate the fitness of an individual based on the sensor data
+            and the matrix of movements represented by the individual
+
+        ValueError: The fitness function must accept 2 parameters:
+            1) A solution to calculate its fitness value.
+            2) The solution's index within the population.
+
+        """
+        logger.info("Starting simulation {}", solution_idx)
+        logger.debug("Creature genome: {}", individual)
+        movement_matrix = np.array(individual).reshape(4, 5)
+        # Simulate the movement of the quadruped based on the movement matrix
+        # and the sensor data
+
+        environment = "default"
+        environments_path = "./environments"
+        creatures_path = "./creatures"
+
+        simulation = ChronoSimulation(
+            environments_path,
+            environment,
+            creatures_path,
+            False,
+            movement_matrix,
+        )
+        # simulation.add_creature(creature_name="bipede")
+        fitness = simulation.run()
+        logger.info("Simulation {} ended", solution_idx)
+        logger.debug("Creature fitness: {}", fitness)
+        return fitness
 
     def save_sol(self, best_sol):
         with open("solution.dat", "wb") as fp:
