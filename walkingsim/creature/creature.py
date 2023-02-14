@@ -1,39 +1,36 @@
 """
 3D PyChrono muscle-based walking simulator
-File: quadrupede.py
+File: creature.py
 Authors:
     BECKER Robin-Gilles
     BOURGEOIS Noé
     HENRY DE FRAHAN Antoine
     PALMISANO Luca
 Description:
-    Class for basic quadruped creature.
+    Class for basic bipede creature.
 """
 
-
-import walkingsim.utils as utils
 
 import pychrono as chrono
 
 
-class Quadrupede:
+class CreatureSuperClass:
     """
-    Class for a basic quadrupede.
+        Class for a basic quadrupede.
 
-    Class attributes:
-        collision_family
-        trunk_dimensions
-        legs_dimensions
+        Class attributes:
+            collision_family
+            trunk_dimensions
+            legs_dimensions
 
-    Attributes:
-        joints
-        bodies
-        sensor_data
+        Attributes:
+            joints
+            bodies
+            sensor_data
     """
     _collision_family = 2
     _trunk_dimensions = (1.0, 0.5, 0.5)
     _legs_dimensions = (0.3, 0.7, 0.15)
-    _nb_joints = 4
 
     def __init__(self, pos: tuple, movement_matrix) -> None:
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
@@ -42,29 +39,22 @@ class Quadrupede:
         self.__bodies = []
         self.__joints = []
         self.__sensor_data = []
-        self.__joints_forces = []
         self.__movement_matrix = movement_matrix
-        self.__x_distance_target = 100
-
-        self.__movement_matrix = movement_matrix
-
         self._create_trunk()
         self._create_legs()
 
-    def set_forces(self, forces: list):
-        if len(forces) < len(self.__joints):
-            raise RuntimeError("Forces for joints are not enough")
 
-        # Store the forces for later use
-        self.__joints_forces = forces
-
-        # NOTE: Important to store the function otherwise they are destroyed
-        # when function is terminated, so chrono cannot access them anymore
-        self.__joints_funcs = []
-
+    def _apply_forces(self):
         for i, joint in enumerate(self.__joints):
-            self.__joints_funcs.append(utils.CustomTorqueFunction(forces[i]))
-            joint.SetTorqueFunction(self.__joints_funcs[i])
+            mod = 1 if i % 2 == 0 else -1
+            sin_torque = chrono.ChFunction_Sine(
+                0, 1, mod * 90  # phase [rad]  # frequency [Hz]
+            )  # amplitude [Nm]
+            joint.SetTorqueFunction(sin_torque)
+
+    def _movement_matrix_apply_forces(self):
+        for i, joint in enumerate(self.__joints):
+            joint.SetTorqueFunction(self.__movement_matrix[i])
 
     def _create_trunk(self):
         trunk_part = self._create_bone(self._trunk_dimensions)
@@ -78,7 +68,6 @@ class Quadrupede:
     def _create_legs(self):
         x_trunk = self.__pos.x
         x_back_legs = x_trunk - 0.8 * (self._trunk_dimensions[0] / 2)
-        x_front_legs = x_trunk + 0.8 * (self._trunk_dimensions[0] / 2)
 
         y_trunk = self.__pos.y
         y_legs = y_trunk - 1.8 * (self._trunk_dimensions[1] / 2)
@@ -87,8 +76,6 @@ class Quadrupede:
         z_left_legs = z_trunk + (self._trunk_dimensions[2] / 2)
         z_right_legs = z_trunk - (self._trunk_dimensions[2] / 2)
 
-        self._create_single_leg(x_front_legs, y_legs, z_left_legs)
-        self._create_single_leg(x_front_legs, y_legs, z_right_legs)
         self._create_single_leg(x_back_legs, y_legs, z_left_legs)
         self._create_single_leg(x_back_legs, y_legs, z_right_legs)
 
@@ -128,33 +115,36 @@ class Quadrupede:
         for joint in self.__joints:
             __env.Add(joint)
 
-    def capture_sensor_data(self):
-        # We capture the information from basic sensors (position, rotation, etc.)
-        pos = self.__bodies[0].GetPos()
-        self.__sensor_data.append({"position": (pos.x, pos.y, pos.z)})
-
-        # We compute additional information (distance, total distance, etc.)
-        step_distance = 0
-        total_distance = 0
-        if len(self.__sensor_data) > 1:
-            step_distance = utils.distance(
-                self.__sensor_data[-1]["position"],
-                self.__sensor_data[0]["position"],
-            )
-
-            # FIXME: Total distance is not calculated correctly
-            for i, data in enumerate(self.__sensor_data[1:]):
-                prev_pos = self.__sensor_data[i]
-                distance_from_prev_pos = utils.distance(
-                    data["position"], prev_pos["position"]
-                )
-                total_distance += distance_from_prev_pos
-
-        # We update the last sensor data added with those additional information
-        self.__sensor_data[-1].update(
-            {"distance": step_distance, "total_distance": total_distance}
-        )
-
-    @property
-    def sensor_data(self):
-        return self.__sensor_data
+    #  def capture_sensor_data(self):
+    #      # We capture the information from basic sensors (position, rotation, etc.)
+    #      pos = self.__bodies[0].GetPos()
+    #      self.__sensor_data.append({"position": (pos.x, pos.y, pos.z)})
+    #
+    #      # We compute additional information (distance, total distance, etc.)
+    #      distance = 0
+    #      total_distance = 0
+    #      if len(self.__sensor_data) > 1:
+    #          distance = _distance(
+    #              self.__sensor_data[-1]["position"],
+    #              self.__sensor_data[0]["position"],
+    #          )
+    #          total_distance = functools.reduce(
+    #              lambda prev, curr: (
+    #                  prev[0]
+    #                  if prev[1] is None
+    #                  else prev[0]
+    #                  + _distance(curr["position"], prev[1]["position"]),
+    #                  curr,
+    #              ),
+    #              self.__sensor_data,
+    #              (0, None),
+    #          )[0]
+    #
+    #      # We update the last sensor data added with those additional information
+    #      self.__sensor_data[-1].update(
+    #          {"distance": distance, "total_distance": total_distance}
+    #      )
+    #
+    #  @property
+    #  def sensor_data(self):
+    #      return self.__sensor_data

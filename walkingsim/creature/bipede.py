@@ -13,8 +13,6 @@ Description:
 
 import pychrono as chrono
 
-# files in which the bipede is imported:
-
 
 class Bipede:
     _collision_family = 2
