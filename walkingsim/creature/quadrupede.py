@@ -10,14 +10,11 @@ Description:
     Class for basic quadruped creature.
 """
 
-import functools
 from copy import deepcopy
 
 import pychrono as chrono
 
 import walkingsim.utils as utils
-
-# files in which the Quadrupede is imported:
 
 
 class CustomTorqueFunction(chrono.ChFunction):
