@@ -1,6 +1,3 @@
-import sys
-
-import walkingsim.ground as ground
 from walkingsim.algorithms.ga import GeneticAlgorithm
 from walkingsim.simulation import ChronoSimulation
 
@@ -55,8 +52,8 @@ if __name__ == "__main__":
     # main()
 
     GA = GeneticAlgorithm(
-        population_size=100,
-        num_generations=100,
+        population_size=10,
+        num_generations=10,
         num_parents_mating=10,
         fitness_func=None,
         num_genes=10,
