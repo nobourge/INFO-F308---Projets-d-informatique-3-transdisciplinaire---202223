@@ -45,6 +45,13 @@ class CreatureSuperClass:
 
         self._create_trunk()
         self._create_legs()
+    @property
+    def pos(self):
+        return self.__pos
+
+    @property
+    def trunk_dim(self):
+        return self._trunk_dimensions
 
     def set_forces(self, forces:list):
         if len(forces) < len(self.__joints):

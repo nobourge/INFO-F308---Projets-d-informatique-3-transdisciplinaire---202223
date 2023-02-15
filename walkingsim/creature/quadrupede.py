@@ -27,19 +27,19 @@ class Quadrupede(Creature):
         sensor_data
     """
     def __init__(self, pos: tuple) -> None:
-        super().__init__(self, pos)
+        super().__init__(pos)
 
     def _create_legs(self):
-        x_trunk = self.__pos.x
-        x_back_legs = x_trunk - 0.8 * (self._trunk_dimensions[0] / 2)
-        x_front_legs = x_trunk + 0.8 * (self._trunk_dimensions[0] / 2)
+        x_trunk = self.pos.x
+        x_back_legs = x_trunk - 0.8 * (self.trunk_dim[0] / 2)
+        x_front_legs = x_trunk + 0.8 * (self.trunk_dim[0] / 2)
 
-        y_trunk = self.__pos.y
-        y_legs = y_trunk - 1.8 * (self._trunk_dimensions[1] / 2)
+        y_trunk = self.pos.y
+        y_legs = y_trunk - 1.8 * (self.trunk_dim[1] / 2)
 
-        z_trunk = self.__pos.z
-        z_left_legs = z_trunk + (self._trunk_dimensions[2] / 2)
-        z_right_legs = z_trunk - (self._trunk_dimensions[2] / 2)
+        z_trunk = self.pos.z
+        z_left_legs = z_trunk + (self.trunk_dim[2] / 2)
+        z_right_legs = z_trunk - (self.trunk_dim[2] / 2)
 
         self._create_single_leg(x_front_legs, y_legs, z_left_legs)
         self._create_single_leg(x_front_legs, y_legs, z_right_legs)
