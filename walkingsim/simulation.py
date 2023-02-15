@@ -49,6 +49,7 @@ class Simulation(abc.ABC):
         self.__creature = None
         self.__genome = None
         self.add_creature("")
+        self.__total_reward = 0
 
     def add_creature(self, creature_name: str, genome: dict = None):
         #FIXME: This function can be removed and done in the __init__ method
@@ -64,6 +65,13 @@ class Simulation(abc.ABC):
         self.__creature = new_creature
         self.__genome = genome
         logger.debug(f"Creature '{new_creature}' added to the simulation")
+
+    @property
+    def total_reward(self):
+        return self.__total_reward
+
+    def set_total_reward(self, value):
+        self.__total_reward = value
 
     @property
     def environment(self):
@@ -188,7 +196,7 @@ class ChronoSimulation(Simulation):
         # 3) Compute reward and add it to total reward/fitness
         # 4) Do timestep in environment
         self.creature.capture_sensor_data()
-        self.__total_reward += self._compute_step_reward()
+        self.set_total_reward(self.total_reward + self._compute_step_reward())
         self.environment.DoStepDynamics(self._TIME_STEP)
 
     def is_over(self):
@@ -212,12 +220,11 @@ class ChronoSimulation(Simulation):
     def is_creature_fallen(self):
         # FIXME hacky. Is there a way to detect collision between shapes?
         try:
-            print(self.creature)
             trunk_y = self.creature.sensor_data[-1]["position"][1]
         except IndexError:
             trunk_y = 1
 
-        height_limit = self.creature._trunk_dimensions[2] / 2
+        height_limit = self.creature.trunk_dim[2] / 2
         return trunk_y < 1.2 * height_limit
 
     def run(self):
@@ -241,7 +248,7 @@ class ChronoSimulation(Simulation):
             self.__renderer.GetDevice().closeDevice()
 
         logger.info("Simulation is done")
-        return self.__total_reward
+        return self.total_reward
 
     @property
     def environment(self):
