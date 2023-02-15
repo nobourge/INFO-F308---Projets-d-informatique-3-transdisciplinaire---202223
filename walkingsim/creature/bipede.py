@@ -10,7 +10,7 @@ Description:
     Class for basic bipede creature.
 """
 
-import creature as Creature
+from walkingsim.creature.creature import CreatureSuperClass as Creature
 
 
 class Bipede(Creature):

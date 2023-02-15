@@ -10,7 +10,7 @@ Description:
     Class for basic quadruped creature.
 """
 
-import creature as Creature
+from walkingsim.creature.creature import CreatureSuperClass as Creature
 
 class Quadrupede(Creature):
     """
