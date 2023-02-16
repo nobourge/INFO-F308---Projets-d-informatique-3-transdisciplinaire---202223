@@ -11,8 +11,9 @@ Description:
 """
 
 
-import walkingsim.utils as utils
 import pychrono as chrono
+
+import walkingsim.utils as utils
 
 
 class CreatureSuperClass:
@@ -29,6 +30,7 @@ class CreatureSuperClass:
         bodies
         sensor_data
     """
+
     _collision_family = 2
     _trunk_dimensions = (1.0, 0.5, 0.5)
     _legs_dimensions = (0.3, 0.7, 0.15)
@@ -45,6 +47,7 @@ class CreatureSuperClass:
 
         self._create_trunk()
         self._create_legs()
+
     @property
     def pos(self):
         return self.__pos
@@ -53,7 +56,7 @@ class CreatureSuperClass:
     def trunk_dim(self):
         return self._trunk_dimensions
 
-    def set_forces(self, forces:list):
+    def set_forces(self, forces: list):
         if len(forces) < len(self.__joints):
             raise RuntimeError("Forces for joints are not enough")
 
@@ -71,7 +74,9 @@ class CreatureSuperClass:
     def _create_trunk(self):
         trunk_part = self._create_bone(self._trunk_dimensions)
         trunk_part.GetCollisionModel().SetFamily(self._collision_family)
-        trunk_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(self._collision_family)
+        trunk_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
+            self._collision_family
+        )
         trunk_part.SetPos(self.__pos)
         self.__bodies.append(trunk_part)
 
@@ -101,7 +106,9 @@ class CreatureSuperClass:
         #  bone_material.SetCompliance(0.0005)
         #  bone_material.SetComplianceT(0.0005)
 
-        bone = chrono.ChBodyEasyBox(size[0], size[1], size[2], 1000, True, True, bone_material)
+        bone = chrono.ChBodyEasyBox(
+            size[0], size[1], size[2], 1000, True, True, bone_material
+        )
         bone.SetBodyFixed(False)
         bone.GetVisualShape(0).SetColor(chrono.ChColor(0.5, 0.7, 0.5))
 

@@ -27,6 +27,7 @@ class Bipede(Creature):
         bodies
         sensor_data
     """
+
     # _upper_legs_dimensions = (0.3, 0.7, 0.15)
     # _lower_legs_dimensions = (0.3, 0.7, 0.15)
 

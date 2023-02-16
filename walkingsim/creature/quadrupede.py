@@ -12,6 +12,7 @@ Description:
 
 from walkingsim.creature.creature import CreatureSuperClass as Creature
 
+
 class Quadrupede(Creature):
     """
     Class for a basic quadrupede.
@@ -26,6 +27,7 @@ class Quadrupede(Creature):
         bodies
         sensor_data
     """
+
     def __init__(self, pos: tuple) -> None:
         super().__init__(pos)
 

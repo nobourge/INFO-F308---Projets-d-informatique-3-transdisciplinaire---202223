@@ -21,6 +21,7 @@ from walkingsim.creature.bipede import Bipede
 from walkingsim.creature.quadrupede import Quadrupede
 from walkingsim.environment import EnvironmentLoader
 
+
 class Simulation(abc.ABC):
     """Abstract class used to create simulations. This class is used by
     `ChronoSimulation`.
@@ -51,7 +52,7 @@ class Simulation(abc.ABC):
         self.__total_reward = 0
 
     def add_creature(self, creature_name: str, genome: dict = None):
-        #FIXME: This function can be removed and done in the __init__ method
+        # FIXME: This function can be removed and done in the __init__ method
         if self.__creature is not None:
             logger.error(
                 "Cannot add a new creature to the simulation, one already exists !"
@@ -96,6 +97,7 @@ class Simulation(abc.ABC):
     def run(self):
         raise NotImplementedError
 
+
 class ChronoSimulation(Simulation):
     """
     Simulation class for `chrono`.
@@ -135,7 +137,9 @@ class ChronoSimulation(Simulation):
         __visualize: bool = False,
         __movement_gene=None,
     ) -> None:
-        super().__init__("chrono", __env_datapath, __env, __creatures_datapath, __visualize)
+        super().__init__(
+            "chrono", __env_datapath, __env, __creatures_datapath, __visualize
+        )
         self.__renderer = None
         if self._visualize is True:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering

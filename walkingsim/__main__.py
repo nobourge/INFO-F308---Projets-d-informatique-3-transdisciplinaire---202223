@@ -22,7 +22,7 @@ def main():
         num_generations=100,
         num_parents_mating=2,
         mutation_percent_genes=10,
-        num_joints=4
+        num_joints=4,
     )
     GA.run()
 
