@@ -44,11 +44,10 @@ class Simulation(abc.ABC):
     ) -> None:
         self.__engine = __engine
         self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
+        self.__environment = self.__loader.load_environment(__env)
         self._visualize = __visualize
-        #self.__environment = self.__loader.load_environment(__env)
         self.__creature = None
         self.__genome = None
-        self.add_creature("")
         self.__total_reward = 0
 
     def add_creature(self, creature_name: str, genome: dict = None):
@@ -70,8 +69,13 @@ class Simulation(abc.ABC):
     def total_reward(self):
         return self.__total_reward
 
-    def set_total_reward(self, value):
+    @total_reward.setter
+    def total_reward(self, value):
         self.__total_reward = value
+
+    @property
+    def engine(self):
+        return self.__engine
 
     @property
     def environment(self):
@@ -131,15 +135,21 @@ class ChronoSimulation(Simulation):
         __visualize: bool = False,
         __movement_gene=None,
     ) -> None:
-        self.__engine = "chrono"
-        self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
-        self._visualize = __visualize
-        self.__environment = self.__loader.load_environment(__env)
+        super().__init__("chrono", __env_datapath, __env, __creatures_datapath, __visualize)
         self.__renderer = None
         if self._visualize is True:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
-        super().__init__(__env_datapath, __env, __creatures_datapath,"", __visualize)
+
+        # FIXME: Pass the creature name
+        self.add_creature("")
+
+        # Set forces on creature
+        # FIXME: Adapt based on creature
+        movement_matrix = np.array(__movement_gene).reshape(
+            4, self._GENOME_DISCRETE_INTERVALS
+        )
+        self.creature.set_forces(movement_matrix)
 
     # Visualize
     def _render_setup(self):
@@ -196,7 +206,7 @@ class ChronoSimulation(Simulation):
         # 3) Compute reward and add it to total reward/fitness
         # 4) Do timestep in environment
         self.creature.capture_sensor_data()
-        self.set_total_reward(self.total_reward + self._compute_step_reward())
+        self.total_reward += self._compute_step_reward()
         self.environment.DoStepDynamics(self._TIME_STEP)
 
     def is_over(self):
@@ -214,7 +224,7 @@ class ChronoSimulation(Simulation):
         return is_over
 
     def is_time_limit_reached(self):
-        current_sim_time = self.__environment.GetChTime()
+        current_sim_time = self.environment.GetChTime()
         return current_sim_time > self._SIM_DURATION_IN_SECS
 
     def is_creature_fallen(self):
@@ -249,11 +259,3 @@ class ChronoSimulation(Simulation):
 
         logger.info("Simulation is done")
         return self.total_reward
-
-    @property
-    def environment(self):
-        return self.__environment
-
-    @property
-    def creature(self):
-        return super().creature
