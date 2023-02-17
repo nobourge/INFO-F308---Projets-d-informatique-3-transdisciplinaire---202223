@@ -10,8 +10,8 @@ Description:
     Utility functions.
 """
 
-from copy import deepcopy
 import math
+from copy import deepcopy
 
 import pychrono as chrono
 
