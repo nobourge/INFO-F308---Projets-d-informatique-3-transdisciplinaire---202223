@@ -1,19 +1,13 @@
 import os
 import pickle
-import sys
 
 import pygad as pygad_
 
 from walkingsim.simulation import ChronoSimulation
-from walkingsim.utils.auto_indent import AutoIndent
-from walkingsim.utils.loguru_log import logger
+from walkingsim.utils import progress
+from loguru import logger
 
 # todo from creature.genotype import Genotype
-
-
-logger.debug("Starting genetic_algorithm.py")
-sys.stdout = AutoIndent(sys.stdout)
-
 
 class GeneticAlgorithm:
     def __init__(
@@ -38,8 +32,14 @@ class GeneticAlgorithm:
             num_genes=self.num_joints * self.num_steps,
             mutation_percent_genes=self.mutation_percent_genes,
             fitness_func=self.fitness_function,
-            parallel_processing=2,  # quantity of cores to use
+            on_generation=self._on_generation,
+            parallel_processing=4,  # quantity of cores to use
         )
+
+    @staticmethod
+    def _on_generation(ga_instance):
+        logger.info(f"Generation done ! {ga_instance.generations_completed}")
+        progress.update_bar(1)
 
     @staticmethod
     def fitness_function(individual, solution_idx):
@@ -52,8 +52,8 @@ class GeneticAlgorithm:
             2) The solution's index within the population.
 
         """
-        logger.debug("Starting simulation {}", solution_idx)
-        logger.debug("Creature genome: {}", individual)
+        logger.info("Simulation {}".format(solution_idx))
+        logger.debug("Creature genome: {}".format(individual))
         # Simulate the movement of the quadruped based on the movement matrix
         # and the sensor data
 
@@ -70,15 +70,14 @@ class GeneticAlgorithm:
         )
         # simulation.add_creature(creature_name="bipede")
         fitness = simulation.run()
-        logger.debug("Simulation {} ended", solution_idx)
-        logger.debug("Creature fitness: {}", fitness)
+        logger.debug("Creature fitness: {}".format(fitness))
         return fitness
 
     def save_sol(self, best_sol):
         with open("solution.dat", "wb") as fp:
             pickle.dump(best_sol, fp)
 
-        logger.success("Best genome was successfully written in solution.dat")
+        logger.info("Best genome was successfully written in solution.dat")
 
     def plot(self):
         self.ga.plot_fitness()
@@ -86,19 +85,20 @@ class GeneticAlgorithm:
         self.ga.plot_new_solution_rate()
 
     def run(self):
-        # Do not show loguru messages
-        os.environ["LOGURU_LEVEL"] = "ERROR"
-        self.ga.run()
-        best_solution, best_fitness, _ = self.ga.best_solution()
-        logger.info("Genetic Algorithm ended")
-        logger.info("Best genome: {}", best_solution)
-        # print the best solution
-        # for i in range(self.num_joints):
-        #     print("Joint {}:", i)
-        #     for j in range(self.num_steps):
-        #         print(
-        #             "Step", j,
-        #             ":", best_solution[i * self.num_steps + j],
-        #         )
-        logger.info("Best fitness: {}", best_fitness)
-        self.save_sol(best_solution)
+        with progress.progress_bar(total=self.num_generations, position=1) as pb:
+            # Do not show loguru messages
+            os.environ["LOGURU_LEVEL"] = "ERROR"
+            self.ga.run()
+            best_solution, best_fitness, _ = self.ga.best_solution()
+            logger.info("Genetic Algorithm ended")
+            logger.info("Best genome: {}".format(best_solution))
+            # print the best solution
+            # for i in range(self.num_joints):
+            #     print("Joint {}:", i)
+            #     for j in range(self.num_steps):
+            #         print(
+            #             "Step", j,
+            #             ":", best_solution[i * self.num_steps + j],
+            #         )
+            logger.info("Best fitness: {}".format(best_fitness))
+            self.save_sol(best_solution)
