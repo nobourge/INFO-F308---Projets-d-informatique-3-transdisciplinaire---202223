@@ -2,12 +2,13 @@ import os
 import pickle
 
 import pygad as pygad_
+from loguru import logger
 
 from walkingsim.simulation import ChronoSimulation
 from walkingsim.utils import progress
-from loguru import logger
 
 # todo from creature.genotype import Genotype
+
 
 class GeneticAlgorithm:
     def __init__(
@@ -85,7 +86,9 @@ class GeneticAlgorithm:
         self.ga.plot_new_solution_rate()
 
     def run(self):
-        with progress.progress_bar(total=self.num_generations, position=1) as pb:
+        with progress.progress_bar(
+            total=self.num_generations, position=1
+        ) as pb:
             # Do not show loguru messages
             os.environ["LOGURU_LEVEL"] = "ERROR"
             self.ga.run()

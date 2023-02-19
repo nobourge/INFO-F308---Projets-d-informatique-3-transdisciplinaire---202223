@@ -15,10 +15,11 @@ import abc
 import numpy as np
 import pychrono as chrono
 import pychrono.irrlicht as chronoirr
+from loguru import logger
 
 from walkingsim.creature.quadrupede import Quadrupede
 from walkingsim.environment import EnvironmentLoader
-from loguru import logger
+
 
 class Simulation(abc.ABC):
     """Abstract class used to create simulations. This class is used by

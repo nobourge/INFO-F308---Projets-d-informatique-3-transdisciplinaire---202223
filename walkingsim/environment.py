@@ -13,8 +13,9 @@ import json
 import os
 
 import pychrono.core as chrono
-import walkingsim.ground as ground
 from loguru import logger
+
+import walkingsim.ground as ground
 
 
 class EnvironmentLoader:
