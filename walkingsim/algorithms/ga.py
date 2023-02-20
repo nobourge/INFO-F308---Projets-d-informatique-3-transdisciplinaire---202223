@@ -34,13 +34,35 @@ class GeneticAlgorithm:
             mutation_percent_genes=self.mutation_percent_genes,
             fitness_func=self.fitness_function,
             on_generation=self._on_generation,
-            parallel_processing=4,  # quantity of cores to use
+            on_start=self._on_start,
+            on_mutation=self._on_mutation,
+            on_stop=self._on_stop,
+            parallel_processing=10,  # quantity of cores to use
+        )
+
+    @staticmethod
+    def _on_start(ga_instance):
+        progress.create_pb(
+            "simulations",
+            total=ga_instance.sol_per_pop,
+            desc="Simulations",
+            leave=False,
+        )
+
+    @staticmethod
+    def _on_mutation(ga_instance, offspring_mutation):
+        progress.reset_pb("simulations", ga_instance.sol_per_pop)
+        progress.set_pb_desc(
+            "simulations", f"Simulations {ga_instance.generations_completed}"
         )
 
     @staticmethod
     def _on_generation(ga_instance):
-        logger.info(f"Generation done ! {ga_instance.generations_completed}")
-        progress.update_bar(1)
+        progress.update_pb("generations", 1)
+
+    @staticmethod
+    def _on_stop(ga_instance, last_population_fitness):
+        progress.close_pb("simulations")
 
     @staticmethod
     def fitness_function(individual, solution_idx):
@@ -72,6 +94,8 @@ class GeneticAlgorithm:
         # simulation.add_creature(creature_name="bipede")
         fitness = simulation.run()
         logger.debug("Creature fitness: {}".format(fitness))
+        progress.update_pb("simulations", 1)
+        progress.refresh_pb("generations")
         return fitness
 
     def save_sol(self, best_sol):
@@ -86,22 +110,28 @@ class GeneticAlgorithm:
         self.ga.plot_new_solution_rate()
 
     def run(self):
-        with progress.progress_bar(
-            total=self.num_generations, position=1
-        ) as pb:
-            # Do not show loguru messages
-            os.environ["LOGURU_LEVEL"] = "ERROR"
-            self.ga.run()
-            best_solution, best_fitness, _ = self.ga.best_solution()
-            logger.info("Genetic Algorithm ended")
-            logger.info("Best genome: {}".format(best_solution))
-            # print the best solution
-            # for i in range(self.num_joints):
-            #     print("Joint {}:", i)
-            #     for j in range(self.num_steps):
-            #         print(
-            #             "Step", j,
-            #             ":", best_solution[i * self.num_steps + j],
-            #         )
-            logger.info("Best fitness: {}".format(best_fitness))
-            self.save_sol(best_solution)
+        progress.create_pb(
+            "generations",
+            total=self.num_generations,
+            desc="Generations",
+            leave=False,
+        )
+
+        # Do not show loguru messages
+        os.environ["LOGURU_LEVEL"] = "ERROR"
+        self.ga.run()
+        best_solution, best_fitness, _ = self.ga.best_solution()
+        logger.info("Genetic Algorithm ended")
+        logger.info("Best genome: {}".format(best_solution))
+        # print the best solution
+        # for i in range(self.num_joints):
+        #     print("Joint {}:", i)
+        #     for j in range(self.num_steps):
+        #         print(
+        #             "Step", j,
+        #             ":", best_solution[i * self.num_steps + j],
+        #         )
+        logger.info("Best fitness: {}".format(best_fitness))
+        self.save_sol(best_solution)
+
+        progress.close_all_pb()
