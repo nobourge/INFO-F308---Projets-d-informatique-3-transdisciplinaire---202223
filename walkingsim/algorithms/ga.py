@@ -45,7 +45,7 @@ class GeneticAlgorithm:
         progress.create_pb(
             "simulations",
             total=ga_instance.sol_per_pop,
-            desc="Simulations",
+            desc="Generation X",
             leave=False,
         )
 
@@ -53,7 +53,7 @@ class GeneticAlgorithm:
     def _on_mutation(ga_instance, offspring_mutation):
         progress.reset_pb("simulations", ga_instance.sol_per_pop)
         progress.set_pb_desc(
-            "simulations", f"Simulations {ga_instance.generations_completed}"
+            "simulations", f"Generation {ga_instance.generations_completed}"
         )
 
     @staticmethod
@@ -75,7 +75,7 @@ class GeneticAlgorithm:
             2) The solution's index within the population.
 
         """
-        logger.info("Simulation {}".format(solution_idx))
+        logger.debug("Simulation {}".format(solution_idx))
         logger.debug("Creature genome: {}".format(individual))
         # Simulate the movement of the quadruped based on the movement matrix
         # and the sensor data
@@ -117,8 +117,6 @@ class GeneticAlgorithm:
             leave=False,
         )
 
-        # Do not show loguru messages
-        os.environ["LOGURU_LEVEL"] = "ERROR"
         self.ga.run()
         best_solution, best_fitness, _ = self.ga.best_solution()
         logger.info("Genetic Algorithm ended")
