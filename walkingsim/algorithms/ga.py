@@ -84,7 +84,11 @@ class GeneticAlgorithm:
     def save_sol(self, best_sol, best_fitness):
         # read the previous best fitness from file fitness.dat
         with open("fitness.dat", "rb") as fp:
-            previous_best_fitness = pickle.load(fp)
+            if os.path.getsize("fitness.dat") > 0:
+                previous_best_fitness = pickle.load(fp)
+            else:
+                previous_best_fitness = 0
+
         logger.debug("Previous best fitness: {}", previous_best_fitness)
         if previous_best_fitness < best_fitness:
             with open("solution.dat", "wb") as fp:
