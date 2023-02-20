@@ -5,9 +5,9 @@ import multiprocessing
 
 import pygad as pygad_
 
-from walkingsim.utils.loguru_log import logger
-from walkingsim.utils.auto_indent import AutoIndent
 from walkingsim.simulation import ChronoSimulation
+from walkingsim.utils.auto_indent import AutoIndent
+from walkingsim.utils.loguru_log import logger
 
 # todo from creature.genotype import Genotype
 
@@ -18,12 +18,12 @@ sys.stdout = AutoIndent(sys.stdout)
 
 class GeneticAlgorithm:
     def __init__(
-            self,
-            population_size,
-            num_generations,
-            num_parents_mating,
-            mutation_percent_genes,
-            num_joints,
+        self,
+        population_size,
+        num_generations,
+        num_parents_mating,
+        mutation_percent_genes,
+        num_joints,
     ):
         self.population_size = population_size
         self.num_generations = num_generations
