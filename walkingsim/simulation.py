@@ -17,9 +17,9 @@ import pychrono as chrono
 import pychrono.irrlicht as chronoirr
 from loguru import logger
 
+from walkingsim.creature.bipede import Bipede
 from walkingsim.creature.quadrupede import Quadrupede
 from walkingsim.environment import EnvironmentLoader
-
 
 class Simulation(abc.ABC):
     """Abstract class used to create simulations. This class is used by
@@ -47,22 +47,17 @@ class Simulation(abc.ABC):
         self.__environment = self.__loader.load_environment(__env)
         self._visualize = __visualize
         self.__creature = None
-        self.__genome = None
         self.__total_reward = 0
 
-    def add_creature(self, creature_name: str, genome: dict = None):
-        # FIXME: This function can be removed and done in the __init__ method
         if self.__creature is not None:
             logger.error(
                 "Cannot add a new creature to the simulation, one already exists !"
             )
             raise RuntimeError("Creature already exists in simulation")
 
-        # FIXME: Pass the genome when creating the creature
         new_creature = Quadrupede((0, 1.9, 0))
         new_creature.add_to_env(self.environment)
         self.__creature = new_creature
-        self.__genome = genome
         logger.debug(f"Creature '{new_creature}' added to the simulation")
 
     @property
@@ -89,13 +84,8 @@ class Simulation(abc.ABC):
     def creature(self):
         return self.__creature
 
-    @property
-    def genome(self):
-        return self.__genome
-
     def run(self):
         raise NotImplementedError
-
 
 class ChronoSimulation(Simulation):
     """
@@ -144,13 +134,13 @@ class ChronoSimulation(Simulation):
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
 
-        # FIXME: Pass the creature name
-        self.add_creature("")
+        """# FIXME: Pass the creature name
+        self.add_creature("")"""
 
         # Set forces on creature
-        # FIXME: Adapt based on creature
+        nbr = self.creature.joints_nbr()
         movement_matrix = np.array(__movement_gene).reshape(
-            4, self._GENOME_DISCRETE_INTERVALS
+            nbr, self._GENOME_DISCRETE_INTERVALS
         )
         self.creature.set_forces(movement_matrix)
 
@@ -189,7 +179,6 @@ class ChronoSimulation(Simulation):
             # The speed is how much distance the creature did in one step
             # If the creature went backwards, the speed is negative
             # this has a negative impact on the fitness value
-            # FIXME: Should we keep the distance positive (absolute value) ?
             if len(sensor_data) >= 2:
                 speed = (
                     sensor_data[-1]["distance"] - sensor_data[-2]["distance"]
