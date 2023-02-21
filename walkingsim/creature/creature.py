@@ -47,6 +47,16 @@ class CreatureSuperClass:
 
         self._create_trunk()
         self._create_legs()
+    @property
+    def pos(self):
+        return self.__pos
+
+    def joints_nbr(self) -> int:
+        return len(self.__joints)
+
+    @property
+    def trunk_dim(self):
+        return self._trunk_dimensions
 
     @property
     def pos(self):
@@ -68,6 +78,7 @@ class CreatureSuperClass:
         self.__joints_funcs = []
 
         for i, joint in enumerate(self.__joints):
+            #print(forces[i])
             self.__joints_funcs.append(utils.CustomTorqueFunction(forces[i]))
             joint.SetTorqueFunction(self.__joints_funcs[i])
 
