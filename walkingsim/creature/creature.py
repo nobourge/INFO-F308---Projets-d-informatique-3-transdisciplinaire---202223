@@ -106,7 +106,7 @@ class CreatureSuperClass:
 
         # TODO: Add constraints on the joints
         joint = chrono.ChLinkMotorRotationTorque()
-        joint_frame = chrono.ChFrameD(chrono.ChVectorD(x,y+1,z))
+        joint_frame = chrono.ChFrameD(chrono.ChVectorD(x,y+0.225,z))
         joint.Initialize(self.__bodies[0], leg_part, joint_frame)
         self.__joints.append(joint)
 
