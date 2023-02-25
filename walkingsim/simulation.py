@@ -142,7 +142,7 @@ class ChronoSimulation(Simulation):
         movement_matrix = np.array(__movement_gene).reshape(
             nbr, self._GENOME_DISCRETE_INTERVALS
         )
-        self.creature.set_forces(movement_matrix)
+        self.creature.set_forces(movement_matrix, self._TIME_STEP)
 
     # Visualize
     def _render_setup(self):

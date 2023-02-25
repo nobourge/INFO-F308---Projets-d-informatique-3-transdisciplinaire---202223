@@ -66,7 +66,7 @@ class CreatureSuperClass:
     def trunk_dim(self):
         return self._trunk_dimensions
 
-    def set_forces(self, forces: list):
+    def set_forces(self, forces: list, timestep: float):
         if len(forces) < len(self.__joints):
             raise RuntimeError("Forces for joints are not enough")
 
@@ -79,7 +79,7 @@ class CreatureSuperClass:
 
         for i, joint in enumerate(self.__joints):
             #print(forces[i])
-            self.__joints_funcs.append(utils.CustomTorqueFunction(forces[i]))
+            self.__joints_funcs.append(utils.ChCustomTorqueFunction(timestep, forces[i]))
             joint.SetTorqueFunction(self.__joints_funcs[i])
 
     def _create_trunk(self):
