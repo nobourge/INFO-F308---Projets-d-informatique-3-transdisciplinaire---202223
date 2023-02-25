@@ -40,8 +40,7 @@ class GeneticAlgorithm:
             parallel_processing=10,  # quantity of cores to use
         )
 
-    @staticmethod
-    def _on_start(ga_instance):
+    def _on_start(self, ga_instance):
         progress.create_pb(
             "simulations",
             total=ga_instance.sol_per_pop,
@@ -49,23 +48,19 @@ class GeneticAlgorithm:
             leave=False,
         )
 
-    @staticmethod
-    def _on_mutation(ga_instance, offspring_mutation):
+    def _on_mutation(self, ga_instance, offspring_mutation):
         progress.reset_pb("simulations", ga_instance.sol_per_pop)
         progress.set_pb_desc(
             "simulations", f"Generation {ga_instance.generations_completed}"
         )
 
-    @staticmethod
-    def _on_generation(ga_instance):
+    def _on_generation(self, ga_instance):
         progress.update_pb("generations", 1)
 
-    @staticmethod
-    def _on_stop(ga_instance, last_population_fitness):
+    def _on_stop(self, ga_instance, last_population_fitness):
         progress.close_pb("simulations")
 
-    @staticmethod
-    def fitness_function(individual, solution_idx):
+    def fitness_function(self, individual, solution_idx):
         """
         Calculate the fitness of an individual based on the sensor data
             and the matrix of movements represented by the individual
