@@ -180,6 +180,8 @@ class ChronoSimulation(Simulation):
         # The distance is simply the actual distance
         # from the start point to the current position
         distance = curr_state["distance"]
+        if sensor_data[-1]["position"][0] < sensor_data[0]["position"][0]:
+            distance *= -1
 
         # The walk straight reward is a value that tells
         # if the creature is walking straight or not. If the
