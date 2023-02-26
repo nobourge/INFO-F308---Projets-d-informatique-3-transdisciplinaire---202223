@@ -1,11 +1,12 @@
 import os
 import pickle
-import tqdm
 
 import pygad as pygad_
+import tqdm
 from loguru import logger
 
 from walkingsim.simulation import ChronoSimulation
+
 # todo from creature.genotype import Genotype
 
 
@@ -51,7 +52,9 @@ class GeneticAlgorithm:
 
     def _on_mutation(self, ga_instance, offspring_mutation):
         self.progress_sims.reset(ga_instance.sol_per_pop)
-        self.progress_sims.set_description(f"Generation {ga_instance.generations_completed}")
+        self.progress_sims.set_description(
+            f"Generation {ga_instance.generations_completed}"
+        )
 
     def _on_generation(self, ga_instance):
         self.progress_gens.update(1)
