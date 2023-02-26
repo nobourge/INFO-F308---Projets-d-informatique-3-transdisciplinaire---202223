@@ -151,6 +151,6 @@ class GeneticAlgorithm:
         #             ":", best_solution[i * self.num_steps + j],
         #         )
         logger.info("Best fitness: {}".format(best_fitness))
-        self.save_sol(best_solution)
+        self.save_sol(best_solution, best_fitness)
 
         progress.close_all_pb()
