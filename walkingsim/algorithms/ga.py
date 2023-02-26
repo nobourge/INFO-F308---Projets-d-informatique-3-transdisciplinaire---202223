@@ -37,7 +37,10 @@ class GeneticAlgorithm:
             on_mutation=self._on_mutation,
             on_stop=self._on_stop,
             parallel_processing=["thread", 10],  # quantity of cores to use
-            init_range_low=0,
+            init_range_low=-1000,
+            init_range_high=1000,
+            random_mutation_min_val=-1000,
+            random_mutation_max_val=1000,
             parent_selection_type = "tournament",
             keep_elitism=10,
             crossover_type="uniform",

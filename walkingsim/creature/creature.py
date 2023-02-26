@@ -10,7 +10,7 @@ Description:
     Class for basic bipede creature.
 """
 
-
+import math
 import pychrono as chrono
 
 import walkingsim.utils.utils as utils
@@ -44,6 +44,7 @@ class CreatureSuperClass:
         self.__sensor_data = []
         self.__joints_forces = []
         self.__joints_funcs = []
+        self.__links = []
 
         self._create_trunk()
         self._create_legs()
@@ -108,7 +109,15 @@ class CreatureSuperClass:
         joint = chrono.ChLinkMotorRotationTorque()
         joint_frame = chrono.ChFrameD(chrono.ChVectorD(x,y+0.225,z))
         joint.Initialize(self.__bodies[0], leg_part, joint_frame)
+
+        constraint_link = chrono.ChLinkLockRevolute()
+        constraint_link.GetLimit_Rz().SetActive(True)
+        constraint_link.GetLimit_Rz().SetMin(-math.pi/3)
+        constraint_link.GetLimit_Rz().SetMax(math.pi/3)
+        constraint_link.Initialize(self.__bodies[0], leg_part, chrono.ChCoordsysD(chrono.ChVectorD(x,y+0.225,z), chrono.QUNIT))
+
         self.__joints.append(joint)
+        self.__links.append(constraint_link)
 
     def _create_bone(self, size: tuple):
         bone_material = chrono.ChMaterialSurfaceNSC()
@@ -130,6 +139,8 @@ class CreatureSuperClass:
             __env.Add(body)
         for joint in self.__joints:
             __env.Add(joint)
+        for link in self.__links:
+            __env.AddLink(link)
 
     def capture_sensor_data(self):
         # We capture the information from basic sensors (position, rotation, etc.)
