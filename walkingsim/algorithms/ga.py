@@ -126,9 +126,6 @@ class GeneticAlgorithm:
         self.ga.plot_new_solution_rate()
 
     def run(self):
-        # Do not show loguru messages above error level
-        os.environ["LOGURU_LEVEL"] = "ERROR"
-  
         self.ga.run()
         best_solution, best_fitness, _ = self.ga.best_solution()
         logger.info("Genetic Algorithm ended")
