@@ -16,14 +16,41 @@ from walkingsim.algorithms.ga import GeneticAlgorithm
 # Sensor data should be gathered for each step of the simulation
 # giving us more possibility on how to compute the fitness value
 
+# best parameters for our case from similar pygad examples are:
+# population_size=100,
+# num_generations=50,
+# num_parents_mating=4,
+# mutation_percent_genes=10,
+# num_joints=4,
+# parallel_processing=None,
+# init_range_low=-1000,
+# init_range_high=1000,
+# random_mutation_min_val=-1000,
+# random_mutation_max_val=1000,
+# parent_selection_type="tournament",
+# keep_elitism=1,
+# crossover_type="uniform",
+
 
 def main():
+    population_size = 100
+
     GA = GeneticAlgorithm(
-        population_size=50,
+        population_size=population_size,
         num_generations=50,
-        num_parents_mating=2,
+        num_parents_mating=4,
         mutation_percent_genes=10,
         num_joints=4,
+        parallel_processing=None,
+        init_range_low=-1000,  # init range applied to the genes
+        # which in this case are the forces/angles
+        init_range_high=1000,
+        random_mutation_min_val=-1000,
+        random_mutation_max_val=1000,
+        parent_selection_type="tournament",
+        keep_elitism=population_size // 100,
+        crossover_type="uniform",
+        save_solutions=True
     )
     GA.run()
 
