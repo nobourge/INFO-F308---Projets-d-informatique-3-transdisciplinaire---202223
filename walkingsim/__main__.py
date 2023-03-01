@@ -36,6 +36,9 @@ def main():
     population_size = 100
 
     _TIME_STEP = 1e-2
+    # _SIM_DURATION_IN_SECS = 50   # ValueError: cannot reshape array of
+    # size 299948 into shape (4,7498)
+
     _SIM_DURATION_IN_SECS = 5
     # applying the same force during set timesteps
     _FORCES_DELAY_IN_TIMESTEPS = 4
@@ -55,8 +58,8 @@ def main():
         num_parents_mating=4,
         mutation_percent_genes=10,
         num_joints=4,
-        num_steps=60000,
-        # num_steps=_GENOME_DISCRETE_INTERVALS,
+        # num_steps=60000,
+        num_steps=_GENOME_DISCRETE_INTERVALS,
         parallel_processing=None,
         init_range_low=-1000,  # init range applied to the genes
         # which in this case are the forces/angles
