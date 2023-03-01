@@ -35,12 +35,28 @@ from walkingsim.algorithms.ga import GeneticAlgorithm
 def main():
     population_size = 100
 
+    _TIME_STEP = 1e-2
+    _SIM_DURATION_IN_SECS = 5
+    # applying the same force during set timesteps
+    _FORCES_DELAY_IN_TIMESTEPS = 4
+
+    _TIME_STEPS_TO_SECOND = 60 // _TIME_STEP
+    _GENOME_DISCRETE_INTERVALS = int(
+        (
+                _TIME_STEPS_TO_SECOND
+                * _SIM_DURATION_IN_SECS
+                // _FORCES_DELAY_IN_TIMESTEPS
+        )
+    )
+
     GA = GeneticAlgorithm(
         population_size=population_size,
         num_generations=50,
         num_parents_mating=4,
         mutation_percent_genes=10,
         num_joints=4,
+        num_steps=60000,
+        # num_steps=_GENOME_DISCRETE_INTERVALS,
         parallel_processing=None,
         init_range_low=-1000,  # init range applied to the genes
         # which in this case are the forces/angles
@@ -50,6 +66,11 @@ def main():
         parent_selection_type="tournament",
         keep_elitism=population_size // 100,
         crossover_type="uniform",
+        # UserWarning: Use the 'save_solutions' parameter with caution
+        # as it may cause memory overflow when either the number of
+        # generations, number of
+        # genes, or number of
+        # solutions in population is large.
         save_solutions=True
     )
     GA.run()

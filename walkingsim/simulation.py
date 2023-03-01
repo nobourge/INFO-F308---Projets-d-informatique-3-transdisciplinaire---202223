@@ -22,6 +22,7 @@ from walkingsim.creature.bipede import Bipede
 from walkingsim.creature.quadrupede import Quadrupede
 from walkingsim.environment import EnvironmentLoader
 
+
 class Simulation(abc.ABC):
     """Abstract class used to create simulations. This class is used by
     `ChronoSimulation`.
@@ -36,12 +37,12 @@ class Simulation(abc.ABC):
     """
 
     def __init__(
-        self,
-        __engine: str,
-        __env_datapath: str,
-        __env: str,
-        __creatures_datapath: str,
-        __visualize: bool = False,
+            self,
+            __engine: str,
+            __env_datapath: str,
+            __env: str,
+            __creatures_datapath: str,
+            __visualize: bool = False,
     ) -> None:
         self.__engine = __engine
         self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
@@ -59,7 +60,8 @@ class Simulation(abc.ABC):
         new_creature = Quadrupede((0, 1, 0))
         new_creature.add_to_env(self.environment)
         self.__creature = new_creature
-        logger.debug(f"Creature '{new_creature}' added to the simulation")
+        logger.debug(
+            f"Creature '{new_creature}' added to the simulation")
 
     @property
     def total_reward(self):
@@ -88,6 +90,7 @@ class Simulation(abc.ABC):
     def run(self):
         raise NotImplementedError
 
+
 class ChronoSimulation(Simulation):
     """
     Simulation class for `chrono`.
@@ -106,30 +109,51 @@ class ChronoSimulation(Simulation):
                                     genome matrix
     """
 
-    _TIME_STEP = 1e-2
-    _TIME_STEPS_TO_SECOND = 60 // _TIME_STEP
-    _SIM_DURATION_IN_SECS = 5
-    # applying the same force during set timesteps
-    _FORCES_DELAY_IN_TIMESTEPS = 4
-    _GENOME_DISCRETE_INTERVALS = int(
-        (
-            _TIME_STEPS_TO_SECOND
-            * _SIM_DURATION_IN_SECS
-            // _FORCES_DELAY_IN_TIMESTEPS
-        )
-    )
-
     def __init__(
-        self,
-        __env_datapath: str,
-        __env: str,
-        __creatures_datapath: str,
-        __visualize: bool = False,
-        __movement_gene=None,
+            self,
+            __env_datapath: str,
+            __env: str,
+            __creatures_datapath: str,
+            __visualize: bool = False,
+            __movement_gene=None,
+            _TIME_STEP=1e-2,
+            _SIM_DURATION_IN_SECS=5,
+            # applying the same force during set timesteps
+            _FORCES_DELAY_IN_TIMESTEPS=4
     ) -> None:
         super().__init__(
-            "chrono", __env_datapath, __env, __creatures_datapath, __visualize
+            "chrono", __env_datapath, __env, __creatures_datapath,
+            __visualize
         )
+        self._TIME_STEP = _TIME_STEP
+        self._SIM_DURATION_IN_SECS = _SIM_DURATION_IN_SECS
+        # applying the same force during set timesteps
+        self._FORCES_DELAY_IN_TIMESTEPS = _FORCES_DELAY_IN_TIMESTEPS
+        self._TIME_STEPS_TO_SECOND = 60 // _TIME_STEP
+        self._GENOME_DISCRETE_INTERVALS = int(
+            (
+                    self._TIME_STEPS_TO_SECOND
+                    * _SIM_DURATION_IN_SECS
+                    // _FORCES_DELAY_IN_TIMESTEPS
+            )
+        )
+        logger.debug(
+            f"Time step: {_TIME_STEP}, "
+        )
+        logger.debug(
+            f"Time steps to second: {self._TIME_STEPS_TO_SECOND}, "
+        )
+        logger.debug(
+            f"Simulation duration in seconds: {_SIM_DURATION_IN_SECS}, "
+        )
+        logger.debug(
+            f"Forces delay in timesteps: {_FORCES_DELAY_IN_TIMESTEPS}, "
+        )
+        logger.debug(
+            f"Genome discrete intervals: "
+            f"{self._GENOME_DISCRETE_INTERVALS}, "
+        )
+
         self.__renderer = None
         if self._visualize is True:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
@@ -171,7 +195,8 @@ class ChronoSimulation(Simulation):
         # The distance is simply the actual distance
         # from the start point to the current position
         distance = curr_state["distance"]
-        if sensor_data[-1]["position"][0] < sensor_data[0]["position"][0]:
+        if sensor_data[-1]["position"][0] < sensor_data[0]["position"][
+            0]:
             distance *= -1
 
         # The walk straight reward is a value that tells
@@ -190,7 +215,7 @@ class ChronoSimulation(Simulation):
 
         joint_limit = 0
         for r in curr_state["link_rotations"].values():
-            if abs(r) >= math.pi/2: joint_limit -= 1500
+            if abs(r) >= math.pi / 2: joint_limit -= 1500
 
         reward = distance + walk_straight + speed + joint_limit
         return reward

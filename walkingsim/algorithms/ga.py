@@ -18,6 +18,7 @@ class GeneticAlgorithm:
         num_parents_mating,
         mutation_percent_genes,
         num_joints,
+        num_steps,
         parallel_processing=None,
         init_range_low=-1000,
         init_range_high=1000,
@@ -34,7 +35,7 @@ class GeneticAlgorithm:
         self.num_parents_mating = num_parents_mating
         self.mutation_percent_genes = mutation_percent_genes
         self.num_joints = num_joints
-        self.num_steps = ChronoSimulation._GENOME_DISCRETE_INTERVALS
+        self.num_steps = num_steps
         self.parallel_processing = parallel_processing
         self.init_range_low = init_range_low
         self.init_range_high = init_range_high
@@ -147,7 +148,10 @@ class GeneticAlgorithm:
         #             "Step", j,
         #             ":", best_solution[i * self.num_steps + j],
         #         )
-        logger.info("Max fitness: {}".format(self.ga.best_solution_generation()))
+
+        # logger.info("Max fitness: {}".format(
+        # self.ga.best_solution_generation())) # TypeError: 'numpy.int64' object is not callable
+
         # logger.info("Max fitness generation index: {}".format(self.ga.
         logger.info("Best fitness: {}".format(best_fitness))
         self.plot()
