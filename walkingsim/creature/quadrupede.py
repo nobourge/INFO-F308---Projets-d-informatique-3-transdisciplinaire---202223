@@ -48,8 +48,12 @@ class Quadrupede(Creature):
         left_back_leg = self._create_single_leg(x_back_legs, y_legs, z_left_legs)
         right_back_leg = self._create_single_leg(x_back_legs, y_legs, z_right_legs)
 
-        self._create_single_leg(x_front_legs, y_legs-0.7, z_left_legs, left_front_leg)
-        self._create_single_leg(x_front_legs, y_legs-0.7, z_right_legs, right_front_leg)
-        self._create_single_leg(x_back_legs, y_legs-0.7, z_left_legs, left_back_leg)
-        self._create_single_leg(x_back_legs, y_legs-0.7, z_right_legs, right_back_leg)
+        left_front_leg_shin = self._create_single_leg(x_front_legs, y_legs-0.7, z_left_legs, left_front_leg)
+        right_front_leg_shin = self._create_single_leg(x_front_legs, y_legs-0.7, z_right_legs, right_front_leg)
+        left_back_leg_shin = self._create_single_leg(x_back_legs, y_legs-0.7, z_left_legs, left_back_leg)
+        right_back_leg_shin = self._create_single_leg(x_back_legs, y_legs-0.7, z_right_legs, right_back_leg)
 
+        self._create_foot(x_front_legs, y_legs-1.0, z_left_legs, left_front_leg_shin)
+        self._create_foot(x_front_legs, y_legs-1.0, z_right_legs, right_front_leg_shin)
+        self._create_foot(x_back_legs, y_legs-1.0, z_left_legs, left_back_leg_shin)
+        self._create_foot(x_back_legs, y_legs-1.0, z_right_legs, right_back_leg_shin)

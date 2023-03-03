@@ -35,6 +35,7 @@ class CreatureSuperClass:
     _collision_family = 2
     _trunk_dimensions = (1.0, 0.5, 0.5)
     _legs_dimensions = (0.3, 0.7, 0.15)
+    _foot_dimensions = (0.4, 0.1, 0.4)
 
     def __init__(self, pos: tuple) -> None:
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
@@ -100,6 +101,30 @@ class CreatureSuperClass:
     def _create_legs(self):
         # change for each creature
         pass
+
+    def _create_foot(self, x, y, z, parent=None):
+        if parent is None:
+            parent = self.__bodies[0]
+
+        foot_part = self._create_bone(self._foot_dimensions)
+        foot_part.GetCollisionModel().SetFamily(self._collision_family)
+        foot_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
+            self._collision_family
+        )
+        foot_part.SetPos(chrono.ChVectorD(x, y, z))
+        self.__bodies.append(foot_part)
+
+        # Link to parent
+        link = chrono.ChLinkLockLock()
+        link.Initialize(
+            parent,
+            foot_part,
+            chrono.ChCoordsysD(
+                chrono.ChVectorD(x, y, z), chrono.QUNIT
+            ),
+        )
+        self.__links.append(link)
+        return foot_part
 
     def _create_single_leg(self, x, y, z, parent=None):
         if parent is None:
