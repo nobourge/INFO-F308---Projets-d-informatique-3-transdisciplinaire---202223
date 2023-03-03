@@ -135,6 +135,22 @@ class ChronoSimulation(Simulation):
                 // _FORCES_DELAY_IN_TIMESTEPS
             )
         )
+
+        self._show_initial_log()
+
+        self.__renderer = None
+        if self._visualize is True:
+            # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
+            self.__renderer = chronoirr.ChVisualSystemIrrlicht()
+
+        # Set forces on creature
+        nbr = self.creature.joints_nbr()
+        movement_matrix = np.array(__movement_gene).reshape(
+            nbr, self._GENOME_DISCRETE_INTERVALS
+        )
+        self.creature.set_forces(movement_matrix, self._TIME_STEP)
+
+    def _show_initial_log(self):
         logger.debug(f"Time step: {_TIME_STEP}, ")
         logger.debug(f"Time steps to second: {self._TIME_STEPS_TO_SECOND}, ")
         logger.debug(
@@ -147,21 +163,6 @@ class ChronoSimulation(Simulation):
             f"Genome discrete intervals: "
             f"{self._GENOME_DISCRETE_INTERVALS}, "
         )
-
-        self.__renderer = None
-        if self._visualize is True:
-            # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
-            self.__renderer = chronoirr.ChVisualSystemIrrlicht()
-
-        """# FIXME: Pass the creature name
-        self.add_creature("")"""
-
-        # Set forces on creature
-        nbr = self.creature.joints_nbr()
-        movement_matrix = np.array(__movement_gene).reshape(
-            nbr, self._GENOME_DISCRETE_INTERVALS
-        )
-        self.creature.set_forces(movement_matrix, self._TIME_STEP)
 
     # Visualize
     def _render_setup(self):
@@ -244,14 +245,17 @@ class ChronoSimulation(Simulation):
         return current_sim_time > self._SIM_DURATION_IN_SECS
 
     def is_creature_fallen(self):
-        try:
-            trunk_y = self.creature.sensor_data[-1]["position"][1]  #
-        except IndexError:
-            logger.debug(
-                "trunk_y = self.creature.sensor_data[-1]["
-                "position][1] IndexError: list index out of range"
-            )
-            return False
+
+        
+
+        #  try:
+        #      trunk_y = self.creature.sensor_data[-1]["position"][1]  #
+        #  except IndexError:
+        #      logger.debug(
+        #          "trunk_y = self.creature.sensor_data[-1]["
+        #          "position][1] IndexError: list index out of range"
+        #      )
+        #      return False
         #
         # height_limit = self.creature.trunk_dim[2] / 2
         # return trunk_y < 1.2 * height_limit

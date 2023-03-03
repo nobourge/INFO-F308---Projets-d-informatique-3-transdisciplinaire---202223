@@ -71,6 +71,8 @@ class CreatureSuperClass:
         return self._trunk_dimensions
 
     def get_trunk_contact_force(self):
+        # The contact force of the trunk is 0 when not touching anything,
+        # and != 0 when touching something (e.g. the ground)
         return self.__bodies[0].GetContactForce().Length()
 
     def set_forces(self, forces: list, timestep: float):
