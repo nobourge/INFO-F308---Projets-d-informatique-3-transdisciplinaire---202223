@@ -224,7 +224,7 @@ class ChronoSimulation(Simulation):
             if abs(r) >= math.pi / 2:
                 joint_limit -= 1500
 
-        reward = distance + walk_straight + speed + joint_limit
+        reward = distance + walk_straight + speed + joint_limit + self.alive_bonus
         return reward
 
     def _simulation_step(self):
@@ -257,42 +257,6 @@ class ChronoSimulation(Simulation):
 
     def is_creature_fallen(self):
         return self.alive_bonus < 0
-
-        #  try:
-        #      trunk_y = self.creature.sensor_data[-1]["position"][1]  #
-        #  except IndexError:
-        #      logger.debug(
-        #          "trunk_y = self.creature.sensor_data[-1]["
-        #          "position][1] IndexError: list index out of range"
-        #      )
-        #      return False
-        #
-        # height_limit = self.creature.trunk_dim[2] / 2
-        # return trunk_y < 1.2 * height_limit
-        #
-        #  trunk_y = self.creature.sensor_data[-1]["position"][1]
-        #  front_left_leg_y = self.creature.sensor_data[-1][
-        #      "front_left_leg_position"
-        #  ][1]
-        #  front_right_leg_y = self.creature.sensor_data[-1][
-        #      "front_right_leg_position"
-        #  ][1]
-        #  back_left_leg_y = self.creature.sensor_data[-1][
-        #      "back_left_leg_position"
-        #  ][1]
-        #  back_right_leg_y = self.creature.sensor_data[-1][
-        #      "back_right_leg_position"
-        #  ][1]
-        #
-        #  # if trunk height is less than 80% of the height of a leg
-        #  # , then the creature is fallen
-        #  if (
-        #      trunk_y < 0.8 * front_left_leg_y
-        #      or trunk_y < 0.8 * front_right_leg_y
-        #      or trunk_y < 0.8 * back_left_leg_y
-        #      or trunk_y < 0.8 * back_right_leg_y
-        #  ):
-        #      return True
 
     def run(self):
         logger.debug("Starting simulation")
