@@ -101,7 +101,10 @@ class CreatureSuperClass:
         # change for each creature
         pass
 
-    def _create_single_leg(self, x, y, z):
+    def _create_single_leg(self, x, y, z, parent=None):
+        if parent is None:
+            parent = self.__bodies[0]
+
         leg_part = self._create_bone(self._legs_dimensions)
         leg_part.GetCollisionModel().SetFamily(self._collision_family)
         leg_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
@@ -113,14 +116,14 @@ class CreatureSuperClass:
         # TODO: Add constraints on the joints
         joint = chrono.ChLinkMotorRotationTorque()
         joint_frame = chrono.ChFrameD(chrono.ChVectorD(x, y + 0.225, z))
-        joint.Initialize(self.__bodies[0], leg_part, joint_frame)
+        joint.Initialize(parent, leg_part, joint_frame)
 
         constraint_link = chrono.ChLinkLockRevolute()
         constraint_link.GetLimit_Rz().SetActive(True)
         constraint_link.GetLimit_Rz().SetMin(-math.pi / 3)
         constraint_link.GetLimit_Rz().SetMax(math.pi / 3)
         constraint_link.Initialize(
-            self.__bodies[0],
+            parent,
             leg_part,
             chrono.ChCoordsysD(
                 chrono.ChVectorD(x, y + 0.225, z), chrono.QUNIT
@@ -129,6 +132,7 @@ class CreatureSuperClass:
 
         self.__joints.append(joint)
         self.__links.append(constraint_link)
+        return leg_part
 
     def _create_bone(self, size: tuple):
         bone_material = chrono.ChMaterialSurfaceNSC()

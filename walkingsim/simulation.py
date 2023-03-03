@@ -57,7 +57,7 @@ class Simulation(abc.ABC):
             )
             raise RuntimeError("Creature already exists in simulation")
 
-        new_creature = Quadrupede((0, 1, 0))
+        new_creature = Quadrupede((0, 2, 0))
         new_creature.add_to_env(self.environment)
         self.__creature = new_creature
         logger.debug(

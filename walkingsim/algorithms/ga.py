@@ -168,7 +168,7 @@ class GeneticAlgorithm:
 
         # logger.info("Max fitness generation index: {}".format(self.ga.
         logger.info("Best fitness: {}".format(best_fitness))
-        self.plot()
+        # self.plot()
         self.save_sol(best_solution)
         self.save_data_log()
         self.progress_sims.close()

@@ -43,7 +43,13 @@ class Quadrupede(Creature):
         z_left_legs = z_trunk + (self.trunk_dim[2] / 2)
         z_right_legs = z_trunk - (self.trunk_dim[2] / 2)
 
-        self._create_single_leg(x_front_legs, y_legs, z_left_legs)
-        self._create_single_leg(x_front_legs, y_legs, z_right_legs)
-        self._create_single_leg(x_back_legs, y_legs, z_left_legs)
-        self._create_single_leg(x_back_legs, y_legs, z_right_legs)
+        left_front_leg = self._create_single_leg(x_front_legs, y_legs, z_left_legs)
+        right_front_leg = self._create_single_leg(x_front_legs, y_legs, z_right_legs)
+        left_back_leg = self._create_single_leg(x_back_legs, y_legs, z_left_legs)
+        right_back_leg = self._create_single_leg(x_back_legs, y_legs, z_right_legs)
+
+        self._create_single_leg(x_front_legs, y_legs-0.7, z_left_legs, left_front_leg)
+        self._create_single_leg(x_front_legs, y_legs-0.7, z_right_legs, right_front_leg)
+        self._create_single_leg(x_back_legs, y_legs-0.7, z_left_legs, left_back_leg)
+        self._create_single_leg(x_back_legs, y_legs-0.7, z_right_legs, right_back_leg)
+

@@ -53,11 +53,11 @@ def main():
     )
 
     GA = GeneticAlgorithm(
-        population_size=10,
-        num_generations=5,
+        population_size=50,
+        num_generations=10,
         num_parents_mating=2,
         mutation_percent_genes=10,
-        num_joints=4,
+        num_joints=8,
         # num_steps=60000,
         num_steps=_GENOME_DISCRETE_INTERVALS,
         parallel_processing=None,
