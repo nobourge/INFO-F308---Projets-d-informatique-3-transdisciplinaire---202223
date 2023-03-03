@@ -124,9 +124,7 @@ class CreatureSuperClass:
         link.Initialize(
             parent,
             foot_part,
-            chrono.ChCoordsysD(
-                chrono.ChVectorD(x, y, z), chrono.QUNIT
-            ),
+            chrono.ChCoordsysD(chrono.ChVectorD(x, y, z), chrono.QUNIT),
         )
         self.__links.append(link)
         return foot_part
@@ -188,27 +186,9 @@ class CreatureSuperClass:
             __env.AddLink(link)
 
     def capture_sensor_data(self):
-        # We capture the information from basic sensors (position, rotation, etc.)
-        trunk_pos = self.__bodies[0].GetPos()
-        self.__sensor_data.append({"position": (trunk_pos.x, trunk_pos.y, trunk_pos.z), "link_rotations":{}})
-        for b in range(len(self.__joints)):
-            rot = self.__joints[b].GetMotorRot()
-            self.__sensor_data[-1]["link_rotations"].update({str(b): rot})
+        self._capture_legs_sensors_data()
 
-        front_left_leg_pos = self.__bodies[1].GetPos()
-        self.__sensor_data[-1].update({"front_left_leg_position": (
-            front_left_leg_pos.x, front_left_leg_pos.y, front_left_leg_pos.z), "link_rotations":{}})
-
-        front_right_leg_pos = self.__bodies[2].GetPos()
-        self.__sensor_data[-1].update({"front_right_leg_position": (front_right_leg_pos.x, front_right_leg_pos.y, front_right_leg_pos.z), "link_rotations":{}})
-
-        back_left_leg_pos = self.__bodies[3].GetPos()
-        self.__sensor_data[-1].update({"back_left_leg_position": (back_left_leg_pos.x, back_left_leg_pos.y, back_left_leg_pos.z), "link_rotations":{}})
-
-        back_right_leg_pos = self.__bodies[4].GetPos()
-        self.__sensor_data[-1].update({"back_right_leg_position": (back_right_leg_pos.x, back_right_leg_pos.y, back_right_leg_pos.z), "link_rotations":{}})
-
-        # We compute additional information (distance, total distance, etc.)
+        # Distance calculation
         step_distance = 0
         total_distance = 0
         if len(self.__sensor_data) > 1:
@@ -228,6 +208,66 @@ class CreatureSuperClass:
         # We update the last sensor data added with those additional information
         self.__sensor_data[-1].update(
             {"distance": step_distance, "total_distance": total_distance}
+        )
+
+    def _capture_legs_sensors_data(self):
+        trunk_pos = self.__bodies[0].GetPos()
+        self.__sensor_data.append(
+            {
+                "position": (trunk_pos.x, trunk_pos.y, trunk_pos.z),
+                "link_rotations": {},
+            }
+        )
+        for b in range(len(self.__joints)):
+            rot = self.__joints[b].GetMotorRot()
+            self.__sensor_data[-1]["link_rotations"].update({str(b): rot})
+
+        front_left_leg_pos = self.__bodies[1].GetPos()
+        self.__sensor_data[-1].update(
+            {
+                "front_left_leg_position": (
+                    front_left_leg_pos.x,
+                    front_left_leg_pos.y,
+                    front_left_leg_pos.z,
+                ),
+                "link_rotations": {},
+            }
+        )
+
+        front_right_leg_pos = self.__bodies[2].GetPos()
+        self.__sensor_data[-1].update(
+            {
+                "front_right_leg_position": (
+                    front_right_leg_pos.x,
+                    front_right_leg_pos.y,
+                    front_right_leg_pos.z,
+                ),
+                "link_rotations": {},
+            }
+        )
+
+        back_left_leg_pos = self.__bodies[3].GetPos()
+        self.__sensor_data[-1].update(
+            {
+                "back_left_leg_position": (
+                    back_left_leg_pos.x,
+                    back_left_leg_pos.y,
+                    back_left_leg_pos.z,
+                ),
+                "link_rotations": {},
+            }
+        )
+
+        back_right_leg_pos = self.__bodies[4].GetPos()
+        self.__sensor_data[-1].update(
+            {
+                "back_right_leg_position": (
+                    back_right_leg_pos.x,
+                    back_right_leg_pos.y,
+                    back_right_leg_pos.z,
+                ),
+                "link_rotations": {},
+            }
         )
 
     @property

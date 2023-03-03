@@ -208,7 +208,6 @@ class ChronoSimulation(Simulation):
         # The walk straight reward is a value that tells
         # if the creature is walking straight or not. If the
         # creature is walking straight the value will be close to 0
-        # FIXME: Why 3 ?
         walk_straight = -3 * (curr_state["position"][2] ** 2)
 
         # The speed is how much distance the creature did in one step
@@ -218,7 +217,6 @@ class ChronoSimulation(Simulation):
             speed = (
                 curr_state["distance"] - sensor_data[-2]["distance"]
             ) / self._TIME_STEP
-            print("speed: = ", speed)
         else:
             speed = 0
 
@@ -228,7 +226,7 @@ class ChronoSimulation(Simulation):
                 joint_limit -= 1500
 
         reward = (
-            distance + walk_straight + 4 * speed + joint_limit + self.alive_bonus
+            2 * distance + walk_straight + 2 * speed + joint_limit + self.alive_bonus
         )
         return reward
 
