@@ -21,7 +21,6 @@ def main():
 
     # simulation slow motion parameter (0.1 = 10x slower)
 
-
     sim = ChronoSimulation(
         environments_path,
         environment,
@@ -32,10 +31,9 @@ def main():
         _SIM_DURATION_IN_SECS=5,
         # _SIM_DURATION_IN_SECS=50,
         # applying the same force during set timesteps
-        _FORCES_DELAY_IN_TIMESTEPS=4
+        _FORCES_DELAY_IN_TIMESTEPS=4,
     )
     sim.run()
-
 
 
 if __name__ == "__main__":

@@ -37,12 +37,12 @@ class Simulation(abc.ABC):
     """
 
     def __init__(
-            self,
-            __engine: str,
-            __env_datapath: str,
-            __env: str,
-            __creatures_datapath: str,
-            __visualize: bool = False,
+        self,
+        __engine: str,
+        __env_datapath: str,
+        __env: str,
+        __creatures_datapath: str,
+        __visualize: bool = False,
     ) -> None:
         self.__engine = __engine
         self.__loader = EnvironmentLoader(__env_datapath, self.__engine)
@@ -60,8 +60,7 @@ class Simulation(abc.ABC):
         new_creature = Quadrupede((0, 2, 0))
         new_creature.add_to_env(self.environment)
         self.__creature = new_creature
-        logger.debug(
-            f"Creature '{new_creature}' added to the simulation")
+        logger.debug(f"Creature '{new_creature}' added to the simulation")
 
     @property
     def total_reward(self):
@@ -110,20 +109,19 @@ class ChronoSimulation(Simulation):
     """
 
     def __init__(
-            self,
-            __env_datapath: str,
-            __env: str,
-            __creatures_datapath: str,
-            __visualize: bool = False,
-            __movement_gene=None,
-            _TIME_STEP=1e-2,
-            _SIM_DURATION_IN_SECS=5,
-            # applying the same force during set timesteps
-            _FORCES_DELAY_IN_TIMESTEPS=4
+        self,
+        __env_datapath: str,
+        __env: str,
+        __creatures_datapath: str,
+        __visualize: bool = False,
+        __movement_gene=None,
+        _TIME_STEP=1e-2,
+        _SIM_DURATION_IN_SECS=5,
+        # applying the same force during set timesteps
+        _FORCES_DELAY_IN_TIMESTEPS=4,
     ) -> None:
         super().__init__(
-            "chrono", __env_datapath, __env, __creatures_datapath,
-            __visualize
+            "chrono", __env_datapath, __env, __creatures_datapath, __visualize
         )
         self._TIME_STEP = _TIME_STEP
         self._SIM_DURATION_IN_SECS = _SIM_DURATION_IN_SECS
@@ -132,17 +130,13 @@ class ChronoSimulation(Simulation):
         self._TIME_STEPS_TO_SECOND = 60 // _TIME_STEP
         self._GENOME_DISCRETE_INTERVALS = int(
             (
-                    self._TIME_STEPS_TO_SECOND
-                    * _SIM_DURATION_IN_SECS
-                    // _FORCES_DELAY_IN_TIMESTEPS
+                self._TIME_STEPS_TO_SECOND
+                * _SIM_DURATION_IN_SECS
+                // _FORCES_DELAY_IN_TIMESTEPS
             )
         )
-        logger.debug(
-            f"Time step: {_TIME_STEP}, "
-        )
-        logger.debug(
-            f"Time steps to second: {self._TIME_STEPS_TO_SECOND}, "
-        )
+        logger.debug(f"Time step: {_TIME_STEP}, ")
+        logger.debug(f"Time steps to second: {self._TIME_STEPS_TO_SECOND}, ")
         logger.debug(
             f"Simulation duration in seconds: {_SIM_DURATION_IN_SECS}, "
         )
@@ -196,8 +190,7 @@ class ChronoSimulation(Simulation):
         # The distance is simply the actual distance
         # from the start point to the current position
         distance = curr_state["distance"]
-        if sensor_data[-1]["position"][0] < sensor_data[0]["position"][
-            0]:
+        if sensor_data[-1]["position"][0] < sensor_data[0]["position"][0]:
             distance *= -1
 
         # The walk straight reward is a value that tells
@@ -255,25 +248,37 @@ class ChronoSimulation(Simulation):
         try:
             trunk_y = self.creature.sensor_data[-1]["position"][1]  #
         except IndexError:
-            logger.debug("trunk_y = self.creature.sensor_data[-1]["
-                         "position][1] IndexError: list index out of range")
+            logger.debug(
+                "trunk_y = self.creature.sensor_data[-1]["
+                "position][1] IndexError: list index out of range"
+            )
             return False
         #
         # height_limit = self.creature.trunk_dim[2] / 2
         # return trunk_y < 1.2 * height_limit
 
         trunk_y = self.creature.sensor_data[-1]["position"][1]
-        front_left_leg_y = self.creature.sensor_data[-1]["front_left_leg_position"][1]
-        front_right_leg_y = self.creature.sensor_data[-1]["front_right_leg_position"][1]
-        back_left_leg_y = self.creature.sensor_data[-1]["back_left_leg_position"][1]
-        back_right_leg_y = self.creature.sensor_data[-1]["back_right_leg_position"][1]
+        front_left_leg_y = self.creature.sensor_data[-1][
+            "front_left_leg_position"
+        ][1]
+        front_right_leg_y = self.creature.sensor_data[-1][
+            "front_right_leg_position"
+        ][1]
+        back_left_leg_y = self.creature.sensor_data[-1][
+            "back_left_leg_position"
+        ][1]
+        back_right_leg_y = self.creature.sensor_data[-1][
+            "back_right_leg_position"
+        ][1]
 
         # if trunk height is less than 80% of the height of a leg
         # , then the creature is fallen
-        if trunk_y < 0.8 * front_left_leg_y or \
-                trunk_y < 0.8 * front_right_leg_y or \
-                trunk_y < 0.8 * back_left_leg_y or \
-                trunk_y < 0.8 * back_right_leg_y:
+        if (
+            trunk_y < 0.8 * front_left_leg_y
+            or trunk_y < 0.8 * front_right_leg_y
+            or trunk_y < 0.8 * back_left_leg_y
+            or trunk_y < 0.8 * back_right_leg_y
+        ):
             return True
 
     def run(self):
