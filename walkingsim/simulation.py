@@ -244,7 +244,6 @@ class ChronoSimulation(Simulation):
         return current_sim_time > self._SIM_DURATION_IN_SECS
 
     def is_creature_fallen(self):
-        # FIXME hacky. Is there a way to detect collision between shapes?
         try:
             trunk_y = self.creature.sensor_data[-1]["position"][1]  #
         except IndexError:
@@ -256,30 +255,30 @@ class ChronoSimulation(Simulation):
         #
         # height_limit = self.creature.trunk_dim[2] / 2
         # return trunk_y < 1.2 * height_limit
-
-        trunk_y = self.creature.sensor_data[-1]["position"][1]
-        front_left_leg_y = self.creature.sensor_data[-1][
-            "front_left_leg_position"
-        ][1]
-        front_right_leg_y = self.creature.sensor_data[-1][
-            "front_right_leg_position"
-        ][1]
-        back_left_leg_y = self.creature.sensor_data[-1][
-            "back_left_leg_position"
-        ][1]
-        back_right_leg_y = self.creature.sensor_data[-1][
-            "back_right_leg_position"
-        ][1]
-
-        # if trunk height is less than 80% of the height of a leg
-        # , then the creature is fallen
-        if (
-            trunk_y < 0.8 * front_left_leg_y
-            or trunk_y < 0.8 * front_right_leg_y
-            or trunk_y < 0.8 * back_left_leg_y
-            or trunk_y < 0.8 * back_right_leg_y
-        ):
-            return True
+        #
+        #  trunk_y = self.creature.sensor_data[-1]["position"][1]
+        #  front_left_leg_y = self.creature.sensor_data[-1][
+        #      "front_left_leg_position"
+        #  ][1]
+        #  front_right_leg_y = self.creature.sensor_data[-1][
+        #      "front_right_leg_position"
+        #  ][1]
+        #  back_left_leg_y = self.creature.sensor_data[-1][
+        #      "back_left_leg_position"
+        #  ][1]
+        #  back_right_leg_y = self.creature.sensor_data[-1][
+        #      "back_right_leg_position"
+        #  ][1]
+        #
+        #  # if trunk height is less than 80% of the height of a leg
+        #  # , then the creature is fallen
+        #  if (
+        #      trunk_y < 0.8 * front_left_leg_y
+        #      or trunk_y < 0.8 * front_right_leg_y
+        #      or trunk_y < 0.8 * back_left_leg_y
+        #      or trunk_y < 0.8 * back_right_leg_y
+        #  ):
+        #      return True
 
     def run(self):
         logger.debug("Starting simulation")
