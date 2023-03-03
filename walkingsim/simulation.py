@@ -233,7 +233,7 @@ class ChronoSimulation(Simulation):
             distance
             + walk_straight
             + 2 * speed
-            + (-0.2 * nb_joints_at_limit)
+            + (1e-2 * nb_joints_at_limit)
             + self.alive_bonus
             - 50 * (height_diff ** 2)
         )
