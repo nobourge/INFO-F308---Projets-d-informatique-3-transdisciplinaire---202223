@@ -29,7 +29,6 @@ class GeneticAlgorithm:
         keep_elitism=1,
         crossover_type="uniform",
         save_solutions=False,
-
     ):
         self.population_size = population_size
         self.num_generations = num_generations
@@ -65,8 +64,8 @@ class GeneticAlgorithm:
             random_mutation_max_val=self.random_mutation_max_val,
             parent_selection_type=self.parent_selection_type,
             keep_elitism=self.keep_elitism,
-            crossover_type=self.crossover_type, 
-            save_solutions=self.save_solutions
+            crossover_type=self.crossover_type,
+            save_solutions=self.save_solutions,
         )
 
         self.progress_sims = tqdm.tqdm(

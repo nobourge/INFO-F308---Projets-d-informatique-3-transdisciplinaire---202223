@@ -11,99 +11,243 @@ Description:
 """
 
 import math
+import typing as t
+from collections import namedtuple
 
 import pychrono as chrono
 
 import walkingsim.utils.utils as utils
 
+Vector = namedtuple("vector", ["x", "y", "z"])
+VectorZero = Vector(0, 0, 0)
 
-class CreatureSuperClass:
+
+class CreatureBranch:
+    def __init__(
+        self,
+        size: Vector,
+        material,
+        family,
+        position: Vector = VectorZero,
+        density=1000,
+        visualize=True,
+        collide=True,
+        parent=None,
+    ) -> None:
+        self.__size = size
+        self.__material = material
+        self.__family = family
+
+        self.__density = density
+        self.__visualize = visualize
+        self.__collide = collide
+        self.__parent = parent
+        self.__position = position
+        self.__childs = []
+
+        self.__body = self._create_body()
+        self.__motor = None
+        self.__link = None
+
+    @property
+    def size(self):
+        return self.__size
+
+    @property
+    def position(self):
+        return self.__position
+
+    @property
+    def parent(self):
+        return self.__parent
+
+    @property
+    def childs(self) -> t.List["CreatureBranch"]:
+        return self.__childs
+
+    @property
+    def body(self):
+        return self.__body
+
+    @property
+    def link(self):
+        return self.__link
+
+    @property
+    def motor(self):
+        return self.__motor
+
+    def _create_body(self):
+        body = chrono.ChBodyEasyBox(
+            self.__size.x,
+            self.__size.y,
+            self.__size.z,
+            self.__density,
+            self.__visualize,
+            self.__collide,
+            self.__material,
+        )
+        body.SetBodyFixed(False)
+        body.GetVisualShape(0).SetColor(chrono.ChColor(0.5, 0.7, 0.5))
+        body.GetCollisionModel().SetFamily(self.__family)
+        body.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
+            self.__family
+        )
+
+        chrono_pos = chrono.ChVectorD(
+            self.__position.x, self.__position.y, self.__position.z
+        )
+        body.SetPos(chrono_pos)
+
+        return body
+
+    def branch(self, size: Vector):
+        _child = CreatureBranch(
+            size, self.__material, self.__family, parent=self
+        )
+        self.__childs.append(_child)
+        return _child
+
+    def join(
+        self,
+        relative_pos: Vector = VectorZero,
+        constraints_z: Vector = None,
+        motor=None,
+    ):
+        if not isinstance(self.__parent, CreatureBranch):
+            raise RuntimeError("Cannot create joint, body has not parent")
+
+        parent_pos = self.__parent.position
+        parent_size = self.__parent.size
+        joint_pos = Vector(
+            parent_pos.x + relative_pos.x,
+            parent_pos.y - (parent_size.y / 2) + relative_pos.y,
+            parent_pos.z + relative_pos.z,
+        )
+        self.__position = Vector(
+            joint_pos.x, joint_pos.y - (self.__size.y / 2), joint_pos.z
+        )
+        chrono_joint_pos = chrono.ChVectorD(
+            joint_pos.x, joint_pos.y, joint_pos.z
+        )
+        chrono_position = chrono.ChVectorD(
+            self.__position.x, self.__position.y, self.__position.z
+        )
+        self.__body.SetPos(chrono_position)
+
+        if motor == "torque":
+            self.__motor = chrono.ChLinkMotorRotationTorque()
+            _motor_frame = chrono.ChFrameD(chrono_joint_pos)
+            self.__motor.Initialize(
+                self.__parent.body, self.__body, _motor_frame
+            )
+
+        if constraints_z is not None:
+            self.__link = chrono.ChLinkLockRevolute()
+            self.__link.GetLimit_Rz().SetActive(True)
+            self.__link.GetLimit_Rz().SetMin(constraints_z[0])
+            self.__link.GetLimit_Rz().SetMax(constraints_z[1])
+            self.__link.Initialize(
+                self.__parent.body,
+                self.__body,
+                chrono.ChCoordsysD(chrono_joint_pos, chrono.QUNIT),
+            )
+
+        # If no link was set yet, use a fix link
+        if self.__link is None:
+            self.__link = chrono.ChLinkLockLock()
+            self.__link.Initialize(
+                self.__parent.body,
+                self.__body,
+                chrono.ChCoordsysD(chrono_joint_pos, chrono.QUNIT),
+            )
+
+        return self
+
+
+class Creature:
     """
     Parent class for all creatures.
 
-    Class attributes:
-        collision_family
-        trunk_dimensions
-        legs_dimensions
-
     Attributes:
-        joints
-        bodies
+        root
         sensor_data
+
+    Methods:
+        bodies: retrieve a list of all the bodies in the creature
+        links: retrieve a list of all the links in the creature
+        motors: retrieve a list of all the motors in the creature
     """
 
-    _collision_family = 2
-    _trunk_dimensions = (1.0, 0.5, 0.5)
-    _legs_dimensions = (0.3, 0.7, 0.15)
-    _foot_dimensions = (0.4, 0.1, 0.4)
-
-    def __init__(self, pos: tuple) -> None:
-        self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
-
-        # first elem 0 is the trunk, the rest are the legs
-        # 1 is the left front leg, 2 is the right front leg
-        self.__bodies = []
-        self.__joints = []
+    def __init__(
+        self, root_size: Vector, root_pos: Vector = VectorZero
+    ) -> None:
+        self.__material = chrono.ChMaterialSurfaceNSC()
+        self.__material.SetFriction(0.5)
+        self.__material.SetDampingF(0.2)
+        self.__family = 2
         self.__sensor_data = []
-        self.__joints_forces = []
-        self.__joints_funcs = []
-        self.__links = []
 
-        self._create_trunk()
-        self._create_legs()
+        self.__root = CreatureBranch(
+            root_size, self.__material, self.__family, position=root_pos
+        )
+        self.create()
+
+    def create(self):
+        raise NotImplementedError
+
+    @property
+    def root(self):
+        return self.__root
+
+    def bodies(self, root=None):
+        if root is None:
+            root = self.root
+
+        _bodies = [root.body]
+        for child in root.childs:
+            _bodies.extend(self.bodies(root=child))
+        return _bodies
+
+    def links(self, root=None):
+        if root is None:
+            root = self.root
+
+        _links = []
+        if root.link is not None:
+            _links.append(root.link)
+
+        for child in root.childs:
+            _links.extend(self.links(root=child))
+        return _links
+
+    def motors(self, root=None):
+        if root is None:
+            root = self.root
+
+        _motors = []
+        if root.motor is not None:
+            _motors.append(root.motor)
+
+        for child in root.childs:
+            _motors.extend(self.motors(root=child))
+        return _motors
 
     @property
     def pos(self):
-        return self.__pos
+        return chrono.ChVectorD(
+            self.root.position.x, self.root.position.y, self.root.position.z
+        )
 
     def joints_nbr(self) -> int:
-        return len(self.__joints)
-
-    @property
-    def trunk_dim(self):
-        return self._trunk_dimensions
-
-    @property
-    def pos(self):
-        return self.__pos
-
-    @property
-    def trunk_dim(self):
-        return self._trunk_dimensions
-
-    @property
-    def sensor_data(self):
-        return self.__sensor_data
-
-    def get_trunk_contact_force(self):
-        # The contact force of the trunk is 0 when not touching anything,
-        # and != 0 when touching something (e.g. the ground)
-        return self.__bodies[0].GetContactForce().Length()
-
-    def set_forces(self, forces: list, timestep: float):
-        if len(forces) < len(self.__joints):
-            raise RuntimeError("Forces for joints are not enough")
-
-        # Store the forces for later use
-        self.__joints_forces = forces
-
-        # NOTE: Important to store the function otherwise they are destroyed
-        # when function is terminated, so chrono cannot access them anymore
-        self.__joints_funcs = []
-
-        for i, joint in enumerate(self.__joints):
-            # print(forces[i])
-            self.__joints_funcs.append(
-                utils.ChCustomTorqueFunction(timestep, forces[i])
-            )
-            joint.SetTorqueFunction(self.__joints_funcs[i])
+        return len(self.motors())
 
     def get_nb_joints_at_limit(self):
         """
         Returns the nb of joints that are closer to their limit angles
         """
         nb_joints_at_limit = 0
-        for link in self.__links:
+        for link in self.links():
             max_angle = link.GetLimit_Rz().GetMax()
             min_angle = link.GetLimit_Rz().GetMin()
             current_angle = link.GetRelAngle()
@@ -115,95 +259,39 @@ class CreatureSuperClass:
 
         return nb_joints_at_limit
 
-    def _create_trunk(self):
-        trunk_part = self._create_bone(self._trunk_dimensions)
-        trunk_part.GetCollisionModel().SetFamily(self._collision_family)
-        trunk_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
-            self._collision_family
-        )
-        trunk_part.SetPos(self.__pos)
-        self.__bodies.append(trunk_part)
+    @property
+    def trunk_dim(self):
+        return self.root.size
 
-    def _create_legs(self):
-        # change for each creature
-        pass
+    def get_trunk_contact_force(self):
+        # The contact force of the trunk is 0 when not touching anything,
+        # and != 0 when touching something (e.g. the ground)
+        return self.root.body.GetContactForce().Length()
 
-    def _create_foot(self, x, y, z, parent=None):
-        if parent is None:
-            parent = self.__bodies[0]
+    def set_forces(self, forces: list, timestep: float):
+        if len(forces) < len(self.motors()):
+            raise RuntimeError("Forces for joints are not enough")
 
-        foot_part = self._create_bone(self._foot_dimensions)
-        foot_part.GetCollisionModel().SetFamily(self._collision_family)
-        foot_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
-            self._collision_family
-        )
-        foot_part.SetPos(chrono.ChVectorD(x, y, z))
-        self.__bodies.append(foot_part)
+        # Store the forces for later use
+        self.__joints_forces = forces
 
-        # Link to parent
-        link = chrono.ChLinkLockLock()
-        link.Initialize(
-            parent,
-            foot_part,
-            chrono.ChCoordsysD(chrono.ChVectorD(x, y, z), chrono.QUNIT),
-        )
-        self.__links.append(link)
-        return foot_part
+        # NOTE: Important to store the function otherwise they are destroyed
+        # when function is terminated, so chrono cannot access them anymore
+        self.__joints_funcs = []
 
-    def _create_single_leg(self, x, y, z, parent=None):
-        if parent is None:
-            parent = self.__bodies[0]
-
-        leg_part = self._create_bone(self._legs_dimensions)
-        leg_part.GetCollisionModel().SetFamily(self._collision_family)
-        leg_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
-            self._collision_family
-        )
-        leg_part.SetPos(chrono.ChVectorD(x, y, z))
-        self.__bodies.append(leg_part)
-
-        # TODO: Add constraints on the joints
-        joint = chrono.ChLinkMotorRotationTorque()
-        joint_frame = chrono.ChFrameD(chrono.ChVectorD(x, y + 0.225, z))
-        joint.Initialize(parent, leg_part, joint_frame)
-
-        constraint_link = chrono.ChLinkLockRevolute()
-        constraint_link.GetLimit_Rz().SetActive(True)
-        constraint_link.GetLimit_Rz().SetMin(-math.pi / 3)
-        constraint_link.GetLimit_Rz().SetMax(math.pi / 3)
-        constraint_link.Initialize(
-            parent,
-            leg_part,
-            chrono.ChCoordsysD(
-                chrono.ChVectorD(x, y + 0.225, z), chrono.QUNIT
-            ),
-        )
-
-        self.__joints.append(joint)
-        self.__links.append(constraint_link)
-        return leg_part
-
-    def _create_bone(self, size: tuple):
-        bone_material = chrono.ChMaterialSurfaceNSC()
-        bone_material.SetFriction(0.5)
-        bone_material.SetDampingF(0.2)
-        #  bone_material.SetCompliance(0.0005)
-        #  bone_material.SetComplianceT(0.0005)
-
-        bone = chrono.ChBodyEasyBox(
-            size[0], size[1], size[2], 1000, True, True, bone_material
-        )
-        bone.SetBodyFixed(False)
-        bone.GetVisualShape(0).SetColor(chrono.ChColor(0.5, 0.7, 0.5))
-
-        return bone
+        for i, joint in enumerate(self.motors()):
+            # print(forces[i])
+            self.__joints_funcs.append(
+                utils.ChCustomTorqueFunction(timestep, forces[i])
+            )
+            joint.SetTorqueFunction(self.__joints_funcs[i])
 
     def add_to_env(self, __env):
-        for body in self.__bodies:
+        for body in self.bodies():
             __env.Add(body)
-        for joint in self.__joints:
+        for joint in self.motors():
             __env.Add(joint)
-        for link in self.__links:
+        for link in self.links():
             __env.AddLink(link)
 
     def capture_sensor_data(self):
@@ -232,18 +320,18 @@ class CreatureSuperClass:
         )
 
     def _capture_legs_sensors_data(self):
-        trunk_pos = self.__bodies[0].GetPos()
+        trunk_pos = self.root.body.GetPos()
         self.__sensor_data.append(
             {
                 "position": (trunk_pos.x, trunk_pos.y, trunk_pos.z),
                 "link_rotations": {},
             }
         )
-        for b in range(len(self.__joints)):
-            rot = self.__joints[b].GetMotorRot()
+        for b in range(len(self.motors())):
+            rot = self.motors()[b].GetMotorRot()
             self.__sensor_data[-1]["link_rotations"].update({str(b): rot})
 
-        front_left_leg_pos = self.__bodies[1].GetPos()
+        front_left_leg_pos = self.root.childs[0].body.GetPos()
         self.__sensor_data[-1].update(
             {
                 "front_left_leg_position": (
@@ -255,7 +343,7 @@ class CreatureSuperClass:
             }
         )
 
-        front_right_leg_pos = self.__bodies[2].GetPos()
+        front_right_leg_pos = self.root.childs[1].body.GetPos()
         self.__sensor_data[-1].update(
             {
                 "front_right_leg_position": (
@@ -267,7 +355,7 @@ class CreatureSuperClass:
             }
         )
 
-        back_left_leg_pos = self.__bodies[3].GetPos()
+        back_left_leg_pos = self.root.childs[2].body.GetPos()
         self.__sensor_data[-1].update(
             {
                 "back_left_leg_position": (
@@ -279,7 +367,7 @@ class CreatureSuperClass:
             }
         )
 
-        back_right_leg_pos = self.__bodies[4].GetPos()
+        back_right_leg_pos = self.root.childs[3].body.GetPos()
         self.__sensor_data[-1].update(
             {
                 "back_right_leg_position": (
@@ -290,3 +378,7 @@ class CreatureSuperClass:
                 "link_rotations": {},
             }
         )
+
+    @property
+    def sensor_data(self):
+        return self.__sensor_data

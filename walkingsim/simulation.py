@@ -18,7 +18,9 @@ import pychrono as chrono
 import pychrono.irrlicht as chronoirr
 from loguru import logger
 
-from walkingsim.creature.bipede import Bipede
+from walkingsim.creature.creature import Vector
+
+# from walkingsim.creature.bipede import Bipede
 from walkingsim.creature.quadrupede import Quadrupede
 from walkingsim.environment import EnvironmentLoader
 
@@ -57,7 +59,7 @@ class Simulation(abc.ABC):
             )
             raise RuntimeError("Creature already exists in simulation")
 
-        new_creature = Quadrupede((0, 2, 0))
+        new_creature = Quadrupede(Vector(0, 1.65, 0))
         new_creature.add_to_env(self.environment)
         self.__creature = new_creature
         logger.debug(f"Creature '{new_creature}' added to the simulation")
@@ -225,7 +227,9 @@ class ChronoSimulation(Simulation):
 
         # Penalties for going lower than their current height
         try:
-            height_diff = curr_state["position"][1] - sensor_data[-2]["position"][1]
+            height_diff = (
+                curr_state["position"][1] - sensor_data[-2]["position"][1]
+            )
         except IndexError:
             height_diff = 0
 
@@ -235,7 +239,7 @@ class ChronoSimulation(Simulation):
             + 2 * speed
             + (1e-2 * nb_joints_at_limit)
             + self.alive_bonus
-            - 50 * (height_diff ** 2)
+            - 50 * (height_diff**2)
         )
         return reward
 

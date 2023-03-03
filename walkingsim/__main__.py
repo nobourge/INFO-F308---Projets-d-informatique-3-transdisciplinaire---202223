@@ -46,9 +46,9 @@ def main():
     _TIME_STEPS_TO_SECOND = 60 // _TIME_STEP
     _GENOME_DISCRETE_INTERVALS = int(
         (
-                _TIME_STEPS_TO_SECOND
-                * _SIM_DURATION_IN_SECS
-                // _FORCES_DELAY_IN_TIMESTEPS
+            _TIME_STEPS_TO_SECOND
+            * _SIM_DURATION_IN_SECS
+            // _FORCES_DELAY_IN_TIMESTEPS
         )
     )
 
@@ -74,7 +74,7 @@ def main():
         # generations, number of
         # genes, or number of
         # solutions in population is large.
-        save_solutions=True
+        save_solutions=True,
     )
     GA.run()
 
