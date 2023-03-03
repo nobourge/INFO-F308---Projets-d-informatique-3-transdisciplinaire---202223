@@ -136,6 +136,9 @@ class ChronoSimulation(Simulation):
             )
         )
 
+        # used for reward and sim end test
+        self.alive_bonus = 0
+
         self._show_initial_log()
 
         self.__renderer = None
@@ -186,6 +189,12 @@ class ChronoSimulation(Simulation):
 
     # Run Simulation
     def _compute_step_reward(self):
+
+        # If the trunk touches the ground, alive_bonus is negative and stops sim
+        self.alive_bonus = (
+            +1 if self.creature.get_trunk_contact_force() == 0 else -1
+        )
+
         sensor_data = self.creature.sensor_data
         if len(sensor_data) == 0:
             return 0
@@ -247,9 +256,7 @@ class ChronoSimulation(Simulation):
         return current_sim_time > self._SIM_DURATION_IN_SECS
 
     def is_creature_fallen(self):
-        pass
-
-        
+        return self.alive_bonus < 0
 
         #  try:
         #      trunk_y = self.creature.sensor_data[-1]["position"][1]  #
