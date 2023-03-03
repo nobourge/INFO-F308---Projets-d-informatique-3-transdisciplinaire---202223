@@ -151,13 +151,13 @@ class ChronoSimulation(Simulation):
         self.creature.set_forces(movement_matrix, self._TIME_STEP)
 
     def _show_initial_log(self):
-        logger.debug(f"Time step: {_TIME_STEP}, ")
+        logger.debug(f"Time step: {self._TIME_STEP}, ")
         logger.debug(f"Time steps to second: {self._TIME_STEPS_TO_SECOND}, ")
         logger.debug(
-            f"Simulation duration in seconds: {_SIM_DURATION_IN_SECS}, "
+            f"Simulation duration in seconds: {self._SIM_DURATION_IN_SECS}, "
         )
         logger.debug(
-            f"Forces delay in timesteps: {_FORCES_DELAY_IN_TIMESTEPS}, "
+            f"Forces delay in timesteps: {self._FORCES_DELAY_IN_TIMESTEPS}, "
         )
         logger.debug(
             f"Genome discrete intervals: "
@@ -245,6 +245,7 @@ class ChronoSimulation(Simulation):
         return current_sim_time > self._SIM_DURATION_IN_SECS
 
     def is_creature_fallen(self):
+        pass
 
         
 
