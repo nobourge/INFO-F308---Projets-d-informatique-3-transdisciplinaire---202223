@@ -135,26 +135,13 @@ class ChronoSimulation(Simulation):
                 // _FORCES_DELAY_IN_TIMESTEPS
             )
         )
-        logger.debug(f"Time step: {_TIME_STEP}, ")
-        logger.debug(f"Time steps to second: {self._TIME_STEPS_TO_SECOND}, ")
-        logger.debug(
-            f"Simulation duration in seconds: {_SIM_DURATION_IN_SECS}, "
-        )
-        logger.debug(
-            f"Forces delay in timesteps: {_FORCES_DELAY_IN_TIMESTEPS}, "
-        )
-        logger.debug(
-            f"Genome discrete intervals: "
-            f"{self._GENOME_DISCRETE_INTERVALS}, "
-        )
+
+        self._show_initial_log()
 
         self.__renderer = None
         if self._visualize is True:
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
-
-        """# FIXME: Pass the creature name
-        self.add_creature("")"""
 
         # Set forces on creature
         nbr = self.creature.joints_nbr()
@@ -162,6 +149,20 @@ class ChronoSimulation(Simulation):
             nbr, self._GENOME_DISCRETE_INTERVALS
         )
         self.creature.set_forces(movement_matrix, self._TIME_STEP)
+
+    def _show_initial_log(self):
+        logger.debug(f"Time step: {self._TIME_STEP}, ")
+        logger.debug(f"Time steps to second: {self._TIME_STEPS_TO_SECOND}, ")
+        logger.debug(
+            f"Simulation duration in seconds: {self._SIM_DURATION_IN_SECS}, "
+        )
+        logger.debug(
+            f"Forces delay in timesteps: {self._FORCES_DELAY_IN_TIMESTEPS}, "
+        )
+        logger.debug(
+            f"Genome discrete intervals: "
+            f"{self._GENOME_DISCRETE_INTERVALS}, "
+        )
 
     # Visualize
     def _render_setup(self):
@@ -244,42 +245,45 @@ class ChronoSimulation(Simulation):
         return current_sim_time > self._SIM_DURATION_IN_SECS
 
     def is_creature_fallen(self):
-        # FIXME hacky. Is there a way to detect collision between shapes?
-        try:
-            trunk_y = self.creature.sensor_data[-1]["position"][1]  #
-        except IndexError:
-            logger.debug(
-                "trunk_y = self.creature.sensor_data[-1]["
-                "position][1] IndexError: list index out of range"
-            )
-            return False
+        pass
+
+        
+
+        #  try:
+        #      trunk_y = self.creature.sensor_data[-1]["position"][1]  #
+        #  except IndexError:
+        #      logger.debug(
+        #          "trunk_y = self.creature.sensor_data[-1]["
+        #          "position][1] IndexError: list index out of range"
+        #      )
+        #      return False
         #
         # height_limit = self.creature.trunk_dim[2] / 2
         # return trunk_y < 1.2 * height_limit
-
-        trunk_y = self.creature.sensor_data[-1]["position"][1]
-        front_left_leg_y = self.creature.sensor_data[-1][
-            "front_left_leg_position"
-        ][1]
-        front_right_leg_y = self.creature.sensor_data[-1][
-            "front_right_leg_position"
-        ][1]
-        back_left_leg_y = self.creature.sensor_data[-1][
-            "back_left_leg_position"
-        ][1]
-        back_right_leg_y = self.creature.sensor_data[-1][
-            "back_right_leg_position"
-        ][1]
-
-        # if trunk height is less than 80% of the height of a leg
-        # , then the creature is fallen
-        if (
-            trunk_y < 0.8 * front_left_leg_y
-            or trunk_y < 0.8 * front_right_leg_y
-            or trunk_y < 0.8 * back_left_leg_y
-            or trunk_y < 0.8 * back_right_leg_y
-        ):
-            return True
+        #
+        #  trunk_y = self.creature.sensor_data[-1]["position"][1]
+        #  front_left_leg_y = self.creature.sensor_data[-1][
+        #      "front_left_leg_position"
+        #  ][1]
+        #  front_right_leg_y = self.creature.sensor_data[-1][
+        #      "front_right_leg_position"
+        #  ][1]
+        #  back_left_leg_y = self.creature.sensor_data[-1][
+        #      "back_left_leg_position"
+        #  ][1]
+        #  back_right_leg_y = self.creature.sensor_data[-1][
+        #      "back_right_leg_position"
+        #  ][1]
+        #
+        #  # if trunk height is less than 80% of the height of a leg
+        #  # , then the creature is fallen
+        #  if (
+        #      trunk_y < 0.8 * front_left_leg_y
+        #      or trunk_y < 0.8 * front_right_leg_y
+        #      or trunk_y < 0.8 * back_left_leg_y
+        #      or trunk_y < 0.8 * back_right_leg_y
+        #  ):
+        #      return True
 
     def run(self):
         logger.debug("Starting simulation")
