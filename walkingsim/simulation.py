@@ -215,7 +215,10 @@ class ChronoSimulation(Simulation):
         # If the creature went backwards, the speed is negative
         # this has a negative impact on the fitness value
         if len(sensor_data) >= 2:
-            speed = curr_state["distance"] - sensor_data[-2]["distance"]
+            speed = (
+                curr_state["distance"] - sensor_data[-2]["distance"]
+            ) / self._TIME_STEP
+            print("speed: = ", speed)
         else:
             speed = 0
 
@@ -224,7 +227,9 @@ class ChronoSimulation(Simulation):
             if abs(r) >= math.pi / 2:
                 joint_limit -= 1500
 
-        reward = distance + walk_straight + speed + joint_limit + self.alive_bonus
+        reward = (
+            distance + walk_straight + 4 * speed + joint_limit + self.alive_bonus
+        )
         return reward
 
     def _simulation_step(self):
