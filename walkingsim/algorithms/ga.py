@@ -19,14 +19,34 @@ class GeneticAlgorithm:
         num_parents_mating,
         mutation_percent_genes,
         num_joints,
+        num_steps,
+        parallel_processing=None,
+        init_range_low=-1000,
+        init_range_high=1000,
+        random_mutation_min_val=-1000,
+        random_mutation_max_val=1000,
+        parent_selection_type="tournament",
+        keep_elitism=1,
+        crossover_type="uniform",
+        save_solutions=False,
+
     ):
         self.population_size = population_size
         self.num_generations = num_generations
         self.num_parents_mating = num_parents_mating
         self.mutation_percent_genes = mutation_percent_genes
         self.num_joints = num_joints
-        self.num_steps = ChronoSimulation._GENOME_DISCRETE_INTERVALS
         self.data_log = []
+        self.num_steps = num_steps
+        self.parallel_processing = parallel_processing
+        self.init_range_low = init_range_low
+        self.init_range_high = init_range_high
+        self.random_mutation_min_val = random_mutation_min_val
+        self.random_mutation_max_val = random_mutation_max_val
+        self.parent_selection_type = parent_selection_type
+        self.keep_elitism = keep_elitism
+        self.crossover_type = crossover_type
+        self.save_solutions = save_solutions
 
         self.ga = pygad_.GA(
             num_parents_mating=self.num_parents_mating,
@@ -38,14 +58,15 @@ class GeneticAlgorithm:
             on_generation=self._on_generation,
             on_mutation=self._on_mutation,
             on_stop=self._on_stop,
-            parallel_processing=["thread", 10],  # quantity of cores to use
-            init_range_low=-1000,
-            init_range_high=1000,
-            random_mutation_min_val=-1000,
-            random_mutation_max_val=1000,
-            parent_selection_type="tournament",
-            keep_elitism=10,
-            crossover_type="uniform",
+            parallel_processing=self.parallel_processing,
+            init_range_low=self.init_range_low,
+            init_range_high=self.init_range_high,
+            random_mutation_min_val=self.random_mutation_min_val,
+            random_mutation_max_val=self.random_mutation_max_val,
+            parent_selection_type=self.parent_selection_type,
+            keep_elitism=self.keep_elitism,
+            crossover_type=self.crossover_type, 
+            save_solutions=self.save_solutions
         )
 
         self.progress_sims = tqdm.tqdm(
@@ -123,6 +144,7 @@ class GeneticAlgorithm:
             writer.writerows(self.data_log)
 
     def plot(self):
+        logger.info("Plotting results")
         self.ga.plot_fitness()
         self.ga.plot_genes()
         self.ga.plot_new_solution_rate()
@@ -140,7 +162,13 @@ class GeneticAlgorithm:
         #             "Step", j,
         #             ":", best_solution[i * self.num_steps + j],
         #         )
+
+        # logger.info("Max fitness: {}".format(
+        # self.ga.best_solution_generation())) # TypeError: 'numpy.int64' object is not callable
+
+        # logger.info("Max fitness generation index: {}".format(self.ga.
         logger.info("Best fitness: {}".format(best_fitness))
+        self.plot()
         self.save_sol(best_solution)
         self.save_data_log()
         self.progress_sims.close()

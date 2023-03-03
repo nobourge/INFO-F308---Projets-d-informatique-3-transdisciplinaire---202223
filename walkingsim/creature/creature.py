@@ -40,6 +40,7 @@ class CreatureSuperClass:
         self.__pos = chrono.ChVectorD(pos[0], pos[1], pos[2])
 
         # first elem 0 is the trunk, the rest are the legs
+        # 1 is the left front leg, 2 is the right front leg
         self.__bodies = []
         self.__joints = []
         self.__sensor_data = []
@@ -154,13 +155,24 @@ class CreatureSuperClass:
 
     def capture_sensor_data(self):
         # We capture the information from basic sensors (position, rotation, etc.)
-        pos = self.__bodies[0].GetPos()
-        self.__sensor_data.append(
-            {"position": (pos.x, pos.y, pos.z), "link_rotations": {}}
-        )
+        trunk_pos = self.__bodies[0].GetPos()
+        self.__sensor_data.append({"position": (trunk_pos.x, trunk_pos.y, trunk_pos.z), "link_rotations":{}})
         for b in range(len(self.__joints)):
             rot = self.__joints[b].GetMotorRot()
             self.__sensor_data[-1]["link_rotations"].update({str(b): rot})
+
+        front_left_leg_pos = self.__bodies[1].GetPos()
+        self.__sensor_data[-1].update({"front_left_leg_position": (
+            front_left_leg_pos.x, front_left_leg_pos.y, front_left_leg_pos.z), "link_rotations":{}})
+
+        front_right_leg_pos = self.__bodies[2].GetPos()
+        self.__sensor_data[-1].update({"front_right_leg_position": (front_right_leg_pos.x, front_right_leg_pos.y, front_right_leg_pos.z), "link_rotations":{}})
+
+        back_left_leg_pos = self.__bodies[3].GetPos()
+        self.__sensor_data[-1].update({"back_left_leg_position": (back_left_leg_pos.x, back_left_leg_pos.y, back_left_leg_pos.z), "link_rotations":{}})
+
+        back_right_leg_pos = self.__bodies[4].GetPos()
+        self.__sensor_data[-1].update({"back_right_leg_position": (back_right_leg_pos.x, back_right_leg_pos.y, back_right_leg_pos.z), "link_rotations":{}})
 
         # We compute additional information (distance, total distance, etc.)
         step_distance = 0
@@ -171,7 +183,7 @@ class CreatureSuperClass:
                 self.__sensor_data[0]["position"],
             )
 
-            # FIXME: Total distance is not calculated correctly
+            # FIXME : Total distance is not calculated correctly
             for i, data in enumerate(self.__sensor_data[1:]):
                 prev_pos = self.__sensor_data[i]
                 distance_from_prev_pos = utils.distance(
