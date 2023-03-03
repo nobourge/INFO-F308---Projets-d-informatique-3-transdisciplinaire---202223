@@ -11,6 +11,7 @@ Description:
 """
 
 import math
+
 import pychrono as chrono
 
 import walkingsim.utils.utils as utils
@@ -48,6 +49,7 @@ class CreatureSuperClass:
 
         self._create_trunk()
         self._create_legs()
+
     @property
     def pos(self):
         return self.__pos
@@ -79,8 +81,10 @@ class CreatureSuperClass:
         self.__joints_funcs = []
 
         for i, joint in enumerate(self.__joints):
-            #print(forces[i])
-            self.__joints_funcs.append(utils.ChCustomTorqueFunction(timestep, forces[i]))
+            # print(forces[i])
+            self.__joints_funcs.append(
+                utils.ChCustomTorqueFunction(timestep, forces[i])
+            )
             joint.SetTorqueFunction(self.__joints_funcs[i])
 
     def _create_trunk(self):
@@ -96,25 +100,31 @@ class CreatureSuperClass:
         # change for each creature
         pass
 
-    def _create_single_leg(self, x,y,z):
+    def _create_single_leg(self, x, y, z):
         leg_part = self._create_bone(self._legs_dimensions)
         leg_part.GetCollisionModel().SetFamily(self._collision_family)
         leg_part.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
             self._collision_family
         )
-        leg_part.SetPos(chrono.ChVectorD(x,y,z))
+        leg_part.SetPos(chrono.ChVectorD(x, y, z))
         self.__bodies.append(leg_part)
 
         # TODO: Add constraints on the joints
         joint = chrono.ChLinkMotorRotationTorque()
-        joint_frame = chrono.ChFrameD(chrono.ChVectorD(x,y+0.225,z))
+        joint_frame = chrono.ChFrameD(chrono.ChVectorD(x, y + 0.225, z))
         joint.Initialize(self.__bodies[0], leg_part, joint_frame)
 
         constraint_link = chrono.ChLinkLockRevolute()
         constraint_link.GetLimit_Rz().SetActive(True)
-        constraint_link.GetLimit_Rz().SetMin(-math.pi/3)
-        constraint_link.GetLimit_Rz().SetMax(math.pi/3)
-        constraint_link.Initialize(self.__bodies[0], leg_part, chrono.ChCoordsysD(chrono.ChVectorD(x,y+0.225,z), chrono.QUNIT))
+        constraint_link.GetLimit_Rz().SetMin(-math.pi / 3)
+        constraint_link.GetLimit_Rz().SetMax(math.pi / 3)
+        constraint_link.Initialize(
+            self.__bodies[0],
+            leg_part,
+            chrono.ChCoordsysD(
+                chrono.ChVectorD(x, y + 0.225, z), chrono.QUNIT
+            ),
+        )
 
         self.__joints.append(joint)
         self.__links.append(constraint_link)
@@ -145,10 +155,12 @@ class CreatureSuperClass:
     def capture_sensor_data(self):
         # We capture the information from basic sensors (position, rotation, etc.)
         pos = self.__bodies[0].GetPos()
-        self.__sensor_data.append({"position": (pos.x, pos.y, pos.z), "link_rotations":{}})
+        self.__sensor_data.append(
+            {"position": (pos.x, pos.y, pos.z), "link_rotations": {}}
+        )
         for b in range(len(self.__joints)):
             rot = self.__joints[b].GetMotorRot()
-            self.__sensor_data[-1]["link_rotations"].update({str(b):rot})
+            self.__sensor_data[-1]["link_rotations"].update({str(b): rot})
 
         # We compute additional information (distance, total distance, etc.)
         step_distance = 0

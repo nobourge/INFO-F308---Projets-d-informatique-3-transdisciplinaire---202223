@@ -1,3 +1,4 @@
+import csv
 import os
 import pickle
 
@@ -25,6 +26,7 @@ class GeneticAlgorithm:
         self.mutation_percent_genes = mutation_percent_genes
         self.num_joints = num_joints
         self.num_steps = ChronoSimulation._GENOME_DISCRETE_INTERVALS
+        self.data_log = []
 
         self.ga = pygad_.GA(
             num_parents_mating=self.num_parents_mating,
@@ -41,7 +43,7 @@ class GeneticAlgorithm:
             init_range_high=1000,
             random_mutation_min_val=-1000,
             random_mutation_max_val=1000,
-            parent_selection_type = "tournament",
+            parent_selection_type="tournament",
             keep_elitism=10,
             crossover_type="uniform",
         )
@@ -100,6 +102,12 @@ class GeneticAlgorithm:
         logger.debug("Creature fitness: {}".format(fitness))
         self.progress_sims.update(1)
         self.progress_gens.refresh()
+
+        # Add entry in data log
+        self.data_log.append(
+            [self.ga.generations_completed, solution_idx, fitness]
+        )
+
         return fitness
 
     def save_sol(self, best_sol):
@@ -107,6 +115,12 @@ class GeneticAlgorithm:
             pickle.dump(best_sol, fp)
 
         logger.info("Best genome was successfully written in solution.dat")
+
+    def save_data_log(self):
+        with open("data_log.csv", "w") as fp:
+            writer = csv.writer(fp)
+            writer.writerow(["generation", "solution", "fitness"])
+            writer.writerows(self.data_log)
 
     def plot(self):
         self.ga.plot_fitness()
@@ -128,5 +142,6 @@ class GeneticAlgorithm:
         #         )
         logger.info("Best fitness: {}".format(best_fitness))
         self.save_sol(best_solution)
+        self.save_data_log()
         self.progress_sims.close()
         self.progress_gens.close()

@@ -17,6 +17,7 @@ import os
 
 import networkx as nx
 import pychrono as chrono
+
 import walkingsim.utils.utils as utils
 
 
