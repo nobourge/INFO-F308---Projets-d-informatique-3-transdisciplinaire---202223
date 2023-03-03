@@ -270,6 +270,23 @@ class CreatureSuperClass:
             }
         )
 
+    def _compute_nb_joints_at_limit(self):
+        """
+        Returns the nb of joints that are closer to their limit angles
+        """
+        nb_joints_at_limit = 0
+        for link in self.__links:
+            max_angle = link.GetLimit_Rz().GetMax()
+            min_angle = link.GetLimit_Rz().GetMin()
+            current_angle = link.GetRelAngle()
+            treshold = 0.95
+            if current_angle >= (treshold * max_angle) or current_angle <= (
+                treshold * min_angle
+            ):
+                nb_joints_at_limit += 1
+
+        return nb_joints_at_limit
+
     @property
     def sensor_data(self):
         return self.__sensor_data
