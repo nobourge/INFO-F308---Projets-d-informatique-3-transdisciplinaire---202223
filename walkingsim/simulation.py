@@ -192,7 +192,7 @@ class ChronoSimulation(Simulation):
 
         # If the trunk touches the ground, alive_bonus is negative and stops sim
         self.alive_bonus = (
-            +1 if self.creature.get_trunk_contact_force() == 0 else -1
+            +1 if self.creature.get_trunk_contact_force() == 0 else -1000
         )
 
         sensor_data = self.creature.sensor_data
@@ -220,20 +220,22 @@ class ChronoSimulation(Simulation):
         else:
             speed = 0
 
-        #  joint_limit = 0
-        #  for r in curr_state["link_rotations"].values():
-        #      if abs(r) >= math.pi / 2:
-        #          joint_limit -= 1500
-
+        # Penalties for discouraging the joints to be stuck at their limit
         nb_joints_at_limit = self.creature.get_nb_joints_at_limit()
-        print("nb of joints at limit=", nb_joints_at_limit)
+
+        # Penalties for going lower than their current height
+        try:
+            height_diff = curr_state["position"][1] - sensor_data[-2]["position"][1]
+        except IndexError:
+            height_diff = 0
 
         reward = (
-            2 * distance
+            distance
             + walk_straight
             + 2 * speed
             + (-0.2 * nb_joints_at_limit)
             + self.alive_bonus
+            - 50 * (height_diff ** 2)
         )
         return reward
 

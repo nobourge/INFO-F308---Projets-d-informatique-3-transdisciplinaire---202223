@@ -107,7 +107,7 @@ class CreatureSuperClass:
             max_angle = link.GetLimit_Rz().GetMax()
             min_angle = link.GetLimit_Rz().GetMin()
             current_angle = link.GetRelAngle()
-            treshold = 0.95
+            treshold = 0.99
             if current_angle >= (treshold * max_angle) or current_angle <= (
                 treshold * min_angle
             ):
