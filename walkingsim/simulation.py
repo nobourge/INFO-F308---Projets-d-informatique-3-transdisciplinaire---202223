@@ -143,12 +143,7 @@ class ChronoSimulation(Simulation):
             # FIXME use ChIrrApp to have a GUI and tweak parameters within rendering
             self.__renderer = chronoirr.ChVisualSystemIrrlicht()
 
-        # Set forces on creature
-        nbr = self.creature.joints_nbr()
-        movement_matrix = np.array(__movement_gene).reshape(
-            nbr, self._GENOME_DISCRETE_INTERVALS
-        )
-        self.creature.set_forces(movement_matrix, self._TIME_STEP)
+        self._add_force_func_to_creature(__movement_gene)
 
     def _show_initial_log(self):
         logger.debug(f"Time step: {self._TIME_STEP}, ")
@@ -163,6 +158,13 @@ class ChronoSimulation(Simulation):
             f"Genome discrete intervals: "
             f"{self._GENOME_DISCRETE_INTERVALS}, "
         )
+
+    def _add_force_func_to_creature(self, movement_gene):
+        nbr = self.creature.joints_nbr()
+        movement_matrix = np.array(movement_gene).reshape(
+            nbr, self._GENOME_DISCRETE_INTERVALS
+        )
+        self.creature.set_forces(movement_matrix, self._TIME_STEP)
 
     # Visualize
     def _render_setup(self):
