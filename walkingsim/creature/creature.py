@@ -169,8 +169,8 @@ class CreatureSuperClass:
 
         constraint_link = chrono.ChLinkLockRevolute()
         constraint_link.GetLimit_Rz().SetActive(True)
-        constraint_link.GetLimit_Rz().SetMin(-math.pi / 2)
-        constraint_link.GetLimit_Rz().SetMax(math.pi / 2)
+        constraint_link.GetLimit_Rz().SetMin(-math.pi / 3)
+        constraint_link.GetLimit_Rz().SetMax(math.pi / 3)
         constraint_link.Initialize(
             parent,
             leg_part,
