@@ -220,13 +220,16 @@ class ChronoSimulation(Simulation):
         else:
             speed = 0
 
-        joint_limit = 0
-        for r in curr_state["link_rotations"].values():
-            if abs(r) >= math.pi / 2:
-                joint_limit -= 1500
+        #  joint_limit = 0
+        #  for r in curr_state["link_rotations"].values():
+        #      if abs(r) >= math.pi / 2:
+        #          joint_limit -= 1500
+
+        nb_joints_at_limit = self.creature.get_nb_joints_at_limit()
+        print("nb of joints at limit=", nb_joints_at_limit)
 
         reward = (
-            2 * distance + walk_straight + 2 * speed + joint_limit + self.alive_bonus
+            2 * distance + walk_straight + 2 * speed + (-0.2 * nb_joints_at_limit) + self.alive_bonus
         )
         return reward
 

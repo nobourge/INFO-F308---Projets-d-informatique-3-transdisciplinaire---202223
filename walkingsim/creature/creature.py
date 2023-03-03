@@ -71,6 +71,10 @@ class CreatureSuperClass:
     def trunk_dim(self):
         return self._trunk_dimensions
 
+    @property
+    def sensor_data(self):
+        return self.__sensor_data
+
     def get_trunk_contact_force(self):
         # The contact force of the trunk is 0 when not touching anything,
         # and != 0 when touching something (e.g. the ground)
@@ -94,6 +98,22 @@ class CreatureSuperClass:
             )
             joint.SetTorqueFunction(self.__joints_funcs[i])
 
+    def get_nb_joints_at_limit(self):
+        """
+        Returns the nb of joints that are closer to their limit angles
+        """
+        nb_joints_at_limit = 0
+        for link in self.__links:
+            max_angle = link.GetLimit_Rz().GetMax()
+            min_angle = link.GetLimit_Rz().GetMin()
+            current_angle = link.GetRelAngle()
+            treshold = 0.95
+            if current_angle >= (treshold * max_angle) or current_angle <= (
+                treshold * min_angle
+            ):
+                nb_joints_at_limit += 1
+
+        return nb_joints_at_limit
     def _create_trunk(self):
         trunk_part = self._create_bone(self._trunk_dimensions)
         trunk_part.GetCollisionModel().SetFamily(self._collision_family)
@@ -269,24 +289,3 @@ class CreatureSuperClass:
                 "link_rotations": {},
             }
         )
-
-    def _compute_nb_joints_at_limit(self):
-        """
-        Returns the nb of joints that are closer to their limit angles
-        """
-        nb_joints_at_limit = 0
-        for link in self.__links:
-            max_angle = link.GetLimit_Rz().GetMax()
-            min_angle = link.GetLimit_Rz().GetMin()
-            current_angle = link.GetRelAngle()
-            treshold = 0.95
-            if current_angle >= (treshold * max_angle) or current_angle <= (
-                treshold * min_angle
-            ):
-                nb_joints_at_limit += 1
-
-        return nb_joints_at_limit
-
-    @property
-    def sensor_data(self):
-        return self.__sensor_data
