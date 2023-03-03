@@ -114,6 +114,7 @@ class CreatureSuperClass:
                 nb_joints_at_limit += 1
 
         return nb_joints_at_limit
+
     def _create_trunk(self):
         trunk_part = self._create_bone(self._trunk_dimensions)
         trunk_part.GetCollisionModel().SetFamily(self._collision_family)
@@ -168,8 +169,8 @@ class CreatureSuperClass:
 
         constraint_link = chrono.ChLinkLockRevolute()
         constraint_link.GetLimit_Rz().SetActive(True)
-        constraint_link.GetLimit_Rz().SetMin(-math.pi / 3)
-        constraint_link.GetLimit_Rz().SetMax(math.pi / 3)
+        constraint_link.GetLimit_Rz().SetMin(-math.pi / 2)
+        constraint_link.GetLimit_Rz().SetMax(math.pi / 2)
         constraint_link.Initialize(
             parent,
             leg_part,

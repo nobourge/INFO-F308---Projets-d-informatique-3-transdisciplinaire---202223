@@ -229,7 +229,11 @@ class ChronoSimulation(Simulation):
         print("nb of joints at limit=", nb_joints_at_limit)
 
         reward = (
-            2 * distance + walk_straight + 2 * speed + (-0.2 * nb_joints_at_limit) + self.alive_bonus
+            2 * distance
+            + walk_straight
+            + 2 * speed
+            + (-0.2 * nb_joints_at_limit)
+            + self.alive_bonus
         )
         return reward
 
