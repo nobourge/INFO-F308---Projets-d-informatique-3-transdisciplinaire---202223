@@ -53,7 +53,7 @@ def main():
     )
 
     GA = GeneticAlgorithm(
-        population_size=50,
+        population_size=20,
         num_generations=10,
         num_parents_mating=2,
         mutation_percent_genes=10,
@@ -74,7 +74,7 @@ def main():
         # generations, number of
         # genes, or number of
         # solutions in population is large.
-        save_solutions=True,
+        save_solutions=False,
     )
     GA.run()
 
