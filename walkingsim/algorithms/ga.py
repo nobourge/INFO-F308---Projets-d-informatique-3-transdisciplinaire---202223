@@ -54,6 +54,11 @@ class GeneticAlgorithm:
         logger.debug("Number of CPU threads: {}", num_threads)
         print("Number of CPU threads: {}".format(num_threads))
 
+        # Get the number of CPU threads
+        num_threads = multiprocessing.cpu_count() * 2
+        logger.debug("Number of CPU threads: {}", num_threads)
+        print("Number of CPU threads: {}".format(num_threads))
+
         self.ga = pygad_.GA(
             num_parents_mating=self.num_parents_mating,
             num_generations=self.num_generations,
