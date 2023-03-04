@@ -1,7 +1,7 @@
+import multiprocessing
 import os
 import pickle
 import sys
-import multiprocessing
 
 import pygad as pygad_
 import tqdm
