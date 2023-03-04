@@ -175,7 +175,8 @@ class ChronoSimulation(Simulation):
     # Run Simulation
     def _compute_step_reward(self):
         sensor_data = self.creature.sensor_data
-        if len(sensor_data) == 0: return 0
+        if len(sensor_data) == 0:
+            return 0
         curr_state = sensor_data[-1]
         # The distance is simply the actual distance
         # from the start point to the current position
@@ -199,7 +200,8 @@ class ChronoSimulation(Simulation):
 
         joint_limit = 0
         for r in curr_state["link_rotations"].values():
-            if abs(r) >= math.pi/2: joint_limit -= 1500
+            if abs(r) >= math.pi / 2:
+                joint_limit -= 1500
 
         reward = distance + walk_straight + speed + joint_limit
         return reward
