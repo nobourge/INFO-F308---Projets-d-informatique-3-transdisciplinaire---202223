@@ -12,63 +12,52 @@ from walkingsim.simulation import Simulation
 
 
 class GeneticAlgorithm:
+    """
+    crossover_type: uniform | single_point | two_points | random
+    mutation_type: adaptive | random
+    """
+
     def __init__(
         self,
-        initial_population,
-        population_size,
-        sol_per_pop,
-        num_steps,
         num_generations,
         num_parents_mating,
         mutation_percent_genes,
-        num_joints,
         parallel_processing,
-        init_range_low,
-        init_range_high,
         parent_selection_type,
         keep_elitism,
         crossover_type,
-        save_solutions,
         mutation_type,
+        initial_population=None,
+        population_size=None,
+        num_joints=None,
     ):
-        self.initial_population = initial_population
-        self.population_size = population_size
-        self.num_generations = num_generations
-        self.sol_per_pop = sol_per_pop
-        self.num_steps = num_steps
-
-        self.num_parents_mating = num_parents_mating
-        self.mutation_percent_genes = mutation_percent_genes
-        self.num_joints = num_joints
         self.data_log = []
-        self.parallel_processing = parallel_processing
-        self.init_range_low = init_range_low
-        self.init_range_high = init_range_high
-        self.mutation_type = mutation_type
-        self.parent_selection_type = parent_selection_type
-        self.keep_elitism = keep_elitism
-        self.crossover_type = crossover_type
-        self.save_solutions = save_solutions
 
         self.ga = pygad_.GA(
-            initial_population=self.initial_population,
-            num_generations=self.num_generations,
-            sol_per_pop=self.sol_per_pop,
-            num_genes=self.num_joints * self.num_steps,
-            num_parents_mating=self.num_parents_mating,
-            mutation_percent_genes=self.mutation_percent_genes,
+            # Population & Generations settings
+            initial_population=initial_population,
+            sol_per_pop=population_size,
+            num_generations=num_generations,
+            num_genes=num_joints * Simulation._GENOME_DISCRETE_INTERVALS,
+            # Other Settings
+            num_parents_mating=num_parents_mating,
+            mutation_percent_genes=mutation_percent_genes,
+            parallel_processing=parallel_processing,
+            parent_selection_type=parent_selection_type,
+            crossover_type=crossover_type,
+            mutation_type=mutation_type,
+            keep_elitism=keep_elitism,
+            save_solutions=False,
+            # Space
+            init_range_low=-1000,
+            init_range_high=1000,
+            random_mutation_min_val=-1000,
+            random_mutation_max_val=1000,
+            # Callbacks
             fitness_func=self.fitness_function,
             on_generation=self._on_generation,
             on_mutation=self._on_mutation,
             on_stop=self._on_stop,
-            parallel_processing=self.parallel_processing,
-            init_range_low=self.init_range_low,
-            init_range_high=self.init_range_high,
-            parent_selection_type=self.parent_selection_type,
-            keep_elitism=self.keep_elitism,
-            crossover_type=self.crossover_type,
-            save_solutions=self.save_solutions,
-            mutation_type="adaptive",
         )
 
         self.progress_sims = tqdm.tqdm(
@@ -77,7 +66,7 @@ class GeneticAlgorithm:
             leave=False,
         )
         self.progress_gens = tqdm.tqdm(
-            total=self.num_generations,
+            total=num_generations,
             desc="Generations",
             leave=False,
         )
@@ -110,7 +99,10 @@ class GeneticAlgorithm:
         # and the sensor data
 
         forces_list = np.array(individual).reshape(
-            (self.num_joints, Simulation._GENOME_DISCRETE_INTERVALS)
+            (
+                self.ga.num_genes // Simulation._GENOME_DISCRETE_INTERVALS,
+                Simulation._GENOME_DISCRETE_INTERVALS,
+            )
         )
 
         env_props = EnvironmentProps("./environments").load("default")
@@ -213,7 +205,7 @@ class GeneticAlgorithm:
         logger.info("Genetic Algorithm started")
         self.ga.run()
         # get all the solutions
-        solutions = self.ga.solutions()  #
+        solutions = self.ga.solutions  #
 
         best_solution, best_fitness, _ = self.ga.best_solution()
         logger.info("Genetic Algorithm ended")
@@ -228,4 +220,4 @@ class GeneticAlgorithm:
         self.progress_sims.close()
         self.progress_gens.close()
 
-        self.plot()
+        # self.plot()

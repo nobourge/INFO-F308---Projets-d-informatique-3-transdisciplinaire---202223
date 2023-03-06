@@ -19,15 +19,15 @@ class _CreatureBody:
     def __init__(
         self, size: tuple, family: int = 1, position: tuple = None, parent=None
     ) -> None:
-        self.__size = size
-        self.__position = (0, 0, 0) if position is None else position
-        self.__family = family
+        self._size = size
+        self._position = (0, 0, 0) if position is None else position
+        self._family = family
 
-        self.__parent = parent
-        self.__childs = []
-        self.__body = self._create_body()
-        self.__motor = None
-        self.__link = None
+        self._parent = parent
+        self._childs = []
+        self._motor = None
+        self._link = None
+        self._create_body()
 
     def _create_body(self):
         raise NotImplementedError
@@ -35,35 +35,35 @@ class _CreatureBody:
     # Getters
     @property
     def size(self):
-        return self.__size
+        return self._size
 
     @property
     def position(self):
-        return self.__position
+        return self._position
 
     @property
     def family(self):
-        return self.__family
+        return self._family
 
     @property
     def parent(self):
-        return self.__parent
+        return self._parent
 
     @property
     def childs(self) -> t.List["_CreatureBody"]:
-        return self.__childs
+        return self._childs
 
     @property
     def body(self):
-        return self.__body
+        return self._body
 
     @property
     def link(self):
-        return self.__link
+        return self._link
 
     @property
     def motor(self):
-        return self.__motor
+        return self._motor
 
     # Methods
     def collision(

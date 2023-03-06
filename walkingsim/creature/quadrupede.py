@@ -24,7 +24,7 @@ class Quadrupede(Creature):
         super().__init__(body_cls, (1.0, 0.5, 0.5), root_pos)
 
     def create(self):
-        yoffset = (self.root.size[1] / 2) + 0.1
+        yoffset = (-self.root.size[1] / 2) + 0.01
         xoffset = 0.2
 
         for i, (xfactor, zfactor) in enumerate(
@@ -50,6 +50,6 @@ class Quadrupede(Creature):
                     constraints_z=[-0.05, math.pi / 2],
                     motor="torque",
                 )
-                .branch(size=(0.4, 0.1, 0.4), relpos=(0, -0.7, 0))  # foot
+                .branch(size=(0.4, 0.1, 0.4), relpos=(0, -0.4, 0))  # foot
                 .join(relpos=(0, 0.1 / 2, 0))
             )

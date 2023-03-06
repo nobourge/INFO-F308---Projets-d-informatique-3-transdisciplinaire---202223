@@ -5,7 +5,8 @@ import sys
 import numpy as np
 from loguru import logger
 
-from walkingsim.simulation import ChronoSimulation
+from walkingsim.loader import EnvironmentProps
+from walkingsim.simulation import Simulation
 
 
 def main():
@@ -25,24 +26,19 @@ def main():
     if len(sys.argv) >= 3:
         creature_name = sys.argv[2]
 
-    environments_path = "./environments"
-    creatures_path = "./creatures"
-
-    # simulation slow motion parameter (0.1 = 10x slower)
-
-    sim = ChronoSimulation(
-        environments_path,
-        environment,
-        creatures_path,
-        True,
-        mv_matrice,
-        _TIME_STEP=1e-2,
-        _SIM_DURATION_IN_SECS=5,
-        # _SIM_DURATION_IN_SECS=50,
-        # applying the same force during set timesteps
-        _FORCES_DELAY_IN_TIMESTEPS=4,
+    forces_list = np.array(mv_matrice).reshape(
+        (8, Simulation._GENOME_DISCRETE_INTERVALS)
     )
-    sim.run()
+
+    env_props = EnvironmentProps("./environments").load("default")
+    simulation = Simulation(env_props, True)
+
+    while not simulation.is_over():
+        for forces in forces_list:
+            simulation.step(list(forces))
+
+    fitness = simulation.total_reward
+    print(fitness)
 
 
 if __name__ == "__main__":

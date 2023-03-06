@@ -30,8 +30,8 @@ class Simulation:
         )
     )
 
-    def __init__(self, __env_props: dict) -> None:
-        self.__environment = ChronoEnvironment(False)
+    def __init__(self, __env_props: dict, visualize: bool = False) -> None:
+        self.__environment = ChronoEnvironment(visualize)
         self.__environment.reset(__env_props)
         self.__total_reward = 0
         self.__step_reward = 0
@@ -51,46 +51,48 @@ class Simulation:
         self.__total_reward += self.__step_reward
 
     def _compute_step_reward(self):
+        observations = self.__environment.observations
+        if len(observations) == 0:
+            return 0
+
+        last_observations = observations[-1]
         # If the trunk touches the ground, alive_bonus is negative and stops sim
         _alive_bonus = (
-            +1 if self.creature.get_trunk_contact_force() == 0 else -1
+            +1 if last_observations["trunk_hit_ground"] == False else -1
         )
-        if _alive_bonus > 0:
+        if _alive_bonus < 0:
             self.__is_creature_fallen = True
 
-        sensor_data = self.creature.sensor_data
-        if len(sensor_data) == 0:
-            return 0
-        curr_state = sensor_data[-1]
         # The distance is simply the actual distance
         # from the start point to the current position
-        distance = curr_state["distance"]
-        if sensor_data[-1]["position"][0] < sensor_data[0]["position"][0]:
+        distance = last_observations["distance"]
+        if observations[-1]["position"][0] < observations[0]["position"][0]:
             distance *= -1
 
         # The walk straight reward is a value that tells
         # if the creature is walking straight or not. If the
         # creature is walking straight the value will be close to 0
         # FIXME: Why 3 ?
-        walk_straight = -3 * (curr_state["position"][2] ** 2)
+        walk_straight = -3 * (last_observations["position"][2] ** 2)
 
         # The speed is how much distance the creature did in one step
         # If the creature went backwards, the speed is negative
         # this has a negative impact on the fitness value
-        if len(sensor_data) >= 2:
+        if len(observations) >= 2:
             speed = (
-                curr_state["distance"] - sensor_data[-2]["distance"]
+                last_observations["distance"] - observations[-2]["distance"]
             ) / self._TIME_STEP
         else:
             speed = 0
 
         # Penalties for discouraging the joints to be stuck at their limit
-        nb_joints_at_limit = self.creature.get_nb_joints_at_limit()
+        nb_joints_at_limit = last_observations["joints_at_limits"]
 
         # Penalties for going lower than their current height
         try:
             height_diff = (
-                curr_state["position"][1] - sensor_data[-2]["position"][1]
+                last_observations["position"][1]
+                - observations[-2]["position"][1]
             )
         except IndexError:
             height_diff = 0
@@ -120,5 +122,6 @@ class Simulation:
         #     device_state = self.__renderer.Run()
         #     if not device_state:
         #         is_over = True
+        self.__environment.check()
 
         return is_over
