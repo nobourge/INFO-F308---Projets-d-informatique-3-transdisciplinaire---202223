@@ -1,12 +1,8 @@
 import pychrono as chrono
 
+from .utils import _tuple_to_chrono_vector
 from .visualizer import Visualizer
 
-def _tuple_to_chrono_vector(_tuple: tuple):
-    if len(_tuple) != 3:
-        raise RuntimeError(f"Cannot convert tuple[{len(_tuple)}] to chrono.ChVectorD")
-
-    return chrono.ChVectorD(_tuple[0], _tuple[1], _tuple[2])
 
 class Environment:
     _TIME_STEP = 1e-2
