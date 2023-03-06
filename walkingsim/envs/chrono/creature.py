@@ -1,9 +1,10 @@
 import typing as t
 import pychrono as chrono
 
+from walkingsim.creature.creature import _CreatureBody
 from .utils import _tuple_to_chrono_vector
 
-class CreatureBody:
+class CreatureBody(_CreatureBody):
     _DENSITY = 1000
     _MATERIAL = chrono.ChMaterialSurfaceNSC()
     _MATERIAL.SetFriction(0.5)
@@ -38,39 +39,6 @@ class CreatureBody:
         body.SetPos(chrono_pos)
 
         return body
-
-    # Getters
-    @property
-    def size(self):
-        return self.__size
-
-    @property
-    def position(self):
-        return self.__position
-
-    @property
-    def family(self):
-        return self.__family
-
-    @property
-    def parent(self):
-        return self.__parent
-
-    @property
-    def childs(self) -> t.List["CreatureBody"]:
-        return self.__childs
-
-    @property
-    def body(self):
-        return self.__body
-
-    @property
-    def link(self):
-        return self.__link
-
-    @property
-    def motor(self):
-        return self.__motor
 
     # Methods
     def collision(
