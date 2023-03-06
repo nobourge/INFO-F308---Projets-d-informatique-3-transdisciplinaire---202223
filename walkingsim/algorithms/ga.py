@@ -1,12 +1,14 @@
 import csv
 import os
 import pickle
+import numpy as np
 
 import pygad as pygad_
 import tqdm
 from loguru import logger
 
-from walkingsim.simulation import ChronoSimulation
+from walkingsim.loader import EnvironmentProps
+from walkingsim.simulation import Simulation
 
 
 class GeneticAlgorithm:
@@ -122,20 +124,20 @@ class GeneticAlgorithm:
         logger.debug("Creature genome: {}".format(individual))
         # Simulate the movement of the quadruped based on the movement matrix
         # and the sensor data
-
-        environment = "default"
-        environments_path = "./environments"
-        creatures_path = "./creatures"
-
-        simulation = ChronoSimulation(
-            environments_path,
-            environment,
-            creatures_path,
-            False,
-            individual,
+        
+        forces_list = np.array(individual).reshape(
+            (self.num_joints, Simulation._GENOME_DISCRETE_INTERVALS)
         )
-        # simulation.add_creature(creature_name="bipede")
-        fitness = simulation.run()
+
+        env_props = EnvironmentProps("./environments").load("default")
+        simulation = Simulation(env_props)
+        
+        while not simulation.is_over():
+            for forces in forces_list:
+                simulation.step(list(forces))
+        
+        fitness = simulation.total_reward
+
         logger.debug("Creature fitness: {}".format(fitness))
         self.progress_sims.update(1)
         self.progress_gens.refresh()

@@ -45,7 +45,7 @@ class Simulation:
         return self.__step_reward
 
     def step(self, action: list):
-        self.__environment.step(action)
+        self.__environment.step(action, self._TIME_STEP)
         self.__step_reward = self._compute_step_reward()
         self.__total_reward += self.__step_reward
 
