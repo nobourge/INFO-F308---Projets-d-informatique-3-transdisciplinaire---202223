@@ -117,11 +117,6 @@ class Simulation:
         if self._is_time_limit_reached() or self.__is_creature_fallen:
             is_over = True
 
-        # FIXME: How do i do this ?
-        # if self._visualize:
-        #     device_state = self.__renderer.Run()
-        #     if not device_state:
-        #         is_over = True
         self.__environment.check()
 
         return is_over
