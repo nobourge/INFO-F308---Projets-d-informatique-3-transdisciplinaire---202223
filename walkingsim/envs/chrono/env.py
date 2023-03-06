@@ -1,5 +1,7 @@
 import pychrono as chrono
 
+from .visualizer import Visualizer
+
 def _tuple_to_chrono_vector(_tuple: tuple):
     if len(_tuple) != 3:
         raise RuntimeError(f"Cannot convert tuple[{len(_tuple)}] to chrono.ChVectorD")
@@ -7,15 +9,32 @@ def _tuple_to_chrono_vector(_tuple: tuple):
     return chrono.ChVectorD(_tuple[0], _tuple[1], _tuple[2])
 
 class Environment:
-    def __init__(self):
+    _TIME_STEP = 1e-2
+
+    def __init__(self, visualize: bool=False):
         self.__environment = chrono.ChSystemNSC()
+
+        self.__visualizer = None
+        if visualize:
+            self.__visualizer = Visualizer(self.__environment)
 
         # Materials & Colors
         self.__ground_material = chrono.ChMaterialSurfaceNSC()
         self.__ground_color = chrono.ChColor(0.5, 0.7, 0.3)
 
+        # Observations
+        self.__observations = None
+
+    @property
+    def observations(self):
+        return self.__observations
+
+    def _gather_observations(self):
+        pass
+
     def reset(self, properties: dict):
         self.__environment.Clear()
+        self.__environment.SetChTime(0) # NOTE: Is this necessary ?
 
         # Set environment properties
         gravity = properties.get("gravity", (0, -9.81, 0))
@@ -40,5 +59,13 @@ class Environment:
 
         # TODO: Add creature
 
+        # Setup visualizer
+        if self.__visualizer is not None:
+            self.__visualizer.setup()
+
     def step(self, action: list):
-        pass
+        self._gather_observations()
+        self.__environment.DoStepDynamics(self._TIME_STEP)
+        if self.__visualizer is not None:
+            self.__visualizer.render()
+        self._gather_observations()
