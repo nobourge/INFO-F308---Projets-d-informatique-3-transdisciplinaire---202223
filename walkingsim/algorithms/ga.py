@@ -16,7 +16,6 @@ class GeneticAlgorithm:
         population_size,
         sol_per_pop,
         num_steps,
-
         num_generations,
         num_parents_mating,
         mutation_percent_genes,
@@ -70,19 +69,15 @@ class GeneticAlgorithm:
             num_generations=self.num_generations,
             sol_per_pop=self.sol_per_pop,
             num_genes=self.num_joints * self.num_steps,
-
             num_parents_mating=self.num_parents_mating,
-
             mutation_percent_genes=self.mutation_percent_genes,
             fitness_func=self.fitness_function,
             on_generation=self._on_generation,
             on_mutation=self._on_mutation,
             on_stop=self._on_stop,
             parallel_processing=self.parallel_processing,
-
             init_range_low=self.init_range_low,
             init_range_high=self.init_range_high,
-
             parent_selection_type=self.parent_selection_type,
             keep_elitism=self.keep_elitism,
             crossover_type=self.crossover_type,
@@ -161,23 +156,29 @@ class GeneticAlgorithm:
                 previous_best_fitness = pickle.load(fp)
             else:
                 previous_best_fitness = 0
-            logger.info("Previous best fitness: {}",
-                        previous_best_fitness)
+            logger.info("Previous best fitness: {}", previous_best_fitness)
 
         if previous_best_fitness < best_fitness:
-            print("previous best fitness: ", previous_best_fitness,
-                  "< best fitness: ", best_fitness)
+            print(
+                "previous best fitness: ",
+                previous_best_fitness,
+                "< best fitness: ",
+                best_fitness,
+            )
 
             # save all solutions best
             with open("solutions_all_best.dat", "wb") as fp:
                 pickle.dump(solutions, fp)
-            print("Best genomes was successfully written in "
-                  "solutions_all_best.dat")
+            print(
+                "Best genomes was successfully written in "
+                "solutions_all_best.dat"
+            )
 
             with open("solution_best.dat", "wb") as fp:
                 pickle.dump(best_sol, fp)
-            print("Best genome was successfully written in "
-                  "solution_best.dat")
+            print(
+                "Best genome was successfully written in " "solution_best.dat"
+            )
 
             with open("fitness_best.dat", "wb") as fp:
                 pickle.dump(best_fitness, fp)
@@ -185,20 +186,26 @@ class GeneticAlgorithm:
         # current
         with open("previous_run_solution.dat", "wb") as fp:
             pickle.dump(best_sol, fp)
-        print("Best current genome was successfully written as "
-              "current in "
-              "previous_run_solution.dat")
+        print(
+            "Best current genome was successfully written as "
+            "current in "
+            "previous_run_solution.dat"
+        )
 
         with open("previous_run_solutions.dat", "wb") as fp:
             pickle.dump(solutions, fp)
-        print("All current genomes were successfully written as "
-              "current in "
-              "previous_run_solutions.dat")
+        print(
+            "All current genomes were successfully written as "
+            "current in "
+            "previous_run_solutions.dat"
+        )
 
         with open("fitness.dat", "wb") as fp:
             pickle.dump(best_fitness, fp)
-        print("Current fitness was successfully written as current in "
-                  "previous_run_solution.dat")
+        print(
+            "Current fitness was successfully written as current in "
+            "previous_run_solution.dat"
+        )
 
     def save_data_log(self):
         with open("data_log.csv", "w") as fp:
@@ -220,7 +227,7 @@ class GeneticAlgorithm:
         logger.info("Genetic Algorithm started")
         self.ga.run()
         # get all the solutions
-        solutions = self.ga.solutions() #
+        solutions = self.ga.solutions()  #
 
         best_solution, best_fitness, _ = self.ga.best_solution()
         logger.info("Genetic Algorithm ended")

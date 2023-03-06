@@ -11,12 +11,16 @@ Description:
 """
 
 import typing as t
+
 import walkingsim.utils.utils as utils
 
+
 class _CreatureBody:
-    def __init__(self, size: tuple, family: int=1, position: tuple=None, parent=None) -> None:
+    def __init__(
+        self, size: tuple, family: int = 1, position: tuple = None, parent=None
+    ) -> None:
         self.__size = size
-        self.__position = (0,0,0) if position is None else position
+        self.__position = (0, 0, 0) if position is None else position
         self.__family = family
 
         self.__parent = parent
@@ -62,14 +66,24 @@ class _CreatureBody:
         return self.__motor
 
     # Methods
-    def collision(self, family: t.Optional[int]=None,nocollision: t.Optional[t.Sequence[int]]=None,docollision: t.Optional[t.Sequence[int]]=None) -> '_CreatureBody':
+    def collision(
+        self,
+        family: t.Optional[int] = None,
+        nocollision: t.Optional[t.Sequence[int]] = None,
+        docollision: t.Optional[t.Sequence[int]] = None,
+    ) -> "_CreatureBody":
         raise NotImplementedError
 
-    def branch(self, size: tuple, family: int = None, relpos: tuple=None) -> '_CreatureBody':
+    def branch(
+        self, size: tuple, family: int = None, relpos: tuple = None
+    ) -> "_CreatureBody":
         raise NotImplementedError
 
-    def join(self, relpos: tuple=None, constraints_z: tuple=None, motor=None) -> '_CreatureBody':
+    def join(
+        self, relpos: tuple = None, constraints_z: tuple = None, motor=None
+    ) -> "_CreatureBody":
         raise NotImplementedError
+
 
 class Creature:
     """
@@ -85,7 +99,12 @@ class Creature:
         motors: retrieve a list of all the motors in the creature
     """
 
-    def __init__(self, body_cls: t.Type[_CreatureBody], root_size: tuple, root_pos: tuple = None) -> None:
+    def __init__(
+        self,
+        body_cls: t.Type[_CreatureBody],
+        root_size: tuple,
+        root_pos: tuple = None,
+    ) -> None:
         self.__root = body_cls(
             root_size, family=1, position=root_pos, parent=None
         )

@@ -1,9 +1,9 @@
 import os
 import pickle
 import sys
-from loguru import logger
 
 import numpy as np
+from loguru import logger
 
 from walkingsim.simulation import ChronoSimulation
 
@@ -17,8 +17,7 @@ def main():
             previous_best_fitness = pickle.load(fp)
         else:
             previous_best_fitness = 0
-        logger.info("Fitness: {}",
-                    previous_best_fitness)
+        logger.info("Fitness: {}", previous_best_fitness)
 
     environment, creature_name = "default", "bipede"
     if len(sys.argv) >= 2:

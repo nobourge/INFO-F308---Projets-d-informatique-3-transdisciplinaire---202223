@@ -1,7 +1,8 @@
 import pychrono as chrono
 import pychrono.irrlicht as chronoirr
 
-class Visualizer:
+
+class ChronoVisualizer:
     def __init__(self, system: chrono.ChSystem) -> None:
         self.__visualizer = chronoirr.ChVisualSystemIrrlicht()
         self.__system = system

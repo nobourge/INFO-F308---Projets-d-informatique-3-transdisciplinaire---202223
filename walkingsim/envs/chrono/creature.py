@@ -1,19 +1,23 @@
 import typing as t
+
 import pychrono as chrono
 
 from walkingsim.creature.creature import _CreatureBody
-from .utils import _tuple_to_chrono_vector
+from walkingsim.envs.chrono.utils import _tuple_to_chrono_vector
 
-class CreatureBody(_CreatureBody):
+
+class ChronoCreatureBody(_CreatureBody):
     _DENSITY = 1000
     _MATERIAL = chrono.ChMaterialSurfaceNSC()
     _MATERIAL.SetFriction(0.5)
     _MATERIAL.SetDampingF(0.2)
     _BODY_COLOR = chrono.ChColor(0.5, 0.7, 0.5)
 
-    def __init__(self, size: tuple, family: int=1, position: tuple=None, parent=None):
+    def __init__(
+        self, size: tuple, family: int = 1, position: tuple = None, parent=None
+    ):
         self.__size = size
-        self.__position = (0,0,0) if position is None else position
+        self.__position = (0, 0, 0) if position is None else position
         self.__family = family
 
         self.__parent = parent
@@ -34,7 +38,7 @@ class CreatureBody(_CreatureBody):
         )
         body.SetBodyFixed(False)
         body.GetVisualShape(0).SetColor(self._BODY_COLOR)
-        self.collision(family=self.__family,nocollision=[self.__family])
+        self.collision(family=self.__family, nocollision=[self.__family])
         chrono_pos = _tuple_to_chrono_vector(self.__position)
         body.SetPos(chrono_pos)
 
@@ -43,39 +47,47 @@ class CreatureBody(_CreatureBody):
     # Methods
     def collision(
         self,
-        family: t.Optional[int]=None,
-        nocollision: t.Optional[t.Sequence[int]]=None,
-        docollision: t.Optional[t.Sequence[int]]=None
+        family: t.Optional[int] = None,
+        nocollision: t.Optional[t.Sequence[int]] = None,
+        docollision: t.Optional[t.Sequence[int]] = None,
     ):
         if family is not None:
             self.__body.GetCollisionModel().SetFamily(family)
-            self.__body.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(family)
+            self.__body.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
+                family
+            )
             for i in range(15):
                 if i != family:
-                    self.__body.GetCollisionModel().SetFamilyMaskDoCollisionWithFamily(i)
+                    self.__body.GetCollisionModel().SetFamilyMaskDoCollisionWithFamily(
+                        i
+                    )
             self.__family = family
 
         if nocollision is not None:
             for fam in nocollision:
-                self.__body.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(fam)
+                self.__body.GetCollisionModel().SetFamilyMaskNoCollisionWithFamily(
+                    fam
+                )
 
         if docollision is not None:
             for fam in docollision:
-                self.__body.GetCollisionModel().SetFamilyMaskDoCollisionWithFamily(fam)
+                self.__body.GetCollisionModel().SetFamilyMaskDoCollisionWithFamily(
+                    fam
+                )
 
         return self
 
-    def branch(self, size: tuple, family: int = None, relpos: tuple=None):
+    def branch(self, size: tuple, family: int = None, relpos: tuple = None):
         if family is None:
             family = self.__family
 
         if relpos is None:
-            relpos = (0,0,0)
+            relpos = (0, 0, 0)
 
         _position = (
             self.__position[0] + relpos[0],
             self.__position[1] + relpos[1],
-            self.__position[2] + relpos[2]
+            self.__position[2] + relpos[2],
         )
 
         _child = CreatureBody(size, family, position=_position, parent=self)
@@ -92,13 +104,15 @@ class CreatureBody(_CreatureBody):
             raise RuntimeError("Cannot create joint, body has not parent")
 
         if relpos is None:
-            relpos = (0,0,0)
+            relpos = (0, 0, 0)
 
-        joint_pos = _tuple_to_chrono_vector((
-            self.__position[0] + relpos[0],
-            self.__position[1] + relpos[1],
-            self.__position[2] + relpos[2]
-        ))
+        joint_pos = _tuple_to_chrono_vector(
+            (
+                self.__position[0] + relpos[0],
+                self.__position[1] + relpos[1],
+                self.__position[2] + relpos[2],
+            )
+        )
 
         if motor == "torque":
             self.__motor = chrono.ChLinkMotorRotationTorque()

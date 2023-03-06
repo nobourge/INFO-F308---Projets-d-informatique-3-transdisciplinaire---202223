@@ -1,10 +1,11 @@
 import pychrono as chrono
 
-from .utils import _tuple_to_chrono_vector
-from .visualizer import Visualizer
-from .creature import CreatureBody
 from walkingsim.creature.quadrupede import Quadrupede
+from walkingsim.envs.chrono.creature import ChronoCreatureBody
+from walkingsim.envs.chrono.utils import _tuple_to_chrono_vector
+from walkingsim.envs.chrono.visualizer import ChronoVisualizer
 from walkingsim.utils import utils
+
 
 class ChCustomTorqueFunction(chrono.ChFunction_SetpointCallback):
     def __init__(self, value: float):
@@ -15,16 +16,16 @@ class ChCustomTorqueFunction(chrono.ChFunction_SetpointCallback):
         return self.__value
 
 
-class Environment:
+class ChronoEnvironment:
     _TIME_STEP = 1e-2
 
-    def __init__(self, visualize: bool=False):
+    def __init__(self, visualize: bool = False):
         self.__environment = chrono.ChSystemNSC()
         self.__creature = None
 
         self.__visualizer = None
         if visualize:
-            self.__visualizer = Visualizer(self.__environment)
+            self.__visualizer = ChronoVisualizer(self.__environment)
 
         # Materials & Colors
         self.__ground_material = chrono.ChMaterialSurfaceNSC()
@@ -43,7 +44,7 @@ class Environment:
 
     def reset(self, properties: dict):
         self.__environment.Clear()
-        self.__environment.SetChTime(0) # NOTE: Is this necessary ?
+        self.__environment.SetChTime(0)  # NOTE: Is this necessary ?
 
         # Set environment properties
         gravity = properties.get("gravity", (0, -9.81, 0))
@@ -54,20 +55,20 @@ class Environment:
         # Add ground
         ground_size = (100, 5, 20)
         ground = chrono.ChBodyEasyBox(
-            ground_size[0],         # Xsize
-            ground_size[1],         # Ysize
-            ground_size[2],         # Zsize
-            4000,                   # Density
-            True,                   # Collide
-            True,                   # Visualize
-            self.__ground_material  # Material
+            ground_size[0],  # Xsize
+            ground_size[1],  # Ysize
+            ground_size[2],  # Zsize
+            4000,  # Density
+            True,  # Collide
+            True,  # Visualize
+            self.__ground_material,  # Material
         )
         ground.SetBodyFixed(True)
         ground.SetPos(chrono.ChVectorD(0, ground_size[1] / 2, 0))
         ground.GetVisualShape(0).SetColor(self.__ground_color)
 
         # Add creature
-        self.__creature = Quadrupede(CreatureBody, (0, 1.65, 0))
+        self.__creature = Quadrupede(ChronoCreatureBody, (0, 1.65, 0))
         for body in self.__creature.bodies():
             self.__environment.Add(body)
         for joint in self.__creature.motors():
@@ -97,9 +98,7 @@ class Environment:
 
         for i, joint in enumerate(self.__creature.motors()):
             # print(forces[i])
-            self.__joints_funcs.append(
-                ChCustomTorqueFunction(action[i])
-            )
+            self.__joints_funcs.append(ChCustomTorqueFunction(action[i]))
             if isinstance(joint, chrono.ChLinkMotorRotationTorque):
                 joint.SetTorqueFunction(self.__joints_funcs[i])
             elif isinstance(joint, chrono.ChLinkMotorRotationAngle):
@@ -127,7 +126,9 @@ class Environment:
 
         # The contact force of the trunk is 0 when not touching anything,
         # and != 0 when touching something (e.g. the ground)
-        trunk_hit_ground = self.__creature.root.body.GetContactForce().Length() != 0
+        trunk_hit_ground = (
+            self.__creature.root.body.GetContactForce().Length() != 0
+        )
 
         # Get position and rotation of trunk
         trunk_pos = self.__creature.root.body.GetPos()
@@ -159,9 +160,11 @@ class Environment:
                 total_distance += distance_from_prev_pos
 
         # We update the last sensor data added with those additional information
-        self.__observations[-1].update({
-            "distance": step_distance, 
-            "total_distance": total_distance,
-            "joints_at_limits": nb_joints_at_limit,
-            "trunk_hit_ground": trunk_hit_ground
-        })
+        self.__observations[-1].update(
+            {
+                "distance": step_distance,
+                "total_distance": total_distance,
+                "joints_at_limits": nb_joints_at_limit,
+                "trunk_hit_ground": trunk_hit_ground,
+            }
+        )

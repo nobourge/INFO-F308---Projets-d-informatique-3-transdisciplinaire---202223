@@ -1,12 +1,12 @@
-import walkingsim.utils._logging  # Configure logging
 import multiprocessing
 import os
 import pickle
 
+import walkingsim.utils._logging  # Configure logging
+from walkingsim.algorithms.ga import GeneticAlgorithm
 
 # from loguru import logger
 
-from walkingsim.algorithms.ga import GeneticAlgorithm
 
 # The programs has 2 steps:
 # 1. Training our models and get the results
@@ -72,11 +72,10 @@ def main():
             initial_population = 0
 
     GA = GeneticAlgorithm(
-        initial_population=[initial_population]*population_size,
+        initial_population=[initial_population] * population_size,
         population_size=population_size,
         sol_per_pop=population_size,
         num_steps=_GENOME_DISCRETE_INTERVALS,
-
         num_generations=200,
         num_parents_mating=4,
         num_joints=8,
@@ -84,26 +83,21 @@ def main():
         parallel_processing=24,
         init_range_low=-1000,
         init_range_high=1000,
-
         parent_selection_type="tournament",
         # K_tournament=population_size // 100,
         keep_elitism=population_size // 100,
-
         crossover_type="uniform",
         # crossover_type="single_point",
         # crossover_type="two_points",
         # crossover_type="random",
-
         # UserWarning: Use the 'save_solutions' parameter with caution
         # as it may cause memory overflow when either the number of
         # generations, number of
         # genes, or number of
         # solutions in population is large.
         save_solutions=False,
-
         mutation_type="adaptive",
-        mutation_percent_genes=(40,10),
-
+        mutation_percent_genes=(40, 10),
         # mutation_type="random",
         # mutation_by_replacement=True,
         # random_mutation_min_val=-1000,
