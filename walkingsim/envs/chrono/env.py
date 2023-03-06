@@ -41,6 +41,10 @@ class ChronoEnvironment:
     @property
     def creature_shape(self):
         return len(self.__creature.motors())
+    
+    @property
+    def time(self):
+        return self.__environment.GetChTime()
 
     def reset(self, properties: dict):
         self.__environment.Clear()
@@ -75,6 +79,8 @@ class ChronoEnvironment:
             self.__environment.Add(joint)
         for link in self.__creature.links():
             self.__environment.AddLink(link)
+
+        self._gather_observations()
 
         # Setup visualizer
         if self.__visualizer is not None:
