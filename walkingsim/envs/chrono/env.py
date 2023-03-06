@@ -17,8 +17,6 @@ class ChCustomTorqueFunction(chrono.ChFunction_SetpointCallback):
 
 
 class ChronoEnvironment:
-    _TIME_STEP = 1e-2
-
     def __init__(self, visualize: bool = False):
         self.__environment = chrono.ChSystemNSC()
         self.__creature = None
@@ -86,9 +84,9 @@ class ChronoEnvironment:
         if self.__visualizer is not None:
             self.__visualizer.setup()
 
-    def step(self, action: list):
+    def step(self, action: list, timestep: float):
         self._apply_forces(action)
-        self.__environment.DoStepDynamics(self._TIME_STEP)
+        self.__environment.DoStepDynamics(timestep)
         if self.__visualizer is not None:
             self.__visualizer.render()
         self._gather_observations()
