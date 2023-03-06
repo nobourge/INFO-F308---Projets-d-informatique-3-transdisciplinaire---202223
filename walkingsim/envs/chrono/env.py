@@ -66,8 +66,9 @@ class ChronoEnvironment:
             self.__ground_material,  # Material
         )
         ground.SetBodyFixed(True)
-        ground.SetPos(chrono.ChVectorD(0, ground_size[1] / 2, 0))
+        ground.SetPos(chrono.ChVectorD(0, -ground_size[1] / 2, 0))
         ground.GetVisualShape(0).SetColor(self.__ground_color)
+        self.__environment.Add(ground)
 
         # Add creature
         self.__creature = Quadrupede(ChronoCreatureBody, (0, 1.65, 0))
@@ -90,6 +91,10 @@ class ChronoEnvironment:
         if self.__visualizer is not None:
             self.__visualizer.render()
         self._gather_observations()
+
+    def check(self):
+        if self.__visualizer is not None:
+            return self.__visualizer.check()
 
     # private methods
     def _apply_forces(self, action: list):
