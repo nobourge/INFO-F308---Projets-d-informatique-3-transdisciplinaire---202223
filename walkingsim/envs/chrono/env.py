@@ -39,7 +39,7 @@ class ChronoEnvironment:
     @property
     def creature_shape(self):
         return len(self.__creature.motors())
-    
+
     @property
     def time(self):
         return self.__environment.GetChTime()

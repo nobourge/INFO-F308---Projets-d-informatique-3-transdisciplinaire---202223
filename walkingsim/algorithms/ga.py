@@ -1,8 +1,8 @@
 import csv
 import os
 import pickle
-import numpy as np
 
+import numpy as np
 import pygad as pygad_
 import tqdm
 from loguru import logger
@@ -49,22 +49,6 @@ class GeneticAlgorithm:
         self.keep_elitism = keep_elitism
         self.crossover_type = crossover_type
         self.save_solutions = save_solutions
-
-        print("GeneticAlgorithm.__init__")
-        print("self.initial_population", self.initial_population)
-        print("self.population_size", self.population_size)
-        print("self.num_generations", self.num_generations)
-        print("sol_per_pop", self.sol_per_pop)
-        print("self.num_parents_mating", self.num_parents_mating)
-        print("self.mutation_percent_genes", self.mutation_percent_genes)
-        print("self.num_joints", self.num_joints)
-        print("self.num_steps", self.num_steps)
-        print("self.parallel_processing", self.parallel_processing)
-        print("self.mutation_type", self.mutation_type)
-        print("self.parent_selection_type", self.parent_selection_type)
-        print("self.keep_elitism", self.keep_elitism)
-        print("self.crossover_type", self.crossover_type)
-        print("self.save_solutions", self.save_solutions)
 
         self.ga = pygad_.GA(
             initial_population=self.initial_population,
@@ -124,18 +108,18 @@ class GeneticAlgorithm:
         logger.debug("Creature genome: {}".format(individual))
         # Simulate the movement of the quadruped based on the movement matrix
         # and the sensor data
-        
+
         forces_list = np.array(individual).reshape(
             (self.num_joints, Simulation._GENOME_DISCRETE_INTERVALS)
         )
 
         env_props = EnvironmentProps("./environments").load("default")
         simulation = Simulation(env_props)
-        
+
         while not simulation.is_over():
             for forces in forces_list:
                 simulation.step(list(forces))
-        
+
         fitness = simulation.total_reward
 
         logger.debug("Creature fitness: {}".format(fitness))

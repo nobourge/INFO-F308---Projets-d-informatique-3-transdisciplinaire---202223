@@ -15,6 +15,7 @@ import os
 
 from loguru import logger
 
+
 class EnvironmentProps:
     """
     Class to load environments from JSON files.

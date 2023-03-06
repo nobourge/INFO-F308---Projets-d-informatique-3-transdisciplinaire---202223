@@ -10,6 +10,7 @@ Description:
     Classes for the simulations
 """
 import math
+
 import numpy as np
 from loguru import logger
 
@@ -17,10 +18,10 @@ from walkingsim.envs.chrono import ChronoEnvironment
 
 
 class Simulation:
-    _TIME_STEP=1e-2
-    _SIM_DURATION_IN_SECS=5
-    _FORCES_DELAY_IN_TIMESTEPS=4
-    _TIME_STEPS_TO_SECOND=60//_TIME_STEP
+    _TIME_STEP = 1e-2
+    _SIM_DURATION_IN_SECS = 5
+    _FORCES_DELAY_IN_TIMESTEPS = 4
+    _TIME_STEPS_TO_SECOND = 60 // _TIME_STEP
     _GENOME_DISCRETE_INTERVALS = int(
         (
             _TIME_STEPS_TO_SECOND
