@@ -90,7 +90,9 @@ class ChronoCreatureBody(_CreatureBody):
             self.__position[2] + relpos[2],
         )
 
-        _child = CreatureBody(size, family, position=_position, parent=self)
+        _child = ChronoCreatureBody(
+            size, family, position=_position, parent=self
+        )
         self.__childs.append(_child)
         return _child
 
@@ -100,7 +102,7 @@ class ChronoCreatureBody(_CreatureBody):
         constraints_z: tuple = None,
         motor=None,
     ):
-        if not isinstance(self.__parent, CreatureBody):
+        if not isinstance(self.__parent, ChronoCreatureBody):
             raise RuntimeError("Cannot create joint, body has not parent")
 
         if relpos is None:
