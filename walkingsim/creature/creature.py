@@ -62,13 +62,13 @@ class _CreatureBody:
         return self.__motor
 
     # Methods
-    def collision(self, family: t.Optional[int]=None,nocollision: t.Optional[t.Sequence[int]]=None,docollision: t.Optional[t.Sequence[int]]=None):
+    def collision(self, family: t.Optional[int]=None,nocollision: t.Optional[t.Sequence[int]]=None,docollision: t.Optional[t.Sequence[int]]=None) -> '_CreatureBody':
         raise NotImplementedError
 
-    def branch(self, size: tuple, family: int = None, relpos: tuple=None):
+    def branch(self, size: tuple, family: int = None, relpos: tuple=None) -> '_CreatureBody':
         raise NotImplementedError
 
-    def join(self, relpos: tuple=None, constraints_z: tuple=None, motor=None):
+    def join(self, relpos: tuple=None, constraints_z: tuple=None, motor=None) -> '_CreatureBody':
         raise NotImplementedError
 
 class Creature:
