@@ -96,6 +96,8 @@ class GeneticAlgorithm:
             logger.error(f"The directory {self.__data_dir} already exists")
         except FileNotFoundError:
             logger.error(f"The parent directory for {self.__data_dir} doesn't exist")
+        else:
+            os.mkdir(self.__data_dir + "logs/")
 
     def _save_pygad_config(self, config):
         with open(self.__data_dir + "pygad_config.bat", "wb") as fp:
