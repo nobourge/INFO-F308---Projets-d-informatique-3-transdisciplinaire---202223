@@ -56,32 +56,16 @@ class GeneticAlgorithm:
             # Callbacks
             fitness_func=self.fitness_function,
             on_generation=self._on_generation,
-            on_mutation=self._on_mutation,
-            on_stop=self._on_stop,
         )
 
-        self.progress_sims = tqdm.tqdm(
-            total=self.ga.sol_per_pop,
-            desc="Generation X",
-            leave=False,
-        )
         self.progress_gens = tqdm.tqdm(
             total=num_generations,
             desc="Generations",
             leave=False,
         )
 
-    def _on_mutation(self, ga_instance, offspring_mutation):
-        self.progress_sims.reset(ga_instance.sol_per_pop)
-        self.progress_sims.set_description(
-            f"Generation {ga_instance.generations_completed}"
-        )
-
     def _on_generation(self, ga_instance):
         self.progress_gens.update(1)
-
-    def _on_stop(self, ga_instance, last_population_fitness):
-        self.progress_sims.reset(ga_instance.sol_per_pop)
 
     def fitness_function(self, individual, solution_idx):
         """
@@ -93,6 +77,7 @@ class GeneticAlgorithm:
             2) The solution's index within the population.
 
         """
+        self.progress_gens.refresh()
         logger.debug("Simulation {}".format(solution_idx))
         logger.debug("Creature genome: {}".format(individual))
         # Simulate the movement of the quadruped based on the movement matrix
@@ -115,7 +100,6 @@ class GeneticAlgorithm:
         fitness = simulation.total_reward
 
         logger.debug("Creature fitness: {}".format(fitness))
-        self.progress_sims.update(1)
         self.progress_gens.refresh()
 
         # Add entry in data log
@@ -217,7 +201,6 @@ class GeneticAlgorithm:
         self.save_sol(solutions, best_solution, best_fitness)
 
         self.save_data_log()
-        self.progress_sims.close()
         self.progress_gens.close()
 
         # self.plot()
