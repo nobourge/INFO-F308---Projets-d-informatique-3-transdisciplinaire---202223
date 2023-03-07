@@ -53,11 +53,11 @@ def main():
 
 
 def get_past_results():
-    with open("solutions/previous_results.dat", "rb") as fp:
+    with open("solutions/last_results.dat", "rb") as fp:
         try:
-            previous_results = pickle.load(fp)
+            last_results = pickle.load(fp)
         except EOFError:
-            logger.warning("previous_results.dat not found")
+            logger.warning("last_results.dat not found")
 
     with open("solutions/best_results.dat", "rb") as fp:
         try:
@@ -65,7 +65,7 @@ def get_past_results():
         except EOFError:
             logger.warning("best_results.dat not found")
 
-    return best_results, previous_results
+    return best_results, last_results
 
 
 if __name__ == "__main__":

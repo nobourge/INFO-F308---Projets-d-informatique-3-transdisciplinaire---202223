@@ -151,7 +151,13 @@ class GeneticAlgorithm:
         Saves the final results dictionary in a .dat file.
         Saves it as best if applicable.
         """
-        with open("solutions/previous_results.dat", "wb") as fp:
+        # In dedicated folder
+        with open(self.__data_dir + "results.bat", "wb") as fp:
+            pickle.dump(self.final_results, fp)
+            logger.info(f"Current results written to {self.__data_dir}/results.bat")
+
+        # In solutions folder
+        with open("solutions/last_results.dat", "wb") as fp:
             pickle.dump(self.final_results, fp)
             logger.info("Current results written to previous_results.dat")
 
