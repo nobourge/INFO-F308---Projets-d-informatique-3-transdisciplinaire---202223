@@ -1,5 +1,8 @@
 import csv
+import datetime
 import pickle
+import os
+import re
 
 import numpy as np
 import pygad as pygad_
@@ -25,12 +28,10 @@ class GeneticAlgorithm:
     mutation_type: adaptive | random
     """
 
-    def __init__(
-        self,
-        config
-    ):
+    def __init__(self, config):
 
         self.data_log = []
+        self.__data_dir = self._generate_data_dirname()
 
         self.final_results = {
             "best_fitness": 0,
@@ -43,7 +44,8 @@ class GeneticAlgorithm:
             initial_population=config.initial_population,
             sol_per_pop=config.population_size,
             num_generations=config.num_generations,
-            num_genes=config.num_joints * Simulation._GENOME_DISCRETE_INTERVALS,
+            num_genes=config.num_joints
+            * Simulation._GENOME_DISCRETE_INTERVALS,
             # Evolution settings
             num_parents_mating=config.num_parents_mating,
             mutation_percent_genes=config.mutation_percent_genes,
@@ -69,6 +71,18 @@ class GeneticAlgorithm:
             desc="Generations",
             leave=False,
         )
+
+    @staticmethod
+    def _generate_data_dirname():
+        """
+        Format: YYYYMMDD-HHMMSS
+        """
+        date_now = str(datetime.datetime.now())
+        date_now = re.sub("-|:", "", date_now)
+        date_now = re.sub(" ", "-", date_now)
+        date_now = re.sub("\..*", "", date_now)
+
+        return date_now
 
     def _on_generation(self, ga_instance):
         self.progress_gens.update(1)
