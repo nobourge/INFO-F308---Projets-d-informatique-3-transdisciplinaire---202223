@@ -29,7 +29,7 @@ def main():
 
     with open("solutions/previous_results.dat", "rb") as fp:
         try:
-            best_results = pickle.load(fp)
+            previous_results = pickle.load(fp)
         except EOFError:
             logger.warning("previous_results.dat not found")
 
