@@ -31,7 +31,9 @@ class GeneticAlgorithm:
     def __init__(self, config):
 
         self.data_log = []
-        self.__data_dir = self._generate_data_dirname()
+        self.__data_dir = "solutions/" + self._generate_data_dirname()
+        self._init_data_dir()
+        self._save_pygad_config()
 
         self.final_results = {
             "best_fitness": 0,
@@ -72,6 +74,9 @@ class GeneticAlgorithm:
             leave=False,
         )
 
+    def _on_generation(self, ga_instance):
+        self.progress_gens.update(1)
+
     @staticmethod
     def _generate_data_dirname():
         """
@@ -84,8 +89,16 @@ class GeneticAlgorithm:
 
         return date_now
 
-    def _on_generation(self, ga_instance):
-        self.progress_gens.update(1)
+    def _init_data_dir(self):
+        try:
+            os.mkdir(self.__data_dir)
+        except FileExistsError:
+            logger.error(f"The directory {self.__data_dir} already exists")
+        except FileNotFoundError:
+            logger.error(f"The parent directory for {self.__data_dir} doesn't exist")
+
+    def _save_pygad_config(self, config):
+        pass
 
     def fitness_function(self, individual, solution_idx):
         """
