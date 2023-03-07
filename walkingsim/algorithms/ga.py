@@ -83,9 +83,8 @@ class GeneticAlgorithm:
         Format: YYYYMMDD-HHMMSS
         """
         date_now = str(datetime.datetime.now())
-        date_now = re.sub("-|:", "", date_now)
+        date_now = re.sub("\..*|-|:", "", date_now)
         date_now = re.sub(" ", "-", date_now)
-        date_now = re.sub("\..*", "", date_now)
 
         return date_now + "/"
 
@@ -159,7 +158,7 @@ class GeneticAlgorithm:
         # In solutions folder
         with open("solutions/last_results.dat", "wb") as fp:
             pickle.dump(self.final_results, fp)
-            logger.info("Current results written to previous_results.dat")
+            logger.info("Current results written to last_results.dat")
 
         with open("solutions/best_results.dat", "r+b") as fp:
             try:
