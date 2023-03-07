@@ -29,8 +29,19 @@ class Simulation:
     def __init__(self, __env_props: dict, visualize: bool = False) -> None:
         self.__environment = ChronoEnvironment(visualize)
         self.__environment.reset(__env_props)
-        self.__total_reward = 0
-        self.__step_reward = 0
+        self.__total_reward = {
+            key: 0
+            for key in [
+                "distance",
+                "walk_straight",
+                "speed",
+                "joints_at_limits",
+                "alive_bonus",
+                "height_diff",
+            ]
+        }
+
+        self.__step_reward = None
         self.__is_creature_fallen = False
 
     @property
@@ -44,7 +55,7 @@ class Simulation:
     def step(self, action: list):
         self.__environment.step(action, self._TIME_STEP)
         self.__step_reward = self._compute_step_reward()
-        self.__total_reward += self.__step_reward
+        self._update_total_reward()
 
     def _compute_step_reward(self):
         observations = self.__environment.observations
@@ -93,15 +104,20 @@ class Simulation:
         except IndexError:
             height_diff = 0
 
-        reward = (
-            distance * 10
-            + walk_straight
-            + 2 * speed
-            + (-10 * nb_joints_at_limit)
-            + _alive_bonus * 100
-            - 50 * (height_diff**2)
-        )
+        reward = {
+            "distance": distance,
+            "walk_straight": walk_straight,
+            "speed": speed,
+            "joints_at_limits": (-10 * nb_joints_at_limit),
+            "alive_bonus": _alive_bonus,
+            "height_diff": (50 * (height_diff**2)),
+        }
+
         return reward
+
+    def _update_total_reward(self):
+        for key in self.__step_reward:
+            self.__total_reward[key] += self.__step_reward[key]
 
     def _is_time_limit_reached(self):
         return self.__environment.time > self._SIM_DURATION_IN_SECS

@@ -1,5 +1,4 @@
 import csv
-import os
 import pickle
 
 import numpy as np
@@ -121,7 +120,7 @@ class GeneticAlgorithm:
             [self.ga.generations_completed, solution_idx, fitness]
         )
 
-        return fitness
+        return sum(fitness.values())
 
     def save_results(self):
         """
