@@ -59,7 +59,7 @@ def main():
     GA = GeneticAlgorithm(
         num_generations=2,
         num_parents_mating=4,
-        mutation_percent_genes=(40,10),
+        mutation_percent_genes=(40, 10),
         parallel_processing=None,
         parent_selection_type="tournament",
         keep_elitism=population_size // 100,

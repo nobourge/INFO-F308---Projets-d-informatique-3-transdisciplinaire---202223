@@ -10,7 +10,6 @@ from loguru import logger
 from walkingsim.loader import EnvironmentProps
 from walkingsim.simulation import Simulation
 
-
 # All of the following will be done in a folder named with the date and time
 # TODO: Dump PyGAD paramters in one file (JSON or Pickle)
 # TODO: For each generations dump
@@ -19,6 +18,7 @@ from walkingsim.simulation import Simulation
 #       - the best solution
 #       - the best fitness
 # TODO: At the end, dump the best solution in one file
+
 
 class GeneticAlgorithm:
     """
