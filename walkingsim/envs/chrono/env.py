@@ -6,7 +6,6 @@ from walkingsim.creature.quadrupede import Quadrupede
 from walkingsim.envs.chrono.creature import ChronoCreatureBody
 from walkingsim.envs.chrono.utils import _tuple_to_chrono_vector
 from walkingsim.envs.chrono.visualizer import ChronoVisualizer
-from walkingsim.utils import utils
 
 
 class ChCustomTorqueFunction(chrono.ChFunction_SetpointCallback):

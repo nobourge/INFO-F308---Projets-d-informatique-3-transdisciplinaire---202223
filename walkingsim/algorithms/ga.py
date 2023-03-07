@@ -27,17 +27,7 @@ class GeneticAlgorithm:
 
     def __init__(
         self,
-        num_generations,
-        num_parents_mating,
-        mutation_percent_genes,
-        parallel_processing,
-        parent_selection_type,
-        keep_elitism,
-        crossover_type,
-        mutation_type,
-        initial_population=None,
-        population_size=None,
-        num_joints=None,
+        config
     ):
 
         self.data_log = []
@@ -49,36 +39,36 @@ class GeneticAlgorithm:
         }
 
         self.ga = pygad_.GA(
-            # Population & Generations settings
-            initial_population=initial_population,
-            sol_per_pop=population_size,
-            num_generations=num_generations,
-            num_genes=num_joints * Simulation._GENOME_DISCRETE_INTERVALS,
-            # Other Settings
-            num_parents_mating=num_parents_mating,
-            mutation_percent_genes=mutation_percent_genes,
-            parallel_processing=parallel_processing,
-            parent_selection_type=parent_selection_type,
-            crossover_type=crossover_type,
-            mutation_type=mutation_type,
-            keep_elitism=keep_elitism,
-            save_solutions=False,
+            # Population & generations settings
+            initial_population=config.initial_population,
+            sol_per_pop=config.population_size,
+            num_generations=config.num_generations,
+            num_genes=config.num_joints * Simulation._GENOME_DISCRETE_INTERVALS,
+            # Evolution settings
+            num_parents_mating=config.num_parents_mating,
+            mutation_percent_genes=config.mutation_percent_genes,
+            parent_selection_type=config.parent_selection_type,
+            crossover_type=config.crossover_type,
+            mutation_type=config.mutation_type,
+            keep_elitism=config.keep_elitism,
+            # Execution settings
+            parallel_processing=config.parallel_processing,
+            save_solutions=config.save_solutions,
             # Space
-            init_range_low=-1000,
-            init_range_high=1000,
-            random_mutation_min_val=-1000,
-            random_mutation_max_val=1000,
+            init_range_low=config.init_range_low,
+            init_range_high=config.init_range_high,
+            random_mutation_min_val=config.random_mutation_min_val,
+            random_mutation_max_val=config.random_mutation_max_val,
             # Callbacks
             fitness_func=self.fitness_function,
             on_generation=self._on_generation,
         )
 
         self.progress_gens = tqdm.tqdm(
-            total=num_generations,
+            total=config.num_generations,
             desc="Generations",
             leave=False,
         )
-
 
     def _on_generation(self, ga_instance):
         self.progress_gens.update(1)

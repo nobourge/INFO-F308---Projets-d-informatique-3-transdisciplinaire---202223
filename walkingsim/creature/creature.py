@@ -12,8 +12,6 @@ Description:
 
 import typing as t
 
-import walkingsim.utils.utils as utils
-
 
 class _CreatureBody:
     def __init__(

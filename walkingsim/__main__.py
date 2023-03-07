@@ -1,9 +1,9 @@
 #  import multiprocessing
 import pickle
-from typing import NamedTuple
 
 import walkingsim.utils._logging  # Configure logging
 from walkingsim.algorithms.ga import GeneticAlgorithm
+from walkingsim.utils.pygad_config import PygadConfig
 
 from loguru import logger
 
@@ -29,7 +29,7 @@ def main():
     # print("Number of CPU threads: {}", threads_quantity)
 
     population_size = 10
-    GA = GeneticAlgorithm(
+    config = PygadConfig(
         num_generations=2,
         num_parents_mating=4,
         mutation_percent_genes=(40, 10),
@@ -41,7 +41,14 @@ def main():
         initial_population=None,
         population_size=population_size,
         num_joints=8,
+        save_solutions=False,
+        init_range_low=-1000,
+        init_range_high=1000,
+        random_mutation_min_val=-1000,
+        random_mutation_max_val=1000
     )
+
+    GA = GeneticAlgorithm(config)
     GA.run()
 
 
