@@ -79,7 +79,6 @@ class Simulation:
         # The walk straight reward is a value that tells
         # if the creature is walking straight or not. If the
         # creature is walking straight the value will be close to 0
-        # FIXME: Why 3 ?
         walk_straight = -3 * (last_observations["position"][2] ** 2)
 
         # The speed is how much distance the creature did in one step

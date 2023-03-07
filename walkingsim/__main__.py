@@ -1,5 +1,6 @@
-import multiprocessing
+#  import multiprocessing
 import pickle
+from typing import NamedTuple
 
 import walkingsim.utils._logging  # Configure logging
 from walkingsim.algorithms.ga import GeneticAlgorithm
@@ -27,18 +28,6 @@ def main():
     # logger.info("Number of CPU threads: {}", threads_quantity)
     # print("Number of CPU threads: {}", threads_quantity)
 
-    with open("solutions/previous_results.dat", "rb") as fp:
-        try:
-            previous_results = pickle.load(fp)
-        except EOFError:
-            logger.warning("previous_results.dat not found")
-
-    with open("solutions/best_results.dat", "rb") as fp:
-        try:
-            best_results = pickle.load(fp)
-        except EOFError:
-            logger.warning("best_results.dat not found")
-
     population_size = 10
     GA = GeneticAlgorithm(
         num_generations=2,
@@ -54,6 +43,22 @@ def main():
         num_joints=8,
     )
     GA.run()
+
+
+def get_past_results():
+    with open("solutions/previous_results.dat", "rb") as fp:
+        try:
+            previous_results = pickle.load(fp)
+        except EOFError:
+            logger.warning("previous_results.dat not found")
+
+    with open("solutions/best_results.dat", "rb") as fp:
+        try:
+            best_results = pickle.load(fp)
+        except EOFError:
+            logger.warning("best_results.dat not found")
+
+    return best_results, previous_results
 
 
 if __name__ == "__main__":

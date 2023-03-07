@@ -39,7 +39,9 @@ class GeneticAlgorithm:
         population_size=None,
         num_joints=None,
     ):
+
         self.data_log = []
+
         self.final_results = {
             "best_fitness": 0,
             "best_solution": None,
@@ -76,6 +78,7 @@ class GeneticAlgorithm:
             desc="Generations",
             leave=False,
         )
+
 
     def _on_generation(self, ga_instance):
         self.progress_gens.update(1)
@@ -134,7 +137,10 @@ class GeneticAlgorithm:
         with open("solutions/best_results.dat", "r+b") as fp:
             try:
                 best_results = pickle.load(fp)
-                if best_results["best_fitness"] < self.final_results["best_fitness"]:
+                if (
+                    best_results["best_fitness"]
+                    < self.final_results["best_fitness"]
+                ):
                     pickle.dump(self.final_results, fp)
                     logger.info("New best results written to best_results.dat")
             except EOFError:
