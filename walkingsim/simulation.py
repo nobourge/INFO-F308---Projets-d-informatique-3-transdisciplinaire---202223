@@ -9,10 +9,6 @@ Authors:
 Description:
     Classes for the simulations
 """
-import math
-
-import numpy as np
-from loguru import logger
 
 from walkingsim.envs.chrono import ChronoEnvironment
 
