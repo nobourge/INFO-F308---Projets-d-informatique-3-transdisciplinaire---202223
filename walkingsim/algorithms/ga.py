@@ -32,8 +32,8 @@ class GeneticAlgorithm:
 
         self.data_log = []
         self.__data_dir = "solutions/" + self._generate_data_dirname()
-        self._init_data_dir()
-        self._save_pygad_config()
+        self._create_data_dir()
+        self._save_pygad_config(config)
 
         self.final_results = {
             "best_fitness": 0,
@@ -87,9 +87,9 @@ class GeneticAlgorithm:
         date_now = re.sub(" ", "-", date_now)
         date_now = re.sub("\..*", "", date_now)
 
-        return date_now
+        return date_now + "/"
 
-    def _init_data_dir(self):
+    def _create_data_dir(self):
         try:
             os.mkdir(self.__data_dir)
         except FileExistsError:
@@ -98,7 +98,9 @@ class GeneticAlgorithm:
             logger.error(f"The parent directory for {self.__data_dir} doesn't exist")
 
     def _save_pygad_config(self, config):
-        pass
+        with open(self.__data_dir + "pygad_config.bat", "wb") as fp:
+            pickle.dump(config, fp)
+            logger.info(f"Saved pygad config in {self.__data_dir}/pygad_config.bat")
 
     def fitness_function(self, individual, solution_idx):
         """
