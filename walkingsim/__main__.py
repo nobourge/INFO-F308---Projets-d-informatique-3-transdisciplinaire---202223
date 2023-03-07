@@ -1,12 +1,10 @@
 import multiprocessing
-import os
 import pickle
 
 import walkingsim.utils._logging  # Configure logging
 from walkingsim.algorithms.ga import GeneticAlgorithm
 
-# from loguru import logger
-
+from loguru import logger
 
 # The programs has 2 steps:
 # 1. Training our models and get the results
@@ -25,35 +23,21 @@ from walkingsim.algorithms.ga import GeneticAlgorithm
 
 
 def main():
-
-    # # initial_population_origin = "previous"
-    # initial_population_origin = "all time"
-    # # initial_population_sample = "best"
-    # initial_population_sample = "all"
-    # population_size = 500
-
     # threads_quantity = multiprocessing.cpu_count() * 2
-    # # logger.info("Number of CPU threads: {}", threads_quantity)
+    # logger.info("Number of CPU threads: {}", threads_quantity)
     # print("Number of CPU threads: {}", threads_quantity)
 
-    # file = ""
+    with open("solutions/previous_results.dat", "rb") as fp:
+        try:
+            best_results = pickle.load(fp)
+        except EOFError:
+            logger.warning("previous_results.dat not found")
 
-    # if initial_population_origin == "previous":
-    #     if initial_population_sample == "best":
-    #         file = "previous_run_solution.dat"
-    #     elif initial_population_sample == "all":
-    #         file = "previous_run_solutions.dat"
-    # elif initial_population_origin == "all time":
-    #     if initial_population_sample == "best":
-    #         file = "solution_best.dat"
-    #     elif initial_population_sample == "all":
-    #         file = "solutions_all_best.dat"
-
-    # with open(file, "rb") as fp:
-    #     if os.path.getsize(file) > 0:
-    #         initial_population = pickle.load(fp)
-    #     else:
-    #         initial_population = 0
+    with open("solutions/best_results.dat", "rb") as fp:
+        try:
+            best_results = pickle.load(fp)
+        except EOFError:
+            logger.warning("best_results.dat not found")
 
     population_size = 10
     GA = GeneticAlgorithm(
