@@ -107,7 +107,6 @@ class ChronoEnvironment:
         self.__joints_funcs = []
 
         for i, joint in enumerate(self.__creature.motors()):
-            # print(forces[i])
             self.__joints_funcs.append(ChCustomTorqueFunction(action[i]))
             if isinstance(joint, chrono.ChLinkMotorRotationTorque):
                 joint.SetTorqueFunction(self.__joints_funcs[i])
