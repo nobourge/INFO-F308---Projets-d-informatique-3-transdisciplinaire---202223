@@ -55,7 +55,7 @@ class DataManager:
             logger.info(f"Saved {obj} in {self.__data_dir}/{filename}")
 
     def save_log_file(self, filename: str, headers, data):
-        with open(self.__log_dir + filename, "w", newline="") as csvfile:
+        with open(self.__log_dir + filename, "a", newline="") as csvfile:
             fieldnames = headers
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
