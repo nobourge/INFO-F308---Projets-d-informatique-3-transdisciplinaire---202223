@@ -17,8 +17,8 @@ from walkingsim.envs.chrono import ChronoEnvironment
 
 class Simulation:
     _TIME_STEP = 1e-2
-    _SIM_DURATION_IN_SECS = 10
-    _TIME_STEPS_TO_SECOND = 1 // _TIME_STEP
+    _SIM_DURATION_IN_SECS = 5
+    _TIME_STEPS_TO_SECOND = 1 / _TIME_STEP
     _GENOME_DISCRETE_INTERVALS = int(
         (_TIME_STEPS_TO_SECOND * _SIM_DURATION_IN_SECS)
     )
@@ -130,6 +130,5 @@ class Simulation:
 
         if self._is_time_limit_reached() or self.__is_creature_fallen:
             is_over = True
-
 
         return is_over
