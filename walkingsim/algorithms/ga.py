@@ -1,8 +1,5 @@
 import csv
-import datetime
 import pickle
-import os
-import re
 
 import numpy as np
 import pygad as pygad_
@@ -11,6 +8,7 @@ from loguru import logger
 
 from walkingsim.loader import EnvironmentProps
 from walkingsim.simulation import Simulation
+from walkingsim.utils.data_manager import DataManager
 
 # All of the following will be done in a folder named with the date and time
 # TODO: Dump PyGAD paramters in one file (JSON or Pickle)
@@ -30,11 +28,9 @@ class GeneticAlgorithm:
 
     def __init__(self, config):
 
+        self.__data_manager = DataManager()
+        self.__data_manager.save_dat_file("pygad_config.dat", config)
         self.data_log = []
-        self.__data_dir = "solutions/" + self._generate_data_dirname()
-        self.__log_dir = self.__data_dir + "logs/"
-        self._create_data_dir()
-        self._save_pygad_config(config)
 
         self.final_results = {
             "best_fitness": 0,
@@ -78,33 +74,6 @@ class GeneticAlgorithm:
     def _on_generation(self, ga_instance):
         self.progress_gens.update(1)
 
-    @staticmethod
-    def _generate_data_dirname():
-        """
-        Format: YYYYMMDD-HHMMSS
-        """
-        date_now = str(datetime.datetime.now())
-        date_now = re.sub("\..*|-|:", "", date_now)
-        date_now = re.sub(" ", "-", date_now)
-
-        return date_now + "/"
-
-    def _create_data_dir(self):
-        try:
-            os.mkdir(self.__data_dir)
-        except FileExistsError:
-            logger.error(f"The directory {self.__data_dir} already exists")
-            sys.exit()
-        except FileNotFoundError:
-            logger.error(f"The parent directory for {self.__data_dir} doesn't exist")
-            sys.exit()
-        else:
-            os.mkdir(self.__log_dir)
-
-    def _save_pygad_config(self, config):
-        with open(self.__data_dir + "pygad_config.bat", "wb") as fp:
-            pickle.dump(config, fp)
-            logger.info(f"Saved pygad config in {self.__data_dir}/pygad_config.bat")
 
     def fitness_function(self, individual, solution_idx):
         """
@@ -175,8 +144,8 @@ class GeneticAlgorithm:
             except EOFError:
                 pickle.dump(self.final_results, fp)
 
-    def save_data_log(self):
-        with open("data_log.csv", "w") as fp:
+    def log_data(self):
+        with open(".csv", "w") as fp:
             writer = csv.writer(fp)
             writer.writerow(["generation", "solution", "fitness"])
             writer.writerows(self.data_log)
@@ -209,7 +178,7 @@ class GeneticAlgorithm:
 
         self.save_results()
 
-        self.save_data_log()
+        self.log_data()
         self.progress_gens.close()
 
         # self.plot()
