@@ -30,6 +30,10 @@ class GeneticAlgorithm:
 
         self.__data_manager = DataManager()
         self.__data_manager.save_local_dat_file("pygad_config.dat", config)
+        config_dict = config._asdict()
+        self.__data_manager.save_log_file(
+            "pygad_config.csv", list(config_dict.keys()), config_dict
+        )
         self.data_log = []
 
         self.final_results = {
@@ -138,7 +142,9 @@ class GeneticAlgorithm:
     def _is_best_result(self):
         res = False
         try:
-            with open(self.__data_manager.root_dir + "best_results.dat", "rb") as fp:
+            with open(
+                self.__data_manager.root_dir + "best_results.dat", "rb"
+            ) as fp:
                 best_results = pickle.load(fp)
                 if (
                     best_results["best_fitness"]

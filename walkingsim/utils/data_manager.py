@@ -1,3 +1,4 @@
+import csv
 import datetime
 import os
 import pickle
@@ -36,23 +37,26 @@ class DataManager:
             logger.error(f"The directory {self.__data_dir} already exists")
             sys.exit()
         except FileNotFoundError:
-            logger.error(f"The parent directory for {self.__data_dir} doesn't exist")
+            logger.error(
+                f"The parent directory for {self.__data_dir} doesn't exist"
+            )
             sys.exit()
         else:
             os.mkdir(self.__log_dir)
 
-    def save_local_dat_file(self, filename, obj):
-        """
-        In .dat format
-        """
+    def save_local_dat_file(self, filename: str, obj):
         with open(self.__data_dir + filename, "wb") as fp:
             pickle.dump(obj, fp)
             logger.info(f"Saved {obj} in {self.__data_dir}/{filename}")
 
-    def save_global_dat_file(self, filename, obj):
-        """
-        In .dat format
-        """
+    def save_global_dat_file(self, filename: str, obj):
         with open(self.__root_dir + filename, "wb") as fp:
             pickle.dump(obj, fp)
             logger.info(f"Saved {obj} in {self.__data_dir}/{filename}")
+
+    def save_log_file(self, filename: str, headers, data):
+        with open(self.__log_dir + filename, "w", newline="") as csvfile:
+            fieldnames = headers
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerow(data)

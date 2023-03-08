@@ -1,11 +1,11 @@
 #  import multiprocessing
 import pickle
 
+from loguru import logger
+
 import walkingsim.utils._logging  # Configure logging
 from walkingsim.algorithms.ga import GeneticAlgorithm
 from walkingsim.utils.pygad_config import PygadConfig
-
-from loguru import logger
 
 # The programs has 2 steps:
 # 1. Training our models and get the results
@@ -45,7 +45,7 @@ def main():
         init_range_low=-1000,
         init_range_high=1000,
         random_mutation_min_val=-1000,
-        random_mutation_max_val=1000
+        random_mutation_max_val=1000,
     )
 
     GA = GeneticAlgorithm(config)
