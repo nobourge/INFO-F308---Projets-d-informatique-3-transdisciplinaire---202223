@@ -94,8 +94,10 @@ class GeneticAlgorithm:
             os.mkdir(self.__data_dir)
         except FileExistsError:
             logger.error(f"The directory {self.__data_dir} already exists")
+            sys.exit()
         except FileNotFoundError:
             logger.error(f"The parent directory for {self.__data_dir} doesn't exist")
+            sys.exit()
         else:
             os.mkdir(self.__log_dir)
 
