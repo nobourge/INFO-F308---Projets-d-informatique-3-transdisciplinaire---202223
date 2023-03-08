@@ -10,6 +10,7 @@ from loguru import logger
 
 class DataManager:
     def __init__(self):
+        # TODO utiliser os.path pour cross-platform
         self.__root_dir = "solutions/"
         self.__data_dir = self.__root_dir + self._generate_data_dirname()
         self.__log_dir = self.__data_dir + "logs/"
@@ -55,8 +56,10 @@ class DataManager:
             logger.info(f"Saved {obj} in {self.__data_dir}{filename}")
 
     def save_log_file(self, filename: str, headers, data):
-        with open(self.__log_dir + filename, "a", newline="") as csvfile:
+        file_path = self.__log_dir + filename 
+        with open(file_path, "a", newline="") as csvfile:
             fieldnames = headers
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
+            if (os.path.getsize(file_path) == 0):
+                writer.writeheader()
             writer.writerow(data)

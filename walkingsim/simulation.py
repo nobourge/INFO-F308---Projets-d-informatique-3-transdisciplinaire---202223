@@ -88,6 +88,8 @@ class Simulation:
             speed = (
                 last_observations["distance"] - observations[-2]["distance"]
             ) / self._TIME_STEP
+            if observations[-1]["position"][0] < observations[0]["position"][0]:
+                speed *= -1
         else:
             speed = 0
 
@@ -107,9 +109,9 @@ class Simulation:
             "distance": distance,
             "walk_straight": walk_straight,
             "speed": speed,
-            "joints_at_limits": (-10 * nb_joints_at_limit),
+            "joints_at_limits": (-0.1 * nb_joints_at_limit),
             "alive_bonus": _alive_bonus,
-            "height_diff": (50 * (height_diff**2)),
+            "height_diff": (50 * (height_diff)),
         }
 
         return reward

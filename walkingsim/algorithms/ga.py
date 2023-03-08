@@ -1,4 +1,4 @@
-import csv
+import copy
 import pickle
 
 import numpy as np
@@ -104,10 +104,13 @@ class GeneticAlgorithm:
         logger.debug("Creature fitness: {}".format(fitness))
         self.progress_gens.refresh()
 
-        # Add entry in data log
-        self.data_log.append(
-            [self.ga.generations_completed, solution_idx, fitness]
-        )
+        # Add entry in csv log
+        headers = ["generation", "specimen_id", "total_fitness"] + list(fitness.keys())
+        data = copy.copy(fitness)
+        data["generation"] = self.ga.generations_completed
+        data["specimen_id"] = solution_idx
+        data["total_fitness"] = sum(fitness.values())
+        self.__data_manager.save_log_file("results.csv", headers, data)
 
         return sum(fitness.values())
 
@@ -148,12 +151,6 @@ class GeneticAlgorithm:
 
         return res
 
-    def log_data(self):
-        with open(".csv", "w") as fp:
-            writer = csv.writer(fp)
-            writer.writerow(["generation", "solution", "fitness"])
-            writer.writerows(self.data_log)
-
     def plot(self):
         logger.info("Plotting results")
         print("Plotting results")
@@ -182,7 +179,6 @@ class GeneticAlgorithm:
 
         self.save_results()
 
-        self.log_data()
         self.progress_gens.close()
 
         # self.plot()
