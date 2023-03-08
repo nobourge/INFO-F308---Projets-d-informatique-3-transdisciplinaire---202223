@@ -40,10 +40,10 @@ def main():
         population_size=population_size,
         num_joints=8,
         save_solutions=False,
-        init_range_low=-1000,
-        init_range_high=1000,
-        random_mutation_min_val=-1000,
-        random_mutation_max_val=1000,
+        init_range_low=-3000,
+        init_range_high=3000,
+        random_mutation_min_val=-3000,
+        random_mutation_max_val=3000,
     )
 
     GA = GeneticAlgorithm(config)
