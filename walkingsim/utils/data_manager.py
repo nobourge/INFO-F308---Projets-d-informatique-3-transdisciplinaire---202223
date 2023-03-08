@@ -38,7 +38,7 @@ class DataManager:
             sys.exit()
         except FileNotFoundError:
             logger.error(
-                f"The parent directory for {self.__data_dir} doesn't exist"
+                f"The parent directory {self.__root_dir} doesn't exist"
             )
             sys.exit()
         else:
@@ -47,12 +47,12 @@ class DataManager:
     def save_local_dat_file(self, filename: str, obj):
         with open(self.__data_dir + filename, "wb") as fp:
             pickle.dump(obj, fp)
-            logger.info(f"Saved {obj} in {self.__data_dir}/{filename}")
+            logger.info(f"Saved {obj} in {self.__data_dir}{filename}")
 
     def save_global_dat_file(self, filename: str, obj):
         with open(self.__root_dir + filename, "wb") as fp:
             pickle.dump(obj, fp)
-            logger.info(f"Saved {obj} in {self.__data_dir}/{filename}")
+            logger.info(f"Saved {obj} in {self.__data_dir}{filename}")
 
     def save_log_file(self, filename: str, headers, data):
         with open(self.__log_dir + filename, "a", newline="") as csvfile:

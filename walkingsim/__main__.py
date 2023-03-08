@@ -1,8 +1,6 @@
 #  import multiprocessing
 import pickle
 
-from loguru import logger
-
 import walkingsim.utils._logging  # Configure logging
 from walkingsim.algorithms.ga import GeneticAlgorithm
 from walkingsim.utils.pygad_config import PygadConfig
@@ -57,13 +55,13 @@ def get_past_results():
         try:
             last_results = pickle.load(fp)
         except EOFError:
-            logger.warning("last_results.dat not found")
+            print("last_results.dat not found")
 
     with open("solutions/best_results.dat", "rb") as fp:
         try:
             best_results = pickle.load(fp)
         except EOFError:
-            logger.warning("best_results.dat not found")
+            print("best_results.dat not found")
 
     return best_results, last_results
 
