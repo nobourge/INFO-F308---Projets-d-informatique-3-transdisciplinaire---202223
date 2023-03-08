@@ -1,5 +1,4 @@
-import csv
-import os
+import copy
 import pickle
 
 import numpy as np
@@ -9,15 +8,7 @@ from loguru import logger
 
 from walkingsim.loader import EnvironmentProps
 from walkingsim.simulation import Simulation
-
-# All of the following will be done in a folder named with the date and time
-# TODO: Dump PyGAD paramters in one file (JSON or Pickle)
-# TODO: For each generations dump
-#       - all the solutions in one file (~= the population)
-#       - all the fitnesses in one file
-#       - the best solution
-#       - the best fitness
-# TODO: At the end, dump the best solution in one file
+from walkingsim.utils.data_manager import DataManager
 
 
 class GeneticAlgorithm:
@@ -26,49 +17,51 @@ class GeneticAlgorithm:
     mutation_type: adaptive | random
     """
 
-    def __init__(
-        self,
-        num_generations,
-        num_parents_mating,
-        mutation_percent_genes,
-        parallel_processing,
-        parent_selection_type,
-        keep_elitism,
-        crossover_type,
-        mutation_type,
-        initial_population=None,
-        population_size=None,
-        num_joints=None,
-    ):
+    def __init__(self, config):
+
+        self.__data_manager = DataManager()
+        self.__data_manager.save_local_dat_file("pygad_config.dat", config)
+        config_dict = config._asdict()
+        self.__data_manager.save_log_file(
+            "pygad_config.csv", list(config_dict.keys()), config_dict
+        )
         self.data_log = []
 
+        self.final_results = {
+            "best_fitness": 0,
+            "best_solution": None,
+            "solutions": None,
+        }
+
         self.ga = pygad_.GA(
-            # Population & Generations settings
-            initial_population=initial_population,
-            sol_per_pop=population_size,
-            num_generations=num_generations,
-            num_genes=num_joints * Simulation._GENOME_DISCRETE_INTERVALS,
-            # Other Settings
-            num_parents_mating=num_parents_mating,
-            mutation_percent_genes=mutation_percent_genes,
-            parallel_processing=parallel_processing,
-            parent_selection_type=parent_selection_type,
-            crossover_type=crossover_type,
-            mutation_type=mutation_type,
-            keep_elitism=keep_elitism,
-            save_solutions=False,
+            # Population & generations settings
+            initial_population=config.initial_population,
+            sol_per_pop=config.population_size,
+            num_generations=config.num_generations,
+            num_genes=config.num_joints
+            * Simulation._GENOME_DISCRETE_INTERVALS,
+            # Evolution settings
+            num_parents_mating=config.num_parents_mating,
+            mutation_percent_genes=config.mutation_percent_genes,
+            parent_selection_type=config.parent_selection_type,
+            crossover_type=config.crossover_type,
+            mutation_type=config.mutation_type,
+            keep_elitism=config.keep_elitism,
+            # Execution settings
+            parallel_processing=config.parallel_processing,
+            save_solutions=config.save_solutions,
             # Space
-            init_range_low=-1000,
-            init_range_high=1000,
-            random_mutation_min_val=-1000,
-            random_mutation_max_val=1000,
+            init_range_low=config.init_range_low,
+            init_range_high=config.init_range_high,
+            random_mutation_min_val=config.random_mutation_min_val,
+            random_mutation_max_val=config.random_mutation_max_val,
             # Callbacks
             fitness_func=self.fitness_function,
             on_generation=self._on_generation,
         )
 
         self.progress_gens = tqdm.tqdm(
-            total=num_generations,
+            total=config.num_generations,
             desc="Generations",
             leave=False,
         )
@@ -111,78 +104,54 @@ class GeneticAlgorithm:
         logger.debug("Creature fitness: {}".format(fitness))
         self.progress_gens.refresh()
 
-        # Add entry in data log
-        self.data_log.append(
-            [self.ga.generations_completed, solution_idx, fitness]
+        # Add entry in csv log
+        headers = ["generation", "specimen_id", "total_fitness"] + list(
+            fitness.keys()
+        )
+        data = copy.copy(fitness)
+        data["generation"] = self.ga.generations_completed
+        data["specimen_id"] = solution_idx
+        data["total_fitness"] = sum(fitness.values())
+        self.__data_manager.save_log_file("results.csv", headers, data)
+
+        return sum(fitness.values())
+
+    def save_results(self):
+        """
+        Saves the final results dictionary in a .dat file.
+        Saves it as best if applicable.
+        """
+        # In dedicated folder
+        self.__data_manager.save_local_dat_file(
+            "results.bat", self.final_results
         )
 
-        return fitness
-
-    def save_sol(self, solutions, best_sol, best_fitness):
-        # from solutions
-        #   save best if better than previous
-        #       read the previous best fitness from file fitness.dat
-        with open("fitness_best.dat", "rb") as fp:
-            if os.path.getsize("fitness_best.dat") > 0:
-                previous_best_fitness = pickle.load(fp)
-            else:
-                previous_best_fitness = 0
-            logger.info("Previous best fitness: {}", previous_best_fitness)
-
-        if previous_best_fitness < best_fitness:
-            print(
-                "previous best fitness: ",
-                previous_best_fitness,
-                "< best fitness: ",
-                best_fitness,
+        # In solutions folder
+        self.__data_manager.save_global_dat_file(
+            "last_results.bat", self.final_results
+        )
+        if self._is_best_result():
+            self.__data_manager.save_global_dat_file(
+                "best_results.bat", self.final_results
             )
 
-            # save all solutions best
-            with open("solutions_all_best.dat", "wb") as fp:
-                pickle.dump(solutions, fp)
-            print(
-                "Best genomes was successfully written in "
-                "solutions_all_best.dat"
-            )
+    def _is_best_result(self):
+        res = False
+        try:
+            with open(
+                self.__data_manager.root_dir + "best_results.dat", "rb"
+            ) as fp:
+                best_results = pickle.load(fp)
+                if (
+                    best_results["best_fitness"]
+                    < self.final_results["best_fitness"]
+                ):
+                    res = True
 
-            with open("solution_best.dat", "wb") as fp:
-                pickle.dump(best_sol, fp)
-            print(
-                "Best genome was successfully written in " "solution_best.dat"
-            )
+        except (EOFError, FileNotFoundError):
+            res = True
 
-            with open("fitness_best.dat", "wb") as fp:
-                pickle.dump(best_fitness, fp)
-
-        # current
-        with open("previous_run_solution.dat", "wb") as fp:
-            pickle.dump(best_sol, fp)
-        print(
-            "Best current genome was successfully written as "
-            "current in "
-            "previous_run_solution.dat"
-        )
-
-        with open("previous_run_solutions.dat", "wb") as fp:
-            pickle.dump(solutions, fp)
-        print(
-            "All current genomes were successfully written as "
-            "current in "
-            "previous_run_solutions.dat"
-        )
-
-        with open("fitness.dat", "wb") as fp:
-            pickle.dump(best_fitness, fp)
-        print(
-            "Current fitness was successfully written as current in "
-            "previous_run_solution.dat"
-        )
-
-    def save_data_log(self):
-        with open("data_log.csv", "w") as fp:
-            writer = csv.writer(fp)
-            writer.writerow(["generation", "solution", "fitness"])
-            writer.writerows(self.data_log)
+        return res
 
     def plot(self):
         logger.info("Plotting results")
@@ -190,26 +159,28 @@ class GeneticAlgorithm:
         self.ga.plot_fitness()
         # self.ga.plot_genes()
         # self.ga.plot_new_solution_rate()    # Plot the new solution
-        # # rate. The new solution rate is the number of new solutions
-        # # created in the current generation divided by the population size.
+        # rate. The new solution rate is the number of new solutions
+        # created in the current generation divided by the population size.
 
     def run(self):
         logger.info("run()")
         logger.info("Genetic Algorithm started")
         self.ga.run()
-        # get all the solutions
-        solutions = self.ga.solutions  #
-
-        best_solution, best_fitness, _ = self.ga.best_solution()
         logger.info("Genetic Algorithm ended")
+
+        solutions = self.ga.solutions  #
+        best_solution, best_fitness, _ = self.ga.best_solution()
+        self.final_results["best_fitness"] = best_fitness
+        self.final_results["best_solution"] = best_solution
+        self.final_results["solutions"] = solutions
+
         logger.info("Best genome: {}".format(best_solution))
         print("Best genome: {}".format(best_solution))
-
         logger.info("Best fitness: {}".format(best_fitness))
         print("Best fitness: {}".format(best_fitness))
-        self.save_sol(solutions, best_solution, best_fitness)
 
-        self.save_data_log()
+        self.save_results()
+
         self.progress_gens.close()
 
         # self.plot()

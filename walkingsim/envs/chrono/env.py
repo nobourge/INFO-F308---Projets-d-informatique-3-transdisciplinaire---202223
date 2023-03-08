@@ -1,10 +1,11 @@
+import math
+
 import pychrono as chrono
 
 from walkingsim.creature.quadrupede import Quadrupede
 from walkingsim.envs.chrono.creature import ChronoCreatureBody
 from walkingsim.envs.chrono.utils import _tuple_to_chrono_vector
 from walkingsim.envs.chrono.visualizer import ChronoVisualizer
-from walkingsim.utils import utils
 
 
 class ChCustomTorqueFunction(chrono.ChFunction_SetpointCallback):
@@ -155,7 +156,7 @@ class ChronoEnvironment:
         step_distance = 0
         total_distance = 0
         if len(self.__observations) > 1:
-            step_distance = utils.distance(
+            step_distance = ChronoEnvironment._compute_distance(
                 self.__observations[-1]["position"],
                 self.__observations[0]["position"],
             )
@@ -163,7 +164,7 @@ class ChronoEnvironment:
             # FIXME : Total distance is not calculated correctly
             for i, data in enumerate(self.__observations[1:]):
                 prev_pos = self.__observations[i]
-                distance_from_prev_pos = utils.distance(
+                distance_from_prev_pos = ChronoEnvironment._compute_distance(
                     data["position"], prev_pos["position"]
                 )
                 total_distance += distance_from_prev_pos
@@ -176,4 +177,10 @@ class ChronoEnvironment:
                 "joints_at_limits": nb_joints_at_limit,
                 "trunk_hit_ground": trunk_hit_ground,
             }
+        )
+
+    @staticmethod
+    def _compute_distance(a, b):
+        return math.sqrt(
+            (a[0] + b[0]) ** 2 + (a[1] + b[1]) ** 2 + (a[2] + b[2]) ** 2
         )
