@@ -9,9 +9,14 @@ from loguru import logger
 
 class DataManager:
     def __init__(self):
-        self.__data_dir = "solutions/" + self._generate_data_dirname()
+        self.__root_dir = "solutions/"
+        self.__data_dir = self.__root_dir + self._generate_data_dirname()
         self.__log_dir = self.__data_dir + "logs/"
         self._create_data_dir()
+
+    @property
+    def root_dir(self):
+        return self.__root_dir
 
     @staticmethod
     def _generate_data_dirname():
@@ -36,10 +41,18 @@ class DataManager:
         else:
             os.mkdir(self.__log_dir)
 
-    def save_dat_file(self, filename, obj):
+    def save_local_dat_file(self, filename, obj):
         """
         In .dat format
         """
         with open(self.__data_dir + filename, "wb") as fp:
+            pickle.dump(obj, fp)
+            logger.info(f"Saved {obj} in {self.__data_dir}/{filename}")
+
+    def save_global_dat_file(self, filename, obj):
+        """
+        In .dat format
+        """
+        with open(self.__root_dir + filename, "wb") as fp:
             pickle.dump(obj, fp)
             logger.info(f"Saved {obj} in {self.__data_dir}/{filename}")

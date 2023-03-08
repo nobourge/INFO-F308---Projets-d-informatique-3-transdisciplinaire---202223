@@ -29,7 +29,7 @@ class GeneticAlgorithm:
     def __init__(self, config):
 
         self.__data_manager = DataManager()
-        self.__data_manager.save_dat_file("pygad_config.dat", config)
+        self.__data_manager.save_local_dat_file("pygad_config.dat", config)
         self.data_log = []
 
         self.final_results = {
@@ -73,7 +73,6 @@ class GeneticAlgorithm:
 
     def _on_generation(self, ga_instance):
         self.progress_gens.update(1)
-
 
     def fitness_function(self, individual, solution_idx):
         """
@@ -123,26 +122,34 @@ class GeneticAlgorithm:
         Saves it as best if applicable.
         """
         # In dedicated folder
-        with open(self.__data_dir + "results.bat", "wb") as fp:
-            pickle.dump(self.final_results, fp)
-            logger.info(f"Current results written to {self.__data_dir}/results.bat")
+        self.__data_manager.save_local_dat_file(
+            "results.bat", self.final_results
+        )
 
         # In solutions folder
-        with open("solutions/last_results.dat", "wb") as fp:
-            pickle.dump(self.final_results, fp)
-            logger.info("Current results written to last_results.dat")
+        self.__data_manager.save_global_dat_file(
+            "last_results.bat", self.final_results
+        )
+        if self._is_best_result():
+            self.__data_manager.save_global_dat_file(
+                "best_results.bat", self.final_results
+            )
 
-        with open("solutions/best_results.dat", "r+b") as fp:
-            try:
+    def _is_best_result(self):
+        res = False
+        try:
+            with open(self.__data_manager.root_dir + "best_results.dat", "rb") as fp:
                 best_results = pickle.load(fp)
                 if (
                     best_results["best_fitness"]
                     < self.final_results["best_fitness"]
                 ):
-                    pickle.dump(self.final_results, fp)
-                    logger.info("New best results written to best_results.dat")
-            except EOFError:
-                pickle.dump(self.final_results, fp)
+                    res = True
+
+        except (EOFError, FileNotFoundError):
+            res = True
+
+        return res
 
     def log_data(self):
         with open(".csv", "w") as fp:
