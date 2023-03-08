@@ -50,11 +50,10 @@ class Simulation:
         return self.__step_reward
 
     def step(self, action: list):
-        #  logger.debug("Simulation step begins.")
         self.__environment.step(action, self._TIME_STEP)
         self.__step_reward = self._compute_step_reward()
         self._update_total_reward()
-        #  logger.debug("Simulation step is over.")
+        self.__environment.check()
 
     def _compute_step_reward(self):
         observations = self.__environment.observations
@@ -132,6 +131,5 @@ class Simulation:
         if self._is_time_limit_reached() or self.__is_creature_fallen:
             is_over = True
 
-        self.__environment.check()
 
         return is_over
