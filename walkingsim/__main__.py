@@ -26,10 +26,10 @@ def main():
     # logger.info("Number of CPU threads: {}", threads_quantity)
     # print("Number of CPU threads: {}", threads_quantity)
 
-    population_size = 1
+    population_size = 50
     config = PygadConfig(
-        num_generations=1,
-        num_parents_mating=1,
+        num_generations=10,
+        num_parents_mating=4,
         mutation_percent_genes=(40, 10),
         parallel_processing=None,
         parent_selection_type="tournament",
