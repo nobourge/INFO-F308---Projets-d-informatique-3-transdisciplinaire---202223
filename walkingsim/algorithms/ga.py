@@ -87,8 +87,8 @@ class GeneticAlgorithm:
 
         forces_list = np.array(individual).reshape(
             (
-                self.ga.num_genes // Simulation._GENOME_DISCRETE_INTERVALS,
                 Simulation._GENOME_DISCRETE_INTERVALS,
+                self.ga.num_genes // Simulation._GENOME_DISCRETE_INTERVALS,
             )
         )
 
@@ -96,7 +96,9 @@ class GeneticAlgorithm:
         simulation = Simulation(env_props)
 
         while not simulation.is_over():
-            for forces in forces_list:
+            for forces in list(forces_list):
+                if simulation.is_over():
+                    break
                 simulation.step(list(forces))
 
         fitness = simulation.total_reward

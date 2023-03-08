@@ -10,20 +10,17 @@ Description:
     Classes for the simulations
 """
 
+from loguru import logger
+
 from walkingsim.envs.chrono import ChronoEnvironment
 
 
 class Simulation:
     _TIME_STEP = 1e-2
-    _SIM_DURATION_IN_SECS = 5
-    _FORCES_DELAY_IN_TIMESTEPS = 4
-    _TIME_STEPS_TO_SECOND = 60 // _TIME_STEP
+    _SIM_DURATION_IN_SECS = 10 
+    _TIME_STEPS_TO_SECOND = 1 // _TIME_STEP
     _GENOME_DISCRETE_INTERVALS = int(
-        (
-            _TIME_STEPS_TO_SECOND
-            * _SIM_DURATION_IN_SECS
-            // _FORCES_DELAY_IN_TIMESTEPS
-        )
+        (_TIME_STEPS_TO_SECOND * _SIM_DURATION_IN_SECS)
     )
 
     def __init__(self, __env_props: dict, visualize: bool = False) -> None:
@@ -53,9 +50,11 @@ class Simulation:
         return self.__step_reward
 
     def step(self, action: list):
+        #  logger.debug("Simulation step begins.")
         self.__environment.step(action, self._TIME_STEP)
         self.__step_reward = self._compute_step_reward()
         self._update_total_reward()
+        #  logger.debug("Simulation step is over.")
 
     def _compute_step_reward(self):
         observations = self.__environment.observations

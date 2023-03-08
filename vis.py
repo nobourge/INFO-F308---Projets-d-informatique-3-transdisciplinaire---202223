@@ -11,7 +11,7 @@ def main():
         results = pickle.load(fp)
 
     forces_list = np.array(results["best_solution"]).reshape(
-        (8, Simulation._GENOME_DISCRETE_INTERVALS)
+        (Simulation._GENOME_DISCRETE_INTERVALS, 8)
     )
 
     env_props = EnvironmentProps("./environments").load("default")
