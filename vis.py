@@ -7,7 +7,7 @@ from walkingsim.simulation import Simulation
 
 
 def main():
-    with open("solutions/best_results.bat", "rb") as fp:
+    with open("solutions/last_results.bat", "rb") as fp:
         results = pickle.load(fp)
 
     forces_list = np.array(results["best_solution"]).reshape(
