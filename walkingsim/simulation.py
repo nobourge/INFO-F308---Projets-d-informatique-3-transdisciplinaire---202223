@@ -88,7 +88,10 @@ class Simulation:
             speed = (
                 last_observations["distance"] - observations[-2]["distance"]
             ) / self._TIME_STEP
-            if observations[-1]["position"][0] < observations[0]["position"][0]:
+            if (
+                observations[-1]["position"][0]
+                < observations[0]["position"][0]
+            ):
                 speed *= -1
         else:
             speed = 0

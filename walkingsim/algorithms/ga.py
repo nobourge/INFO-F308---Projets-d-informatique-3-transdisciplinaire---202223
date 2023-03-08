@@ -105,7 +105,9 @@ class GeneticAlgorithm:
         self.progress_gens.refresh()
 
         # Add entry in csv log
-        headers = ["generation", "specimen_id", "total_fitness"] + list(fitness.keys())
+        headers = ["generation", "specimen_id", "total_fitness"] + list(
+            fitness.keys()
+        )
         data = copy.copy(fitness)
         data["generation"] = self.ga.generations_completed
         data["specimen_id"] = solution_idx
