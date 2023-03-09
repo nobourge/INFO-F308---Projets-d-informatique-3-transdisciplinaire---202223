@@ -101,22 +101,23 @@ class GeneticAlgorithm:
                     break
                 simulation.step(list(forces))
 
-        fitness = simulation.total_reward
+        fitness = simulation.reward
+        fitness_props = simulation.reward_props
 
         logger.debug("Creature fitness: {}".format(fitness))
         self.progress_gens.refresh()
 
         # Add entry in csv log
         headers = ["generation", "specimen_id", "total_fitness"] + list(
-            fitness.keys()
+            fitness_props.keys()
         )
-        data = copy.copy(fitness)
+        data = copy.copy(fitness_props)
         data["generation"] = self.ga.generations_completed
         data["specimen_id"] = solution_idx
-        data["total_fitness"] = sum(fitness.values())
+        data["total_fitness"] = fitness
         self.__data_manager.save_log_file("results.csv", headers, data)
 
-        return sum(fitness.values())
+        return fitness
 
     def save_results(self):
         """

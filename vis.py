@@ -23,8 +23,8 @@ def main():
                 break
             simulation.step(list(forces))
 
-    fitness = simulation.total_reward
-    print(fitness)
+    print(simulation.reward)
+    print(simulation.reward_props)
 
 
 if __name__ == "__main__":

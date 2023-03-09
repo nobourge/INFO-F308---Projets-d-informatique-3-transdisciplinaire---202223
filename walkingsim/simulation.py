@@ -26,86 +26,63 @@ class Simulation:
     def __init__(self, __env_props: dict, visualize: bool = False) -> None:
         self.__environment = ChronoEnvironment(visualize)
         self.__environment.reset(__env_props)
-        self.__total_reward = defaultdict(float)
-        self.__step_reward = None
         self.__is_creature_fallen = False
         self.__current_step = 0
 
-    @property
-    def total_reward(self):
-        return self.__total_reward
+        self.__reward_props = defaultdict(float)
+        self.__reward = None
 
     @property
-    def step_reward(self):
-        return self.__step_reward
+    def reward_props(self):
+        return self.__reward_props
+
+    @property
+    def reward(self):
+        return self.__reward
 
     def step(self, action: list):
         self.__environment.step(action, self._TIME_STEP)
-        self.__step_reward = self._compute_step_reward()
-        self._update_total_reward()
+        self.__reward = self._compute_step_reward()
         self.__environment.check()
 
     def _compute_step_reward(self):
         observations = self.__environment.observations
         self.__current_step += 1
-
         if len(observations) == 0:
             return 0
 
         last_observations = observations[-1]
+
         # If the trunk touches the ground, alive_bonus is negative and stops sim
         if (
             not last_observations["trunk_hit_ground"]
             and not last_observations["legs_hit_ground"]
         ):
-            _alive_bonus = +1
+            self.__reward_props["alive_bonus"] += 1
         else:
-            _alive_bonus = -1
-
-        if _alive_bonus < 0:
+            self.__reward_props["alive_bonus"] -= 1
             self.__is_creature_fallen = True
 
         # Penalties for discouraging the joints to be stuck at their limit
-        nb_joints_at_limit = last_observations["joints_at_limits"]
+        self.__reward_props["joints_at_limits"] += (-0.01 * last_observations["joints_at_limits"])
 
-        reward = {
-            "joints_at_limits": (-0.01 * nb_joints_at_limit),
-            "alive_bonus": _alive_bonus,
-        }
-
-        return reward
-
-    def _update_total_reward(self):
-        for key in self.__step_reward:
-            self.__total_reward[key] += self.__step_reward[key]
-
-        # End of sim computations
-        if self.is_over():
-            self._make_ending_computations()
-
-    def _make_ending_computations(self):
-        """
-        Compute the reward components that are calculated at the end
-        of the simulation.
-
-        Current components:
-            total distance
-            speed over whole sim
-            height difference between start and end (y-axis)
-            straight walk error (z-axis)
-        """
-        obs = self.__environment.observations
-        self.__total_reward["distance"] = obs[-1]["distance"] * 100
-        self.__total_reward["speed"] = (
-            self.__total_reward["distance"]
-            / Simulation._GENOME_DISCRETE_INTERVALS
+        # Values like the distance and speed will simply replace the one from
+        # the previous observations instead of being added. The reward is then
+        # calculated by adding all the values from the __reward_props attribute.
+        # Other value like the height diff and walk_straight also follow the same
+        # logic.
+        self.__reward_props["distance"] = last_observations["distance"] * 100
+        self.__reward_props["speed"] = (
+            self.__reward_props["distance"] / self.__environment.time
         )
-        self.__total_reward["height_diff"] = (
-            -50 * (obs[-1]["position"][1] - obs[0]["position"][1]) ** 2
+        self.__reward_props["height_diff"] = (
+            -50 * (last_observations["position"][1] - observations[0]["position"][1]) ** 2
         )
-        self.__total_reward["walk_straight"] = -3 * (
-            obs[-1]["position"][2] ** 2
+        self.__reward_props["walk_straight"] = -3 * (
+            last_observations["position"][2] ** 2
         )
+
+        return sum(self.__reward_props.values())
 
     def _is_time_limit_reached(self):
         return self.__environment.time > self._SIM_DURATION_IN_SECS
