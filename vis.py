@@ -19,6 +19,8 @@ def main():
 
     while not simulation.is_over():
         for forces in forces_list:
+            if simulation.is_over():
+                break
             simulation.step(list(forces))
 
     fitness = simulation.total_reward
