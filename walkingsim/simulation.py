@@ -40,6 +40,8 @@ class Simulation:
 
         self.__step_reward = None
         self.__is_creature_fallen = False
+        self.__current_step = 0
+        self.__start_pos = 0
 
     @property
     def total_reward(self):
@@ -57,62 +59,25 @@ class Simulation:
 
     def _compute_step_reward(self):
         observations = self.__environment.observations
+        self.__current_step += 1
+
         if len(observations) == 0:
             return 0
 
         last_observations = observations[-1]
         # If the trunk touches the ground, alive_bonus is negative and stops sim
         _alive_bonus = (
-            +1 if last_observations["trunk_hit_ground"] == False else -1
+            +1 if last_observations["trunk_hit_ground"] is False else -1
         )
         if _alive_bonus < 0:
             self.__is_creature_fallen = True
 
-        # The distance is simply the actual distance
-        # from the start point to the current position
-        distance = last_observations["distance"]
-        if observations[-1]["position"][0] < observations[0]["position"][0]:
-            distance *= -1
-
-        # The walk straight reward is a value that tells
-        # if the creature is walking straight or not. If the
-        # creature is walking straight the value will be close to 0
-        walk_straight = -3 * (last_observations["position"][2] ** 2)
-
-        # The speed is how much distance the creature did in one step
-        # If the creature went backwards, the speed is negative
-        # this has a negative impact on the fitness value
-        if len(observations) >= 2:
-            speed = (
-                last_observations["distance"] - observations[-2]["distance"]
-            ) / self._TIME_STEP
-            if (
-                observations[-1]["position"][0]
-                < observations[0]["position"][0]
-            ):
-                speed *= -1
-        else:
-            speed = 0
-
         # Penalties for discouraging the joints to be stuck at their limit
         nb_joints_at_limit = last_observations["joints_at_limits"]
 
-        # Penalties for going lower than their current height
-        try:
-            height_diff = (
-                last_observations["position"][1]
-                - observations[-2]["position"][1]
-            )
-        except IndexError:
-            height_diff = 0
-
         reward = {
-            "distance": distance,
-            "walk_straight": walk_straight,
-            "speed": speed,
             "joints_at_limits": (-0.1 * nb_joints_at_limit),
             "alive_bonus": _alive_bonus,
-            "height_diff": (50 * (height_diff)),
         }
 
         return reward
@@ -120,6 +85,32 @@ class Simulation:
     def _update_total_reward(self):
         for key in self.__step_reward:
             self.__total_reward[key] += self.__step_reward[key]
+
+        # End of sim computations
+        if self.__current_step == Simulation._GENOME_DISCRETE_INTERVALS:
+            self._make_ending_computations()
+
+    def _make_ending_computations(self):
+        """
+        Compute the reward components that are calculated at the end
+        of the simulation.
+
+        Current components:
+            total distance
+            speed over whole sim
+            height difference between start and end (y-axis)
+            straight walk error (z-axis)
+        """
+        obs = self.__environment.obs
+        self.__total_reward["distance"] = obs[-1]["distance"]
+        self.__total_reward["speed"] = (
+            self.__total_reward["distance"]
+            / Simulation._GENOME_DISCRETE_INTERVALS
+        )
+        self.__total_reward["height_diff"] = -50 * (
+            obs[-1]["position"][1] - obs[0]["position"][1]
+        ) ** 2
+        self.__total_reward["walk_straight"] = -3 * (obs[0]["position"][2] ** 2)
 
     def _is_time_limit_reached(self):
         return self.__environment.time > self._SIM_DURATION_IN_SECS
