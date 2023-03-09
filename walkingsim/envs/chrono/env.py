@@ -139,10 +139,13 @@ class ChronoEnvironment:
             self.__creature.root.body.GetContactForce().Length() != 0
         )
         legs_hit_ground = False
-        # FIXME target only the thighs and shins of the quadrupede here, to check
+        # FIXME target only the thighs of the quadrupede here, to check
         # if they touch the ground
         for i in range(0, 4):
-            if self.__creature.root.childs[i].body.GetContactForce().Length() != 0:
+            if (
+                self.__creature.root.childs[i].body.GetContactForce().Length()
+                != 0
+            ):
                 legs_hit_ground = True
 
         # Get position and rotation of trunk
@@ -159,34 +162,19 @@ class ChronoEnvironment:
 
         # Distance calculation
         step_distance = 0
-        total_distance = 0
         if len(self.__observations) > 1:
-            step_distance = ChronoEnvironment._compute_distance(
-                self.__observations[-1]["position"],
-                self.__observations[0]["position"],
-            )
 
-            # FIXME : Total distance is not calculated correctly
-            for i, data in enumerate(self.__observations[1:]):
-                prev_pos = self.__observations[i]
-                distance_from_prev_pos = ChronoEnvironment._compute_distance(
-                    data["position"], prev_pos["position"]
-                )
-                total_distance += distance_from_prev_pos
+            step_distance = (
+                self.__observations[-1]["position"][0]
+                - self.__observations[0]["position"][0]
+            )
 
         # We update the last sensor data added with those additional information
         self.__observations[-1].update(
             {
                 "distance": step_distance,
-                "total_distance": total_distance,
                 "joints_at_limits": nb_joints_at_limit,
                 "trunk_hit_ground": trunk_hit_ground,
                 "legs_hit_ground": legs_hit_ground,
             }
-        )
-
-    @staticmethod
-    def _compute_distance(a, b):
-        return math.sqrt(
-            (a[0] + b[0]) ** 2 + (a[1] + b[1]) ** 2 + (a[2] + b[2]) ** 2
         )

@@ -95,7 +95,7 @@ class Simulation:
             straight walk error (z-axis)
         """
         obs = self.__environment.observations
-        self.__total_reward["distance"] = obs[-1]["distance"]
+        self.__total_reward["distance"] = obs[-1]["distance"] * 100
         self.__total_reward["speed"] = (
             self.__total_reward["distance"]
             / Simulation._GENOME_DISCRETE_INTERVALS
