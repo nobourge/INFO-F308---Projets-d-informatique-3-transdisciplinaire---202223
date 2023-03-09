@@ -12,8 +12,6 @@ Description:
 
 from collections import defaultdict
 
-from loguru import logger
-
 from walkingsim.envs.chrono import ChronoEnvironment
 
 
@@ -56,9 +54,14 @@ class Simulation:
 
         last_observations = observations[-1]
         # If the trunk touches the ground, alive_bonus is negative and stops sim
-        _alive_bonus = (
-            +1 if last_observations["trunk_hit_ground"] is False else -1
-        )
+        if (
+            not last_observations["trunk_hit_ground"]
+            and not last_observations["legs_hit_ground"]
+        ):
+            _alive_bonus = +1
+        else:
+            _alive_bonus = -1
+
         if _alive_bonus < 0:
             self.__is_creature_fallen = True
 
@@ -66,7 +69,7 @@ class Simulation:
         nb_joints_at_limit = last_observations["joints_at_limits"]
 
         reward = {
-            "joints_at_limits": (-0.1 * nb_joints_at_limit),
+            "joints_at_limits": (-0.01 * nb_joints_at_limit),
             "alive_bonus": _alive_bonus,
         }
 
@@ -77,7 +80,7 @@ class Simulation:
             self.__total_reward[key] += self.__step_reward[key]
 
         # End of sim computations
-        if self.__current_step == Simulation._GENOME_DISCRETE_INTERVALS:
+        if self.is_over():
             self._make_ending_computations()
 
     def _make_ending_computations(self):
@@ -97,10 +100,12 @@ class Simulation:
             self.__total_reward["distance"]
             / Simulation._GENOME_DISCRETE_INTERVALS
         )
-        self.__total_reward["height_diff"] = -50 * (
-            obs[-1]["position"][1] - obs[0]["position"][1]
-        ) ** 2
-        self.__total_reward["walk_straight"] = -3 * (obs[-1]["position"][2] ** 2)
+        self.__total_reward["height_diff"] = (
+            -50 * (obs[-1]["position"][1] - obs[0]["position"][1]) ** 2
+        )
+        self.__total_reward["walk_straight"] = -3 * (
+            obs[-1]["position"][2] ** 2
+        )
 
     def _is_time_limit_reached(self):
         return self.__environment.time > self._SIM_DURATION_IN_SECS

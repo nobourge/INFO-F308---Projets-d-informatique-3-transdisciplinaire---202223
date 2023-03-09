@@ -133,11 +133,17 @@ class ChronoEnvironment:
     def _gather_observations(self):
         nb_joints_at_limit = self._get_nb_joints_at_limit()
 
-        # The contact force of the trunk is 0 when not touching anything,
+        # The contact force of a body is 0 when not touching anything,
         # and != 0 when touching something (e.g. the ground)
         trunk_hit_ground = (
             self.__creature.root.body.GetContactForce().Length() != 0
         )
+        legs_hit_ground = False
+        # FIXME target only the thighs and shins of the quadrupede here, to check
+        # if they touch the ground
+        for i in range(0, 4):
+            if self.__creature.root.childs[i].body.GetContactForce().Length() != 0:
+                legs_hit_ground = True
 
         # Get position and rotation of trunk
         trunk_pos = self.__creature.root.body.GetPos()
@@ -175,6 +181,7 @@ class ChronoEnvironment:
                 "total_distance": total_distance,
                 "joints_at_limits": nb_joints_at_limit,
                 "trunk_hit_ground": trunk_hit_ground,
+                "legs_hit_ground": legs_hit_ground,
             }
         )
 
