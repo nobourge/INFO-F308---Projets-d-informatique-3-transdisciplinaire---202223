@@ -10,6 +10,8 @@ Description:
     Classes for the simulations
 """
 
+from collections import defaultdict
+
 from loguru import logger
 
 from walkingsim.envs.chrono import ChronoEnvironment
@@ -26,22 +28,10 @@ class Simulation:
     def __init__(self, __env_props: dict, visualize: bool = False) -> None:
         self.__environment = ChronoEnvironment(visualize)
         self.__environment.reset(__env_props)
-        self.__total_reward = {
-            key: 0
-            for key in [
-                "distance",
-                "walk_straight",
-                "speed",
-                "joints_at_limits",
-                "alive_bonus",
-                "height_diff",
-            ]
-        }
-
+        self.__total_reward = defaultdict(float)
         self.__step_reward = None
         self.__is_creature_fallen = False
         self.__current_step = 0
-        self.__start_pos = 0
 
     @property
     def total_reward(self):
@@ -101,7 +91,7 @@ class Simulation:
             height difference between start and end (y-axis)
             straight walk error (z-axis)
         """
-        obs = self.__environment.obs
+        obs = self.__environment.observations
         self.__total_reward["distance"] = obs[-1]["distance"]
         self.__total_reward["speed"] = (
             self.__total_reward["distance"]
@@ -110,7 +100,7 @@ class Simulation:
         self.__total_reward["height_diff"] = -50 * (
             obs[-1]["position"][1] - obs[0]["position"][1]
         ) ** 2
-        self.__total_reward["walk_straight"] = -3 * (obs[0]["position"][2] ** 2)
+        self.__total_reward["walk_straight"] = -3 * (obs[-1]["position"][2] ** 2)
 
     def _is_time_limit_reached(self):
         return self.__environment.time > self._SIM_DURATION_IN_SECS
