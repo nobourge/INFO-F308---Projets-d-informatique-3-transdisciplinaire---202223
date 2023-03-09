@@ -29,7 +29,7 @@ def main():
     population_size = 50
     config = PygadConfig(
         num_generations=10,
-        num_parents_mating=4,
+        num_parents_mating=population_size//2,
         mutation_percent_genes=(40, 10),
         parallel_processing=None,
         parent_selection_type="tournament",

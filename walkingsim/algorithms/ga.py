@@ -57,17 +57,40 @@ class GeneticAlgorithm:
             random_mutation_max_val=config.random_mutation_max_val,
             # Callbacks
             fitness_func=self.fitness_function,
+            on_crossover=self.on_crossover,
+            on_mutation=self.on_mutation,
             on_generation=self._on_generation,
+            on_stop=self.on_stop
         )
 
         self.progress_gens = tqdm.tqdm(
             total=config.num_generations,
             desc="Generations",
             leave=False,
+            position=1
         )
+
+        self.progress_sims = tqdm.tqdm(
+            total=self.ga.sol_per_pop,
+            desc=f"({self.ga.generations_completed}) Fitness",
+            leave=False,
+            position=0
+        )
+
+    def on_crossover(self, ga_instance, offspring_crossover):
+        self.progress_sims.reset(len(offspring_crossover))
+        self.progress_sims.set_description(f"({self.ga.generations_completed}) Crossover")
+
+    def on_mutation(self, ga_instance, offspring_mutation):
+        self.progress_sims.reset(len(offspring_mutation))
+        self.progress_sims.set_description(f"({self.ga.generations_completed}) Mutation")
 
     def _on_generation(self, ga_instance):
         self.progress_gens.update(1)
+
+    def on_stop(self, ga_instance, last_population_fitness):
+        self.progress_sims.reset(len(self.ga.last_generation_offspring_mutation))
+        self.progress_sims.set_description(f"({self.ga.generations_completed}) Fitness")
 
     def fitness_function(self, individual, solution_idx):
         """
@@ -106,6 +129,7 @@ class GeneticAlgorithm:
 
         logger.debug("Creature fitness: {}".format(fitness))
         self.progress_gens.refresh()
+        self.progress_sims.update(1)
 
         # Add entry in csv log
         headers = ["generation", "specimen_id", "total_fitness"] + list(
@@ -178,12 +202,15 @@ class GeneticAlgorithm:
         self.final_results["solutions"] = solutions
 
         logger.info("Best genome: {}".format(best_solution))
-        print("Best genome: {}".format(best_solution))
+        logger.error("Best genome: {}".format(best_solution))
         logger.info("Best fitness: {}".format(best_fitness))
-        print("Best fitness: {}".format(best_fitness))
+        logger.error("Best fitness: {}".format(best_fitness))
 
         self.save_results()
 
-        self.progress_gens.close()
-
         # self.plot()
+
+        self.progress_gens.close()
+        if self.progress_sims is not None:
+            self.progress_sims.close()
+
