@@ -119,10 +119,10 @@ class GeneticAlgorithm:
         simulation = Simulation(env_props)
 
         while not simulation.is_over():
-            for forces in list(forces_list):
+            for forces in forces_list:
                 if simulation.is_over():
                     break
-                simulation.step(list(forces))
+                simulation.step(forces)
 
         fitness = simulation.reward
         fitness_props = simulation.reward_props

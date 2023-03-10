@@ -22,5 +22,8 @@ class ChronoVisualizer:
         self.__visualizer.ShowInfoPanel(True)
         self.__visualizer.EndScene()
 
+    def refresh(self):
+        self.__visualizer.BindAll()
+
     def check(self):
         return self.__visualizer.Run()

@@ -21,7 +21,8 @@ def main():
         for forces in forces_list:
             if simulation.is_over():
                 break
-            simulation.step(list(forces))
+            simulation.step(forces)
+            simulation.render()
 
     print(simulation.reward)
     print(simulation.reward_props)

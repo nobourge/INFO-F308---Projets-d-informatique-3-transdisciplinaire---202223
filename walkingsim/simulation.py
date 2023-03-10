@@ -43,7 +43,9 @@ class Simulation:
     def step(self, action: list):
         self.__environment.step(action, self._TIME_STEP)
         self.__reward = self._compute_step_reward()
-        self.__environment.check()
+
+    def render(self):
+        self.__environment.render()
 
     def _compute_step_reward(self):
         observations = self.__environment.observations

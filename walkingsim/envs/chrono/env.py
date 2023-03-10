@@ -22,9 +22,8 @@ class ChronoEnvironment:
         self.__environment = chrono.ChSystemNSC()
         self.__creature = None
 
+        self.__visualize = visualize
         self.__visualizer = None
-        if visualize:
-            self.__visualizer = ChronoVisualizer(self.__environment)
 
         # Materials & Colors
         self.__ground_material = chrono.ChMaterialSurfaceNSC()
@@ -48,6 +47,7 @@ class ChronoEnvironment:
     def reset(self, properties: dict):
         self.__environment.Clear()
         self.__environment.SetChTime(0)  # NOTE: Is this necessary ?
+        self.__observations.clear()
 
         # Set environment properties
         gravity = properties.get("gravity", (0, -9.81, 0))
@@ -81,21 +81,22 @@ class ChronoEnvironment:
             self.__environment.AddLink(link)
 
         self._gather_observations()
+        if self.__visualizer:
+            self.__visualizer.refresh()
 
-        # Setup visualizer
-        if self.__visualizer is not None:
-            self.__visualizer.setup()
-
-    def step(self, action: list, timestep: float):
-        self._apply_forces(action)
+    def step(self, action, timestep: float):
+        self._apply_forces(action.tolist())
         self.__environment.DoStepDynamics(timestep)
-        if self.__visualizer is not None:
-            self.__visualizer.render()
         self._gather_observations()
 
-    def check(self):
+    def render(self):
+        if self.__visualize and self.__visualizer is None:
+            self.__visualizer = ChronoVisualizer(self.__environment)
+            self.__visualizer.setup()
+
         if self.__visualizer is not None:
-            return self.__visualizer.check()
+            self.__visualizer.render()
+            self.__visualizer.check()
 
     # private methods
     def _apply_forces(self, action: list):
