@@ -69,7 +69,11 @@ class ChronoEnvironment:
         ground.SetBodyFixed(True)
         ground.SetPos(chrono.ChVectorD(0, -ground_size[1] / 2, 0))
         ground.GetVisualShape(0).SetColor(self.__ground_color)
-        ground.GetVisualShape(0).SetTexture("resources/materials/floor/dirty_concrete.jpg", scale_x=10, scale_y=10)
+        ground.GetVisualShape(0).SetTexture(
+            "resources/materials/floor/dirty_concrete.jpg",
+            scale_x=10,
+            scale_y=10,
+        )
         self.__environment.Add(ground)
 
         # Add creature

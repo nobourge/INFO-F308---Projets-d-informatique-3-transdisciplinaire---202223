@@ -29,7 +29,9 @@ class ChronoCreatureBody(_CreatureBody):
         self.collision(family=self._family, nocollision=[self._family])
         chrono_pos = _tuple_to_chrono_vector(self._position)
         self._body.SetPos(chrono_pos)
-        self._body.GetVisualShape(0).SetTexture(self._TEXTURE, scale_x=5, scale_y=5)
+        self._body.GetVisualShape(0).SetTexture(
+            self._TEXTURE, scale_x=5, scale_y=5
+        )
 
     # Methods
     def collision(
