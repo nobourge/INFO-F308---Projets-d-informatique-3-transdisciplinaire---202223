@@ -13,7 +13,7 @@ class ChronoVisualizer:
         self.__visualizer.SetWindowTitle("3D muscle-based walking sim")
         self.__visualizer.Initialize()
         self.__visualizer.AddSkyBox("resources/materials/skybox/pink_sky/")
-        self.__visualizer.AddCamera(chrono.ChVectorD(2, 10, 3))
+        self.__visualizer.AddCamera(chrono.ChVectorD(10, 2, 15))
         self.__visualizer.AddTypicalLights()
         #  self.__visualizer.SetShadows(True)
 
