@@ -26,24 +26,24 @@ def main():
     # logger.info("Number of CPU threads: {}", threads_quantity)
     # print("Number of CPU threads: {}", threads_quantity)
 
-    population_size = 50
+    population_size = 100 
     config = PygadConfig(
-        num_generations=10,
-        num_parents_mating=population_size//2,
-        mutation_percent_genes=(40, 10),
+        num_generations=50,
+        num_parents_mating=4,
+        mutation_percent_genes=(60, 10),
         parallel_processing=None,
         parent_selection_type="tournament",
-        keep_elitism=population_size // 100,
+        keep_elitism=5,
         crossover_type="uniform",
         mutation_type="adaptive",
         initial_population=None,
         population_size=population_size,
         num_joints=8,
         save_solutions=False,
-        init_range_low=-1000,
-        init_range_high=1000,
-        random_mutation_min_val=-1000,
-        random_mutation_max_val=1000,
+        init_range_low=-1500,
+        init_range_high=1500,
+        random_mutation_min_val=-1500,
+        random_mutation_max_val=1500,
     )
 
     GA = GeneticAlgorithm(config)
