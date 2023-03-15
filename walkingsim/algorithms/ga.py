@@ -60,37 +60,45 @@ class GeneticAlgorithm:
             on_crossover=self.on_crossover,
             on_mutation=self.on_mutation,
             on_generation=self._on_generation,
-            on_stop=self.on_stop
+            on_stop=self.on_stop,
         )
 
         self.progress_gens = tqdm.tqdm(
             total=config.num_generations,
             desc="Generations",
             leave=False,
-            position=1
+            position=1,
         )
 
         self.progress_sims = tqdm.tqdm(
             total=self.ga.sol_per_pop,
             desc=f"({self.ga.generations_completed}) Fitness",
             leave=False,
-            position=0
+            position=0,
         )
 
     def on_crossover(self, ga_instance, offspring_crossover):
         self.progress_sims.reset(len(offspring_crossover))
-        self.progress_sims.set_description(f"({self.ga.generations_completed}) Crossover")
+        self.progress_sims.set_description(
+            f"({self.ga.generations_completed}) Crossover"
+        )
 
     def on_mutation(self, ga_instance, offspring_mutation):
         self.progress_sims.reset(len(offspring_mutation))
-        self.progress_sims.set_description(f"({self.ga.generations_completed}) Mutation")
+        self.progress_sims.set_description(
+            f"({self.ga.generations_completed}) Mutation"
+        )
 
     def _on_generation(self, ga_instance):
         self.progress_gens.update(1)
 
     def on_stop(self, ga_instance, last_population_fitness):
-        self.progress_sims.reset(len(self.ga.last_generation_offspring_mutation))
-        self.progress_sims.set_description(f"({self.ga.generations_completed}) Fitness")
+        self.progress_sims.reset(
+            len(self.ga.last_generation_offspring_mutation)
+        )
+        self.progress_sims.set_description(
+            f"({self.ga.generations_completed}) Fitness"
+        )
 
     def fitness_function(self, individual, solution_idx):
         """
@@ -213,4 +221,3 @@ class GeneticAlgorithm:
         self.progress_gens.close()
         if self.progress_sims is not None:
             self.progress_sims.close()
-

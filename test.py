@@ -1,8 +1,11 @@
-import walkingsim
 import gymnasium as gym
 from stable_baselines3 import PPO
 
-env = gym.make("quadrupede-v0", render_mode="human", properties={"gravity": [0, -9.81, 0]})
+import walkingsim
+
+env = gym.make(
+    "quadrupede-v0", render_mode="human", properties={"gravity": [0, -9.81, 0]}
+)
 model = PPO("MultiInputPolicy", env, verbose=1)
 model.learn(total_timesteps=2e5, progress_bar=True)
 

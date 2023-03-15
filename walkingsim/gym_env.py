@@ -1,7 +1,8 @@
+from collections import defaultdict
+
 import gymnasium as gym
 import numpy as np
 
-from collections import defaultdict
 from walkingsim.envs.chrono import ChronoEnvironment
 
 
@@ -15,22 +16,18 @@ class GymEnvironment(gym.Env):
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode=None, properties: dict=None):
+    def __init__(self, render_mode=None, properties: dict = None):
         super().__init__()
         self.__properties = properties
         self.render_mode = render_mode
 
-        self.observation_space = gym.spaces.Dict({
-            "distance": gym.spaces.Box(low=-1000, high=1000)
-        })
-        self.action_space = gym.spaces.Box(
-            low=-1,
-            high=1,
-            shape=(8,)
+        self.observation_space = gym.spaces.Dict(
+            {"distance": gym.spaces.Box(low=-1000, high=1000)}
         )
+        self.action_space = gym.spaces.Box(low=-1, high=1, shape=(8,))
         self.gain = 1000
 
-        self.__environment = ChronoEnvironment(render_mode=="human")
+        self.__environment = ChronoEnvironment(render_mode == "human")
         self.__is_creature_fallen = False
         self.__current_step = 0
 
@@ -47,7 +44,10 @@ class GymEnvironment(gym.Env):
 
     def _get_obs(self):
         return {
-            "distance": np.array([self.__environment.observations[-1]["distance"]], dtype=np.float32)
+            "distance": np.array(
+                [self.__environment.observations[-1]["distance"]],
+                dtype=np.float32,
+            )
         }
 
     def _get_info(self):
@@ -65,7 +65,7 @@ class GymEnvironment(gym.Env):
         return observation, info
 
     def step(self, action):
-        self.__environment.step(action*self.gain, self._TIME_STEP)
+        self.__environment.step(action * self.gain, self._TIME_STEP)
         self.__reward = self._compute_step_reward()
         observation = self._get_obs()
         info = self._get_info()
@@ -98,7 +98,9 @@ class GymEnvironment(gym.Env):
             self.__is_creature_fallen = True
 
         # Penalties for discouraging the joints to be stuck at their limit
-        self.__reward_props["joints_at_limits"] += (-0.01 * last_observations["joints_at_limits"])
+        self.__reward_props["joints_at_limits"] += (
+            -0.01 * last_observations["joints_at_limits"]
+        )
 
         # Values like the distance and speed will simply replace the one from
         # the previous observations instead of being added. The reward is then
@@ -110,7 +112,12 @@ class GymEnvironment(gym.Env):
             self.__reward_props["distance"] / self.__environment.time
         )
         self.__reward_props["height_diff"] = (
-            -50 * (last_observations["position"][1] - observations[0]["position"][1]) ** 2
+            -50
+            * (
+                last_observations["position"][1]
+                - observations[0]["position"][1]
+            )
+            ** 2
         )
         self.__reward_props["walk_straight"] = -3 * (
             last_observations["position"][2] ** 2

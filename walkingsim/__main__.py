@@ -26,7 +26,7 @@ def main():
     # logger.info("Number of CPU threads: {}", threads_quantity)
     # print("Number of CPU threads: {}", threads_quantity)
 
-    population_size = 100 
+    population_size = 100
     config = PygadConfig(
         num_generations=50,
         num_parents_mating=4,
