@@ -90,7 +90,6 @@ def get_parser():
 
 
 def _train(args):
-    print(args.environment)
     if not args.use_gym:
         if args.population_size is None or args.num_generations is None:
             logger.error(
@@ -99,6 +98,7 @@ def _train(args):
             return -1
 
         return _train_with_pygad(
+            env=args.environment,
             population_size=args.population_size,
             num_generations=args.num_generations,
             workers=args.workers,
@@ -112,6 +112,7 @@ def _train(args):
             return -1
 
         return _train_with_gym(
+            env=args.environment,
             timesteps=args.gym_timesteps,
             algo=args.gym_algo,
             show_progress=args.gym_progress_bar,
@@ -119,6 +120,7 @@ def _train(args):
 
 
 def _train_with_pygad(
+    env: dict,
     population_size: int = None,
     num_generations: int = None,
     workers: int = None,
@@ -127,7 +129,7 @@ def _train_with_pygad(
     from walkingsim.algorithms.ga import GeneticAlgorithm
     from walkingsim.utils.pygad_config import PygadConfig
 
-    # FIXME: Pass environment, creature & target (walking, running, etc.)
+    # FIXME: Pass creature & target (walking, running, etc.)
     # FIXME: Pass the render while training options
 
     parallel_processing = workers
@@ -153,27 +155,27 @@ def _train_with_pygad(
         random_mutation_max_val=1500,
     )
 
-    GA = GeneticAlgorithm(config)
+    GA = GeneticAlgorithm(config, env)
     GA.run()
 
 
 def _train_with_gym(
-    timesteps: int, algo: str = "PPO", show_progress: bool = False
+    env: dict, timesteps: int, algo: str = "PPO", show_progress: bool = False
 ):
     import gymnasium as gym
     from stable_baselines3 import PPO
 
-    # FIXME: Pass environment, creature & target (walking, running, etc.)
+    # FIXME: Pass creature & target (walking, running, etc.)
     # FIXME: Pass the render while training options
     # FIXME: Use different algorithmes
 
     env = gym.make(
         "quadrupede-v0",
         render_mode="human",
-        properties={"gravity": [0, -9.81, 0]},
+        properties=env,
     )
     model = PPO("MultiInputPolicy", env, verbose=1)
-    model.learn(total_timesteps=2e5, progress_bar=show_progress)
+    model.learn(total_timesteps=timesteps, progress_bar=show_progress)
 
 
 def _visualize(args):

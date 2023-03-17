@@ -6,7 +6,6 @@ import pygad as pygad_
 import tqdm
 from loguru import logger
 
-from walkingsim.loader import EnvironmentProps
 from walkingsim.simulation import Simulation
 from walkingsim.utils.data_manager import DataManager
 
@@ -17,8 +16,7 @@ class GeneticAlgorithm:
     mutation_type: adaptive | random
     """
 
-    def __init__(self, config):
-
+    def __init__(self, config, env_props):
         self.__data_manager = DataManager()
         self.__data_manager.save_local_dat_file("pygad_config.dat", config)
         config_dict = config._asdict()
@@ -26,6 +24,7 @@ class GeneticAlgorithm:
             "pygad_config.csv", list(config_dict.keys()), config_dict
         )
         self.data_log = []
+        self.__env_props = env_props
 
         self.final_results = {
             "best_fitness": 0,
@@ -123,8 +122,7 @@ class GeneticAlgorithm:
             )
         )
 
-        env_props = EnvironmentProps("./environments").load("default")
-        simulation = Simulation(env_props)
+        simulation = Simulation(self.__env_props)
 
         while not simulation.is_over():
             for forces in forces_list:
