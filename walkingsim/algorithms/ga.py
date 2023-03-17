@@ -16,7 +16,13 @@ class GeneticAlgorithm:
     mutation_type: adaptive | random
     """
 
-    def __init__(self, config, env_props, visualize: bool = False):
+    def __init__(
+        self,
+        config,
+        env_props,
+        visualize: bool = False,
+        creature: str = "quadrupede",
+    ):
         self.__data_manager = DataManager()
         config_dict = config._asdict()
         self.__data_manager.save_log_file(
@@ -25,14 +31,16 @@ class GeneticAlgorithm:
         self.data_log = []
         self.__env_props = env_props
         self.__visualize = visualize
-        self.__simulation = Simulation(self.__env_props, self.__visualize)
+        self.__simulation = Simulation(
+            self.__env_props, self.__visualize, 0, creature
+        )
 
         self.sim_data = {
             "config": config,
             "best_fitness": 0,
             "best_solution": None,
             "solutions": None,
-            "env": env_props
+            "env": env_props,
         }
 
         self.ga = pygad_.GA(
@@ -40,7 +48,8 @@ class GeneticAlgorithm:
             initial_population=config.initial_population,
             sol_per_pop=config.population_size,
             num_generations=config.num_generations,
-            num_genes=self.__simulation.creature_shape * Simulation._GENOME_DISCRETE_INTERVALS,
+            num_genes=self.__simulation.creature_shape
+            * Simulation._GENOME_DISCRETE_INTERVALS,
             # Evolution settings
             num_parents_mating=config.num_parents_mating,
             mutation_percent_genes=config.mutation_percent_genes,

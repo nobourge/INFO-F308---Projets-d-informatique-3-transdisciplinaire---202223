@@ -18,11 +18,18 @@ class GymEnvironment(gym.Env):
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode=None, properties: dict = None):
+    def __init__(
+        self,
+        render_mode=None,
+        properties: dict = None,
+        creature: str = "quadrupede",
+    ):
         super().__init__()
         self.__properties = properties
         self.render_mode = render_mode
-        self.__environment = ChronoEnvironment(render_mode == "human")
+        self.__environment = ChronoEnvironment(
+            render_mode == "human", creature
+        )
 
         # FIXME: Adapt the observation spaces based on the selected fitness
         self.observation_space = gym.spaces.Dict(
@@ -35,7 +42,9 @@ class GymEnvironment(gym.Env):
                 "walk_straight": gym.spaces.Box(low=-50, high=50),
             }
         )
-        self.action_space = gym.spaces.Box(low=-1, high=1, shape=(self.__environment.creature_shape,))
+        self.action_space = gym.spaces.Box(
+            low=-1, high=1, shape=(self.__environment.creature_shape,)
+        )
         self.gain = 1000
 
         self.__fitness = AliveBonusFitness(

@@ -1,6 +1,7 @@
 class GA_Train:
     def __init__(
         self,
+        creature: str,
         env: dict,
         population_size: int = None,
         num_generations: int = None,
@@ -36,7 +37,7 @@ class GA_Train:
             random_mutation_max_val=1500,
         )
 
-        self.ga = GeneticAlgorithm(config, env, visualize)
+        self.ga = GeneticAlgorithm(config, env, visualize, creature)
 
     def run(self):
         self.ga.run()
@@ -45,6 +46,7 @@ class GA_Train:
 class GYM_Train:
     def __init__(
         self,
+        creature: str,
         env: dict,
         timesteps: int,
         algo: str = "PPO",
@@ -64,6 +66,7 @@ class GYM_Train:
             "quadrupede-v0",
             render_mode="human" if visualize else "rgb_array",
             properties=env,
+            creature=creature,
         )
         self.model = PPO("MultiInputPolicy", env, verbose=1)
 

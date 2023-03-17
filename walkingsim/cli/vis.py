@@ -1,11 +1,11 @@
-from walkingsim.loader import EnvironmentProps
-from walkingsim.simulation import Simulation
-
 import pickle
 import sys
 
-from loguru import logger
 import numpy as np
+from loguru import logger
+
+from walkingsim.loader import EnvironmentProps
+from walkingsim.simulation import Simulation
 
 
 class GA_Vis:

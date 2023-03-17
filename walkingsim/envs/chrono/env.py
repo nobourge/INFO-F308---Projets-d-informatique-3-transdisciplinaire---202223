@@ -2,8 +2,8 @@ import math
 
 import pychrono as chrono
 
-from walkingsim.creature.quadrupede import Quadrupede
 from walkingsim.creature.bipede import Bipede
+from walkingsim.creature.quadrupede import Quadrupede
 from walkingsim.envs.chrono.creature import ChronoCreatureBody
 from walkingsim.envs.chrono.utils import _tuple_to_chrono_vector
 from walkingsim.envs.chrono.visualizer import ChronoVisualizer
@@ -83,7 +83,9 @@ class ChronoEnvironment:
         self.__environment.Add(ground)
 
         # Add creature
-        self.__creature = self.__creature_cls(ChronoCreatureBody, (0, self.__creature_cls._CREATURE_HEIGHT, 0))
+        self.__creature = self.__creature_cls(
+            ChronoCreatureBody, (0, self.__creature_cls._CREATURE_HEIGHT, 0)
+        )
         for body in self.__creature.bodies():
             self.__environment.Add(body)
         for joint in self.__creature.motors():
@@ -157,7 +159,7 @@ class ChronoEnvironment:
         legs_hit_ground = False
         # FIXME target only the thighs of the quadrupede here, to check
         # if they touch the ground
-        for i in range(0, len(self.__creature.motors())//2):
+        for i in range(0, len(self.__creature.motors()) // 2):
             if (
                 self.__creature.root.childs[i].body.GetContactForce().Length()
                 != 0

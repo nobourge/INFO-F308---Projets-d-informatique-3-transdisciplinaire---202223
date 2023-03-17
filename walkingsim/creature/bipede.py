@@ -17,6 +17,7 @@ from walkingsim.creature.creature import Creature, _CreatureBody
 
 class Bipede(Creature):
     """Class for a basic quadrupede."""
+
     _CREATURE_HEIGHT = 1.65
     _CREATURE_MOTORS = 4
 

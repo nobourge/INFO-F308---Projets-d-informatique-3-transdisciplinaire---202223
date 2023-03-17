@@ -24,8 +24,14 @@ class Simulation:
         (_TIME_STEPS_TO_SECOND * _SIM_DURATION_IN_SECS)
     )
 
-    def __init__(self, __env_props: dict, visualize: bool = False, ending_delay: int = 0) -> None:
-        self.__environment = ChronoEnvironment(visualize)
+    def __init__(
+        self,
+        __env_props: dict,
+        visualize: bool = False,
+        ending_delay: int = 0,
+        creature: str = "quadrupede",
+    ) -> None:
+        self.__environment = ChronoEnvironment(visualize, creature)
         self.__env_props = __env_props
         self.__fitness = AliveBonusFitness(
             self._SIM_DURATION_IN_SECS, self._TIME_STEP

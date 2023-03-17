@@ -94,8 +94,15 @@ class WalkingSimArgumentParser:
         parser.set_defaults(func=self.visualize)
         # General Options
         general_options = parser.add_argument_group("General Options")
-        general_options.add_argument("solution_file", nargs='?', type=str, default="solutions/last_sim_data.dat")
-        general_options.add_argument("--ending-delay", type=int, default=0, dest="ending_delay") # in secs
+        general_options.add_argument(
+            "solution_file",
+            nargs="?",
+            type=str,
+            default="solutions/last_sim_data.dat",
+        )
+        general_options.add_argument(
+            "--ending-delay", type=int, default=0, dest="ending_delay"
+        )  # in secs
 
     def train(self, args):
         if not args.use_gym:
@@ -106,6 +113,7 @@ class WalkingSimArgumentParser:
                 return -1
 
             return GA_Train(
+                creature=args.creature,
                 env=args.environment,
                 population_size=args.population_size,
                 num_generations=args.num_generations,
@@ -121,6 +129,7 @@ class WalkingSimArgumentParser:
                 return -1
 
             return GYM_Train(
+                creature=args.creature,
                 env=args.environment,
                 timesteps=args.gym_timesteps,
                 algo=args.gym_algo,
