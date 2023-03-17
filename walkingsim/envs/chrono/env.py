@@ -103,6 +103,10 @@ class ChronoEnvironment:
             self.__visualizer.render()
             self.__visualizer.check()
 
+    def close(self):
+        if self.__visualizer is not None:
+            self.__visualizer.close()
+
     # private methods
     def _apply_forces(self, action: list):
         if len(action) < len(self.__creature.motors()):

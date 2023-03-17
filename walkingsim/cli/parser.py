@@ -107,6 +107,7 @@ class WalkingSimArgumentParser:
                 num_generations=args.num_generations,
                 workers=args.workers,
                 use_multiprocessing=args.use_multiprocessing,
+                visualize=args.do_render,
             ).run()
         else:
             if args.gym_timesteps is None:
@@ -120,6 +121,7 @@ class WalkingSimArgumentParser:
                 timesteps=args.gym_timesteps,
                 algo=args.gym_algo,
                 show_progress=args.gym_progress_bar,
+                visualize=args.do_render,
             ).run()
 
     def visualize(self):

@@ -16,7 +16,7 @@ class GeneticAlgorithm:
     mutation_type: adaptive | random
     """
 
-    def __init__(self, config, env_props):
+    def __init__(self, config, env_props, visualize: bool = False):
         self.__data_manager = DataManager()
         config_dict = config._asdict()
         self.__data_manager.save_log_file(
@@ -24,6 +24,8 @@ class GeneticAlgorithm:
         )
         self.data_log = []
         self.__env_props = env_props
+        self.__visualize = visualize
+        self.__simulation = Simulation(self.__env_props, self.__visualize)
 
         self.sim_data = {
             "config": config,
@@ -122,16 +124,16 @@ class GeneticAlgorithm:
             )
         )
 
-        simulation = Simulation(self.__env_props)
-
-        while not simulation.is_over():
+        self.__simulation.reset()
+        while not self.__simulation.is_over():
             for forces in forces_list:
-                if simulation.is_over():
+                if self.__simulation.is_over():
                     break
-                simulation.step(forces)
+                self.__simulation.step(forces)
+                self.__simulation.render()
 
-        fitness = simulation.reward
-        fitness_props = simulation.reward_props
+        fitness = self.__simulation.reward
+        fitness_props = self.__simulation.reward_props
 
         logger.debug("Creature fitness: {}".format(fitness))
         self.progress_gens.refresh()
@@ -155,9 +157,7 @@ class GeneticAlgorithm:
         Saves it as best if applicable.
         """
         # In dedicated folder
-        self.__data_manager.save_local_dat_file(
-            "sim_data.dat", self.sim_data
-        )
+        self.__data_manager.save_local_dat_file("sim_data.dat", self.sim_data)
 
         # In solutions folder
         self.__data_manager.save_global_dat_file(
@@ -199,6 +199,7 @@ class GeneticAlgorithm:
         logger.info("run()")
         logger.info("Genetic Algorithm started")
         self.ga.run()
+        self.__simulation.close()
         logger.info("Genetic Algorithm ended")
 
         solutions = self.ga.solutions  #

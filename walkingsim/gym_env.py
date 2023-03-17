@@ -86,6 +86,7 @@ class GymEnvironment(gym.Env):
         self.__is_done = False
         self.__reward = None
         self.__reward_props.clear()
+        self.__fitness.reset()
 
         observation = self._get_obs()
         info = self._get_info()
@@ -102,7 +103,7 @@ class GymEnvironment(gym.Env):
         self.__environment.render()
 
     def close(self):
-        pass
+        self.__environment.close()
 
     # private methods
     def _compute_step_reward(self, forces):

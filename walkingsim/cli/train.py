@@ -6,6 +6,7 @@ class GA_Train:
         num_generations: int = None,
         workers: int = None,
         use_multiprocessing: bool = False,
+        visualize: bool = False,
     ) -> None:
         from walkingsim.algorithms.ga import GeneticAlgorithm
         from walkingsim.utils.pygad_config import PygadConfig
@@ -36,7 +37,7 @@ class GA_Train:
             random_mutation_max_val=1500,
         )
 
-        self.ga = GeneticAlgorithm(config, env)
+        self.ga = GeneticAlgorithm(config, env, visualize)
 
     def run(self):
         self.ga.run()
@@ -49,6 +50,7 @@ class GYM_Train:
         timesteps: int,
         algo: str = "PPO",
         show_progress: bool = False,
+        visualize: bool = False,
     ) -> None:
         self.timesteps = timesteps
         self.show_progress = show_progress

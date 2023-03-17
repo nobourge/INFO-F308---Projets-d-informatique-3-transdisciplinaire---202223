@@ -21,6 +21,11 @@ class Fitness:
     def done(self):
         return self._done
 
+    def reset(self):
+        self._props.clear()
+        self._fitness = None
+        self._done = False
+
     def compute(
         self,
         last_observation: dict,

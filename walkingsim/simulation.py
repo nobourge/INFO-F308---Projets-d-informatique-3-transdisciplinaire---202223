@@ -26,7 +26,7 @@ class Simulation:
 
     def __init__(self, __env_props: dict, visualize: bool = False) -> None:
         self.__environment = ChronoEnvironment(visualize)
-        self.__environment.reset(__env_props)
+        self.__env_props = __env_props
         self.__fitness = AliveBonusFitness(
             self._SIM_DURATION_IN_SECS, self._TIME_STEP
         )
@@ -48,8 +48,19 @@ class Simulation:
         self.__environment.step(action, self._TIME_STEP)
         self.__reward = self._compute_step_reward(action)
 
+    def reset(self):
+        self.__environment.reset(self.__env_props)
+        self.__is_done = False
+        self.__reward = None
+        self.__current_step = 0
+        self.__reward_props.clear()
+        self.__fitness.reset()
+
     def render(self):
         self.__environment.render()
+
+    def close(self):
+        self.__environment.close()
 
     def _compute_step_reward(self, forces):
         observations = self.__environment.observations
