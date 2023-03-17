@@ -7,6 +7,7 @@ import sys
 import numpy as np
 import gymnasium as gym
 from stable_baselines3 import PPO
+from loguru import logger
 
 
 class GA_Vis:
@@ -38,13 +39,20 @@ class GA_Vis:
 
 
 class GYM_Vis:
-    def __init__(self, model_data_file: str):
-        pass
+    def __init__(self, model_data_file: str, env: dict, creature: str):
+
+        env = gym.make(
+            "quadrupede-v0",
+            render_mode="human",
+            properties=env,
+            creature=creature,
+        )
+        self.__model = PPO.load(model_data_file, env)
 
     def run(self):
-        vec_env = model.get_env()
+        vec_env = self.__model.get_env()
         obs = vec_env.reset()
         for i in range(100_000):
-           action, _state = model.predict(obs, deterministic=True)
+           action, _state = self.__model.predict(obs, deterministic=True)
            obs, reward, done, info = vec_env.step(action)
            vec_env.render()
