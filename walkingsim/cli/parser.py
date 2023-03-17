@@ -3,6 +3,7 @@ from argparse import Action, ArgumentParser
 from loguru import logger
 
 from walkingsim.cli.train import GA_Train, GYM_Train
+from walkingsim.cli.vis import GA_Vis
 from walkingsim.loader import EnvironmentProps
 
 
@@ -91,7 +92,10 @@ class WalkingSimArgumentParser:
     def _setup_vis_parser(self):
         parser = self.commands.add_parser("vis")
         parser.set_defaults(func=self.visualize)
-        parser.add_argument("solution_file", type=str)
+        # General Options
+        general_options = parser.add_argument_group("General Options")
+        general_options.add_argument("solution_file", nargs='?', type=str, default="solutions/last_sim_data.dat")
+        general_options.add_argument("--ending-delay", type=int, default=5, dest="ending_delay")
 
     def train(self, args):
         if not args.use_gym:
@@ -124,8 +128,8 @@ class WalkingSimArgumentParser:
                 visualize=args.do_render,
             ).run()
 
-    def visualize(self):
-        pass
+    def visualize(self, args):
+        return GA_Vis(args.solution_file).run()
 
     def run(self):
         args = self.parser.parse_args()
