@@ -20,12 +20,14 @@ class GA_Vis:
                 logger.error("Could not load the simulation data file")
                 sys.exit()
 
-        self.__forces_list = np.array(self.sim_data["best_solution"]).reshape(
-            (Simulation._GENOME_DISCRETE_INTERVALS, 8)
-        )
-
         env_props = self.sim_data["env"]
         self.__simulation = Simulation(env_props, True, ending_delay)
+        self.__forces_list = np.array(self.sim_data["best_solution"]).reshape(
+            (
+                Simulation._GENOME_DISCRETE_INTERVALS,
+                self.__simulation.creature_shape,
+            )
+        )
         self.__simulation.reset()
 
     def run(self):
