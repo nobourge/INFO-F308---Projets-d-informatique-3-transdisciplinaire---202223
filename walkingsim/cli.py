@@ -1,11 +1,35 @@
-from argparse import ArgumentParser
+from argparse import Action, ArgumentParser
 
-import gymnasium as gym
 from loguru import logger
-from stable_baselines3 import PPO
 
-from walkingsim.algorithms.ga import GeneticAlgorithm
-from walkingsim.utils.pygad_config import PygadConfig
+from walkingsim.loader import EnvironmentProps
+
+
+class EnvironmentArgumentAction(Action):
+    """This is a custom Action for argparse. It automatically loads the environment props"""
+
+    def __init__(
+        self, option_strings, dest, required=False, help=None, metavar=None
+    ) -> None:
+        default_env_props = EnvironmentProps("./environments").load("default")
+        super().__init__(
+            option_strings,
+            dest,
+            None,
+            None,
+            default_env_props,
+            str,
+            ["default", "moon", "mars"],
+            required,
+            help,
+            metavar,
+        )
+
+    def __call__(
+        self, parser: ArgumentParser, namespace, values, option_string=None
+    ) -> None:
+        env_props = EnvironmentProps("./environments").load(values)
+        setattr(namespace, self.dest, env_props)
 
 
 def setup_train_parser(parser: ArgumentParser):
@@ -15,7 +39,10 @@ def setup_train_parser(parser: ArgumentParser):
     # General Options
     general_options = parser.add_argument_group("General Options")
     general_options.add_argument(
-        "--environment", "-e", default="default", type=str, dest="environment"
+        "--environment",
+        "-e",
+        action=EnvironmentArgumentAction,
+        dest="environment",
     )
     general_options.add_argument(
         "--target", "-t", default="walk", type=str, dest="target"
@@ -63,6 +90,7 @@ def get_parser():
 
 
 def _train(args):
+    print(args.environment)
     if not args.use_gym:
         if args.population_size is None or args.num_generations is None:
             logger.error(
@@ -96,6 +124,9 @@ def _train_with_pygad(
     workers: int = None,
     use_multiprocessing: bool = False,
 ):
+    from walkingsim.algorithms.ga import GeneticAlgorithm
+    from walkingsim.utils.pygad_config import PygadConfig
+
     # FIXME: Pass environment, creature & target (walking, running, etc.)
     # FIXME: Pass the render while training options
 
@@ -129,6 +160,9 @@ def _train_with_pygad(
 def _train_with_gym(
     timesteps: int, algo: str = "PPO", show_progress: bool = False
 ):
+    import gymnasium as gym
+    from stable_baselines3 import PPO
+
     # FIXME: Pass environment, creature & target (walking, running, etc.)
     # FIXME: Pass the render while training options
     # FIXME: Use different algorithmes
