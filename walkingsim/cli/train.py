@@ -1,6 +1,3 @@
-import os
-
-
 class GA_Train:
     def __init__(
         self,
@@ -40,10 +37,11 @@ class GA_Train:
             random_mutation_max_val=1500,
         )
 
-        self.ga = GeneticAlgorithm(config, env, visualize, creature)
+        self.algo = GeneticAlgorithm(config, env, creature, visualize)
 
     def run(self):
-        self.ga.run()
+        self.algo.train()
+        self.algo.save()
 
 
 class GYM_Train:
@@ -56,33 +54,14 @@ class GYM_Train:
         show_progress: bool = False,
         visualize: bool = False,
     ) -> None:
-        self.timesteps = timesteps
-        self.show_progress = show_progress
-        self.algo = algo
-        self.creature = creature
-
-        import gymnasium as gym
-        from stable_baselines3 import PPO
+        from walkingsim.algorithms.ppo import PPO_Algo
+        from walkingsim.utils.baselines_config import BaselinesConfig
 
         # FIXME: target (walking, running, etc.)
         # FIXME: Use different algorithms
-
-        env = gym.make(
-            "quadrupede-v0",
-            env_props=env,
-            creature=creature,
-            visualize=visualize,
-        )
-        self.model = PPO("MultiInputPolicy", env, verbose=1)
+        self.config = BaselinesConfig(timesteps, show_progress)
+        self.algo = PPO_Algo(self.config, env, creature, visualize)
 
     def run(self):
-        from walkingsim.utils.data_manager import DataManager
-
-        self.model.learn(
-            total_timesteps=self.timesteps, progress_bar=self.show_progress
-        )
-        self.model.save(
-            os.path.join(
-                DataManager().data_dir, f"{self.algo}_{self.creature}"
-            )
-        )
+        self.algo.train()
+        self.algo.save()

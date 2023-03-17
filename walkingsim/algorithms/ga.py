@@ -1,5 +1,4 @@
 import copy
-import pickle
 
 import numpy as np
 import pygad as pygad_
@@ -8,6 +7,7 @@ from loguru import logger
 
 from walkingsim.simulation.ga import GA_Simulation
 from walkingsim.utils.data_manager import DataManager
+from walkingsim.utils.pygad_config import PygadConfig
 
 
 class GeneticAlgorithm:
@@ -16,32 +16,39 @@ class GeneticAlgorithm:
     mutation_type: adaptive | random
     """
 
+    _dm_group = "ga"
+
     def __init__(
         self,
-        config,
-        env_props,
-        visualize: bool = False,
+        config: PygadConfig,
+        env_props: dict,
         creature: str = "quadrupede",
+        visualize: bool = False,
+        ending_delay: int = 0,
+        best_solution=None,
     ):
-        self.__data_manager = DataManager()
+        self._dm = DataManager(self._dm_group)
         config_dict = config._asdict()
-        self.__data_manager.save_log_file(
+        self._dm.save_log_file(
             "pygad_config.csv", list(config_dict.keys()), config_dict
         )
+
         self.data_log = []
-        self.__env_props = env_props
-        self.__visualize = visualize
-        self.__simulation = GA_Simulation(
-            env_props=self.__env_props,
+        self._env_props = env_props
+        self._visualize = visualize
+        self._simulation = GA_Simulation(
+            env_props=self._env_props,
             creature=creature,
-            visualize=self.__visualize,
+            visualize=self._visualize,
+            ending_delay=ending_delay,
         )
 
         self.sim_data = {
             "config": config,
             "best_fitness": 0,
-            "best_solution": None,
+            "best_solution": best_solution,
             "solutions": None,
+            "creature": creature,
             "env": env_props,
         }
 
@@ -50,8 +57,8 @@ class GeneticAlgorithm:
             initial_population=config.initial_population,
             sol_per_pop=config.population_size,
             num_generations=config.num_generations,
-            num_genes=self.__simulation.creature_shape
-            * self.__simulation.genome_discrete_intervals,
+            num_genes=self._simulation.creature_shape
+            * self._simulation.genome_discrete_intervals,
             # Evolution settings
             num_parents_mating=config.num_parents_mating,
             mutation_percent_genes=config.mutation_percent_genes,
@@ -130,20 +137,20 @@ class GeneticAlgorithm:
 
         forces_list = np.array(individual).reshape(
             (
-                self.__simulation.genome_discrete_intervals,
-                self.__simulation.creature_shape,
+                self._simulation.genome_discrete_intervals,
+                self._simulation.creature_shape,
             )
         )
 
-        self.__simulation.reset()
-        while not self.__simulation.is_over():
+        self._simulation.reset()
+        while not self._simulation.is_over():
             for forces in forces_list:
-                if self.__simulation.is_over():
+                if self._simulation.is_over():
                     break
-                self.__simulation.step(forces)
+                self._simulation.step(forces)
 
-        fitness = self.__simulation.reward
-        fitness_props = self.__simulation.reward_props
+        fitness = self._simulation.reward
+        fitness_props = self._simulation.reward_props
 
         logger.debug("Creature fitness: {}".format(fitness))
         self.progress_gens.refresh()
@@ -157,76 +164,72 @@ class GeneticAlgorithm:
         data["generation"] = self.ga.generations_completed
         data["specimen_id"] = solution_idx
         data["total_fitness"] = fitness
-        self.__data_manager.save_log_file("results.csv", headers, data)
+        self._dm.save_log_file("results.csv", headers, data)
 
         return fitness
 
-    def save_results(self):
+    # save & load
+    def save(self):
         """
         Saves the final results dictionary in a .dat file.
         Saves it as best if applicable.
         """
-        # In dedicated folder
-        self.__data_manager.save_local_dat_file("sim_data.dat", self.sim_data)
+        self._dm.save_local_dat_file("sim_data.dat", self.sim_data)
+        self._dm.save_global_dat_file("last_sim_data.dat", self.sim_data)
 
-        # In solutions folder
-        self.__data_manager.save_global_dat_file(
-            "last_sim_data.dat", self.sim_data
-        )
-        if self._is_best_result():
-            self.__data_manager.save_global_dat_file(
-                "best_sim_data.dat", self.sim_data
-            )
-
-    def _is_best_result(self):
-        res = False
         try:
-            with open(
-                self.__data_manager.root_dir + "best_results.dat", "rb"
-            ) as fp:
-                best_results = pickle.load(fp)
-                if (
-                    best_results["best_fitness"]
-                    < self.sim_data["best_fitness"]
-                ):
-                    res = True
-
+            best_sim_data = self._dm.load_global_dat_file("best_sim_data.dat")
+            if best_sim_data["best_fitness"] < self.sim_data["best_fitness"]:
+                self._dm.save_global_dat_file(
+                    "best_sim_data.dat", self.sim_data
+                )
         except (EOFError, FileNotFoundError):
-            res = True
+            self._dm.save_global_dat_file("best_sim_data.dat", self.sim_data)
 
-        return res
+    @classmethod
+    def load(cls, date: str, visualize: bool = False, ending_delay: int = 0):
+        dm = DataManager(cls._dm_group, date, False)
+        sim_data = dm.load_local_dat_file("sim_data.dat")
+        return GeneticAlgorithm(
+            config=sim_data["config"],
+            env_props=sim_data["env"],
+            creature=sim_data["creature"],
+            visualize=visualize,
+            ending_delay=ending_delay,
+            best_solution=sim_data["best_solution"],
+        )
 
-    def plot(self):
-        logger.info("Plotting results")
-        print("Plotting results")
-        self.ga.plot_fitness()
-        # self.ga.plot_genes()
-        # self.ga.plot_new_solution_rate()    # Plot the new solution
-        # rate. The new solution rate is the number of new solutions
-        # created in the current generation divided by the population size.
-
-    def run(self):
-        logger.info("run()")
-        logger.info("Genetic Algorithm started")
+    # train & visualize
+    def train(self):
         self.ga.run()
-        self.__simulation.close()
-        logger.info("Genetic Algorithm ended")
+        self._simulation.close()
 
-        solutions = self.ga.solutions  #
         best_solution, best_fitness, _ = self.ga.best_solution()
         self.sim_data["best_fitness"] = best_fitness
         self.sim_data["best_solution"] = best_solution
-        self.sim_data["solutions"] = solutions
+        self.sim_data["solutions"] = self.ga.solutions
 
-        logger.info("Best genome: {}".format(best_solution))
         logger.error("Best genome: {}".format(best_solution))
-        logger.info("Best fitness: {}".format(best_fitness))
         logger.error("Best fitness: {}".format(best_fitness))
-
-        self.save_results()
-
-        # self.plot()
 
         self.progress_gens.close()
         if self.progress_sims is not None:
             self.progress_sims.close()
+
+    def visualize(self):
+        forces_list = np.array(self.sim_data["best_solution"]).reshape(
+            (
+                self._simulation.genome_discrete_intervals,
+                self._simulation.creature_shape,
+            )
+        )
+
+        self._simulation.reset()
+        while not self._simulation.is_closed():
+            for forces in forces_list:
+                if self._simulation.is_over():
+                    break
+                self._simulation.step(forces)
+
+            if self._simulation.is_over():
+                self._simulation.reset()
