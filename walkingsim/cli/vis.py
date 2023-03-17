@@ -7,7 +7,7 @@ from loguru import logger
 from stable_baselines3 import PPO
 
 import walkingsim
-from walkingsim.simulation import Simulation
+from walkingsim.simulation.ga import GA_Simulation
 
 
 class GA_Vis:
@@ -21,32 +21,32 @@ class GA_Vis:
                 sys.exit()
 
         env_props = self.sim_data["env"]
-        self.__simulation = Simulation(env_props, True, ending_delay)
+        self.__simulation = GA_Simulation(
+            env_props=env_props,
+            # creature=creature,
+            visualize=True,
+            ending_delay=ending_delay,
+        )
         self.__forces_list = np.array(self.sim_data["best_solution"]).reshape(
             (
-                Simulation._GENOME_DISCRETE_INTERVALS,
+                self.__simulation.genome_discrete_intervals,
                 self.__simulation.creature_shape,
             )
         )
         self.__simulation.reset()
 
     def run(self):
-
         while not self.__simulation.is_over():
             for forces in self.__forces_list:
                 if self.__simulation.is_over():
                     break
                 self.__simulation.step(forces)
-                self.__simulation.render()
 
 
 class GYM_Vis:
     def __init__(self, model_data_file: str, env: dict, creature: str):
         env = gym.make(
-            "quadrupede-v0",
-            render_mode="human",
-            properties=env,
-            creature=creature,
+            "quadrupede-v0", env_props=env, creature=creature, visualize=True
         )
         self.__model = PPO.load(model_data_file, env)
 

@@ -6,7 +6,7 @@ import pygad as pygad_
 import tqdm
 from loguru import logger
 
-from walkingsim.simulation import Simulation
+from walkingsim.simulation.ga import GA_Simulation
 from walkingsim.utils.data_manager import DataManager
 
 
@@ -31,8 +31,10 @@ class GeneticAlgorithm:
         self.data_log = []
         self.__env_props = env_props
         self.__visualize = visualize
-        self.__simulation = Simulation(
-            self.__env_props, self.__visualize, 0, creature
+        self.__simulation = GA_Simulation(
+            env_props=self.__env_props,
+            creature=creature,
+            visualize=self.__visualize,
         )
 
         self.sim_data = {
@@ -49,7 +51,7 @@ class GeneticAlgorithm:
             sol_per_pop=config.population_size,
             num_generations=config.num_generations,
             num_genes=self.__simulation.creature_shape
-            * Simulation._GENOME_DISCRETE_INTERVALS,
+            * self.__simulation.genome_discrete_intervals,
             # Evolution settings
             num_parents_mating=config.num_parents_mating,
             mutation_percent_genes=config.mutation_percent_genes,
@@ -128,8 +130,8 @@ class GeneticAlgorithm:
 
         forces_list = np.array(individual).reshape(
             (
-                Simulation._GENOME_DISCRETE_INTERVALS,
-                self.ga.num_genes // Simulation._GENOME_DISCRETE_INTERVALS,
+                self.__simulation.genome_discrete_intervals,
+                self.__simulation.creature_shape,
             )
         )
 
@@ -139,7 +141,6 @@ class GeneticAlgorithm:
                 if self.__simulation.is_over():
                     break
                 self.__simulation.step(forces)
-                self.__simulation.render()
 
         fitness = self.__simulation.reward
         fitness_props = self.__simulation.reward_props
