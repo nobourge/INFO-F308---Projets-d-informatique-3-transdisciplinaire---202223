@@ -3,7 +3,7 @@ from argparse import Action, ArgumentParser
 from loguru import logger
 
 from walkingsim.cli.train import GA_Train, GYM_Train
-from walkingsim.cli.vis import GA_Vis
+from walkingsim.cli.vis import GA_Vis, GYM_Vis
 from walkingsim.loader import EnvironmentProps
 
 
@@ -138,7 +138,10 @@ class WalkingSimArgumentParser:
             ).run()
 
     def visualize(self, args):
-        return GA_Vis(args.solution_file, args.ending_delay).run()
+        if args.use_gym:
+            return GYM_Vis().run()
+        else:
+            return GA_Vis(args.solution_file, args.ending_delay).run()
 
     def run(self):
         args = self.parser.parse_args()

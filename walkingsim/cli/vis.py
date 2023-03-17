@@ -1,17 +1,18 @@
+import walkingsim
+from walkingsim.simulation import Simulation
+
 import pickle
 import sys
 
 import numpy as np
-from loguru import logger
-
-from walkingsim.loader import EnvironmentProps
-from walkingsim.simulation import Simulation
+import gymnasium as gym
+from stable_baselines3 import PPO
 
 
 class GA_Vis:
-    def __init__(self, sim_data_dat: str, ending_delay: int) -> None:
+    def __init__(self, sim_data_file: str, ending_delay: int) -> None:
 
-        with open(sim_data_dat, "rb") as fp:
+        with open(sim_data_file, "rb") as fp:
             try:
                 self.sim_data = pickle.load(fp)
             except IOError:
@@ -34,3 +35,16 @@ class GA_Vis:
                     break
                 self.__simulation.step(forces)
                 self.__simulation.render()
+
+
+class GYM_Vis:
+    def __init__(self, model_data_file: str):
+        pass
+
+    def run(self):
+        vec_env = model.get_env()
+        obs = vec_env.reset()
+        for i in range(100_000):
+           action, _state = model.predict(obs, deterministic=True)
+           obs, reward, done, info = vec_env.step(action)
+           vec_env.render()
