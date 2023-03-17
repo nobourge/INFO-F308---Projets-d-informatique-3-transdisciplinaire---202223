@@ -23,8 +23,9 @@ class GA_Vis:
             (Simulation._GENOME_DISCRETE_INTERVALS, 8)
         )
 
-        env_props = EnvironmentProps("./environments").load("default")
+        env_props = self.sim_data["env"]
         simulation = Simulation(env_props, True)
+        simulation.reset()
 
         while not simulation.is_over():
             for forces in forces_list:

@@ -32,6 +32,7 @@ class GeneticAlgorithm:
             "best_fitness": 0,
             "best_solution": None,
             "solutions": None,
+            "env": env_props
         }
 
         self.ga = pygad_.GA(
