@@ -2,6 +2,7 @@ from collections import defaultdict
 
 import gymnasium as gym
 import numpy as np
+from loguru import logger
 
 from walkingsim.envs.chrono import ChronoEnvironment
 from walkingsim.fitness import AliveBonusFitness
@@ -95,6 +96,10 @@ class GymEnvironment(gym.Env):
     def step(self, action):
         self.__environment.step(action * self.gain, self._TIME_STEP)
         self.__reward = self._compute_step_reward(action)
+
+        if self.render_mode == "human":
+            self.render()
+
         observation = self._get_obs()
         info = self._get_info()
         return observation, self.__reward, self.is_over(), self.is_over(), info

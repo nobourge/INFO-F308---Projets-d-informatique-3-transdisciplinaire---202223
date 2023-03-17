@@ -64,7 +64,7 @@ class GYM_Train:
 
         env = gym.make(
             "quadrupede-v0",
-            render_mode="human",
+            render_mode="human" if visualize else "rgb_array",
             properties=env,
         )
         self.model = PPO("MultiInputPolicy", env, verbose=1)
