@@ -18,7 +18,6 @@ class GeneticAlgorithm:
 
     def __init__(self, config, env_props):
         self.__data_manager = DataManager()
-        self.__data_manager.save_local_dat_file("pygad_config.dat", config)
         config_dict = config._asdict()
         self.__data_manager.save_log_file(
             "pygad_config.csv", list(config_dict.keys()), config_dict
@@ -26,7 +25,8 @@ class GeneticAlgorithm:
         self.data_log = []
         self.__env_props = env_props
 
-        self.final_results = {
+        self.sim_data = {
+            "config": config,
             "best_fitness": 0,
             "best_solution": None,
             "solutions": None,
@@ -156,16 +156,16 @@ class GeneticAlgorithm:
         """
         # In dedicated folder
         self.__data_manager.save_local_dat_file(
-            "results.bat", self.final_results
+            "sim_data.dat", self.sim_data
         )
 
         # In solutions folder
         self.__data_manager.save_global_dat_file(
-            "last_results.bat", self.final_results
+            "last_sim_data.dat", self.sim_data
         )
         if self._is_best_result():
             self.__data_manager.save_global_dat_file(
-                "best_results.bat", self.final_results
+                "best_sim_data.dat", self.sim_data
             )
 
     def _is_best_result(self):
@@ -177,7 +177,7 @@ class GeneticAlgorithm:
                 best_results = pickle.load(fp)
                 if (
                     best_results["best_fitness"]
-                    < self.final_results["best_fitness"]
+                    < self.sim_data["best_fitness"]
                 ):
                     res = True
 
@@ -203,9 +203,9 @@ class GeneticAlgorithm:
 
         solutions = self.ga.solutions  #
         best_solution, best_fitness, _ = self.ga.best_solution()
-        self.final_results["best_fitness"] = best_fitness
-        self.final_results["best_solution"] = best_solution
-        self.final_results["solutions"] = solutions
+        self.sim_data["best_fitness"] = best_fitness
+        self.sim_data["best_solution"] = best_solution
+        self.sim_data["solutions"] = solutions
 
         logger.info("Best genome: {}".format(best_solution))
         logger.error("Best genome: {}".format(best_solution))
