@@ -1,5 +1,6 @@
 import os
 
+
 class GA_Train:
     def __init__(
         self,
@@ -80,4 +81,8 @@ class GYM_Train:
         self.model.learn(
             total_timesteps=self.timesteps, progress_bar=self.show_progress
         )
-        self.model.save(os.path.join(DataManager().data_dir, f"{self.algo}_{self.creature}"))
+        self.model.save(
+            os.path.join(
+                DataManager().data_dir, f"{self.algo}_{self.creature}"
+            )
+        )

@@ -68,6 +68,9 @@ class GymEnvironment(gym.Env):
     def reward(self):
         return self.__reward
 
+    def closed(self):
+        return self.__environment.closed
+
     def _get_obs(self):
         # FIXME: Adapt based on the selected fitness
         return {

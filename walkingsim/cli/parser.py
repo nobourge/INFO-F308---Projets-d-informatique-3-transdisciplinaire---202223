@@ -103,7 +103,9 @@ class WalkingSimArgumentParser:
         general_options.add_argument(
             "--ending-delay", type=int, default=0, dest="ending_delay"
         )  # in secs
-        general_options.add_argument("--use-gym", action="store_true", dest="use_gym", default=False)
+        general_options.add_argument(
+            "--use-gym", action="store_true", dest="use_gym", default=False
+        )
 
         # Gym options
         gym_options = parser.add_argument_group("Gym Options")
@@ -151,9 +153,13 @@ class WalkingSimArgumentParser:
     def visualize(self, args):
         if args.use_gym:
             if args.environment is not None and args.creature is not None:
-                return GYM_Vis(args.solution_file, args.environment, args.creature).run()
+                return GYM_Vis(
+                    args.solution_file, args.environment, args.creature
+                ).run()
             else:
-                logger.error("When visualising a Gym simulation you must provide --creature and --environment")
+                logger.error(
+                    "When visualising a Gym simulation you must provide --creature and --environment"
+                )
         else:
             return GA_Vis(args.solution_file, args.ending_delay).run()
 

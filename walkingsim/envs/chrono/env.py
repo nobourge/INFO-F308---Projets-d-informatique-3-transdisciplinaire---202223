@@ -50,6 +50,13 @@ class ChronoEnvironment:
     def time(self):
         return self.__environment.GetChTime()
 
+    @property
+    def closed(self):
+        if self.__visualizer:
+            return not self.__visualizer.check()
+
+        return False
+
     def reset(self, properties: dict):
         self.__environment.Clear()
         self.__environment.SetChTime(0)  # NOTE: Is this necessary ?

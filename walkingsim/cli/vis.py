@@ -1,13 +1,13 @@
-import walkingsim
-from walkingsim.simulation import Simulation
-
 import pickle
 import sys
 
-import numpy as np
 import gymnasium as gym
-from stable_baselines3 import PPO
+import numpy as np
 from loguru import logger
+from stable_baselines3 import PPO
+
+import walkingsim
+from walkingsim.simulation import Simulation
 
 
 class GA_Vis:
@@ -40,7 +40,6 @@ class GA_Vis:
 
 class GYM_Vis:
     def __init__(self, model_data_file: str, env: dict, creature: str):
-
         env = gym.make(
             "quadrupede-v0",
             render_mode="human",
@@ -52,7 +51,6 @@ class GYM_Vis:
     def run(self):
         vec_env = self.__model.get_env()
         obs = vec_env.reset()
-        for i in range(100_000):
-           action, _state = self.__model.predict(obs, deterministic=True)
-           obs, reward, done, info = vec_env.step(action)
-           vec_env.render()
+        while not vec_env.env_method("closed")[0]:
+            action, _state = self.__model.predict(obs, deterministic=True)
+            obs, reward, done, info = vec_env.step(action)

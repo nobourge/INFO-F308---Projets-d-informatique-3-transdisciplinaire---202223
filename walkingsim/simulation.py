@@ -56,6 +56,9 @@ class Simulation:
     def reward(self):
         return self.__reward
 
+    def closed(self):
+        return self.__environment.closed
+
     def step(self, action: list):
         self.__environment.step(action, self._TIME_STEP)
         self.__reward = self._compute_step_reward(action)
