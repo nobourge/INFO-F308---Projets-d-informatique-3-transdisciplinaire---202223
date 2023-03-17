@@ -3,8 +3,8 @@
 import pickle
 
 import walkingsim.utils._logging  # Configure logging
-from walkingsim import cli
 from walkingsim.algorithms.ga import GeneticAlgorithm
+from walkingsim.cli.parser import WalkingSimArgumentParser
 from walkingsim.utils.pygad_config import PygadConfig
 
 # The programs has 2 steps:
@@ -69,5 +69,4 @@ def get_past_results():
 
 
 if __name__ == "__main__":
-    # main()
-    cli.main()
+    WalkingSimArgumentParser().run()
