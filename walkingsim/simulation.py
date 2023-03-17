@@ -68,7 +68,7 @@ class Simulation:
         self.__reward_props.clear()
         self.__reward_props.update(self.__fitness.props)
         self.__is_done = self.__fitness.done
-        return self.__fitness.reward
+        return self.__fitness.fitness
 
     def _is_time_limit_reached(self):
         return self.__environment.time > self._SIM_DURATION_IN_SECS
