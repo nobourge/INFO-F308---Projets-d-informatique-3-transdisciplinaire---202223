@@ -95,7 +95,7 @@ class WalkingSimArgumentParser:
         # General Options
         general_options = parser.add_argument_group("General Options")
         general_options.add_argument("solution_file", nargs='?', type=str, default="solutions/last_sim_data.dat")
-        general_options.add_argument("--ending-delay", type=int, default=5, dest="ending_delay")
+        general_options.add_argument("--ending-delay", type=int, default=0, dest="ending_delay") # in secs
 
     def train(self, args):
         if not args.use_gym:
@@ -129,7 +129,7 @@ class WalkingSimArgumentParser:
             ).run()
 
     def visualize(self, args):
-        return GA_Vis(args.solution_file).run()
+        return GA_Vis(args.solution_file, args.ending_delay).run()
 
     def run(self):
         args = self.parser.parse_args()

@@ -24,7 +24,7 @@ class Simulation:
         (_TIME_STEPS_TO_SECOND * _SIM_DURATION_IN_SECS)
     )
 
-    def __init__(self, __env_props: dict, visualize: bool = False) -> None:
+    def __init__(self, __env_props: dict, visualize: bool = False, ending_delay: int = 0) -> None:
         self.__environment = ChronoEnvironment(visualize)
         self.__env_props = __env_props
         self.__fitness = AliveBonusFitness(
@@ -35,6 +35,8 @@ class Simulation:
 
         self.__reward_props = defaultdict(float)
         self.__reward = None
+
+        self.__ending_delay = ending_delay
 
     @property
     def reward_props(self):
@@ -90,5 +92,10 @@ class Simulation:
 
         if self._is_time_limit_reached() or self.__is_done:
             is_over = True
+
+        # Add additional delay at end of sim
+        if self.__ending_delay > 0:
+            is_over = False
+            self.__ending_delay -= Simulation._TIME_STEP
 
         return is_over

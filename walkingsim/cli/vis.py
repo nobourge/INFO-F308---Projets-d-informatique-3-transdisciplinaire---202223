@@ -9,7 +9,7 @@ import numpy as np
 
 
 class GA_Vis:
-    def __init__(self, sim_data_dat: str) -> None:
+    def __init__(self, sim_data_dat: str, ending_delay: int) -> None:
 
         with open(sim_data_dat, "rb") as fp:
             try:
@@ -18,18 +18,19 @@ class GA_Vis:
                 logger.error("Could not load the simulation data file")
                 sys.exit()
 
-    def run(self):
-        forces_list = np.array(self.sim_data["best_solution"]).reshape(
+        self.__forces_list = np.array(self.sim_data["best_solution"]).reshape(
             (Simulation._GENOME_DISCRETE_INTERVALS, 8)
         )
 
         env_props = self.sim_data["env"]
-        simulation = Simulation(env_props, True)
-        simulation.reset()
+        self.__simulation = Simulation(env_props, True, ending_delay)
+        self.__simulation.reset()
 
-        while not simulation.is_over():
-            for forces in forces_list:
-                if simulation.is_over():
+    def run(self):
+
+        while not self.__simulation.is_over():
+            for forces in self.__forces_list:
+                if self.__simulation.is_over():
                     break
-                simulation.step(forces)
-                simulation.render()
+                self.__simulation.step(forces)
+                self.__simulation.render()
