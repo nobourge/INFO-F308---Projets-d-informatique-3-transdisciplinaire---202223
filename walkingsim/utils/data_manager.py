@@ -15,12 +15,18 @@ class DataManager:
         if date is None:
             date = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
 
+        self.__date = date
+
         self.__root_dir = os.path.join("solutions", group)
         self.__data_dir = os.path.join(self.__root_dir, date)
         self.__log_dir = os.path.join(self.__data_dir, "logs")
 
         if fail_if_exists:
             self._create_data_dir()
+
+    @property
+    def date(self):
+        return self.__date
 
     def _create_data_dir(self):
         try:

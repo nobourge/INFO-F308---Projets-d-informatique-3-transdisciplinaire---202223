@@ -175,20 +175,27 @@ class GeneticAlgorithm:
         Saves it as best if applicable.
         """
         self._dm.save_local_dat_file("sim_data.dat", self.sim_data)
-        self._dm.save_global_dat_file("last_sim_data.dat", self.sim_data)
+        self._dm.save_global_dat_file("last_sim.dat", self._dm.date)
 
         try:
-            best_sim_data = self._dm.load_global_dat_file("best_sim_data.dat")
+            best_sim_date = self._dm.load_global_dat_file("best_sim.dat")
+            best_sim_data = DataManager(
+                self._dm_group, best_sim_date, False
+            ).load_local_dat_file("sim_data.dat")
             if best_sim_data["best_fitness"] < self.sim_data["best_fitness"]:
-                self._dm.save_global_dat_file(
-                    "best_sim_data.dat", self.sim_data
-                )
+                self._dm.save_global_dat_file("best_sim.dat", self._dm.date)
         except (EOFError, FileNotFoundError):
-            self._dm.save_global_dat_file("best_sim_data.dat", self.sim_data)
+            self._dm.save_global_dat_file("best_sim.dat", self._dm.date)
 
     @classmethod
-    def load(cls, date: str, visualize: bool = False, ending_delay: int = 0):
+    def load(
+        cls, date: str = None, visualize: bool = False, ending_delay: int = 0
+    ):
         dm = DataManager(cls._dm_group, date, False)
+        if date is None:
+            best_sim_date = dm.load_global_dat_file("best_sim.dat")
+            dm = DataManager(cls._dm_group, best_sim_date, False)
+
         sim_data = dm.load_local_dat_file("sim_data.dat")
         return GeneticAlgorithm(
             config=sim_data["config"],

@@ -92,10 +92,10 @@ class WalkingSimArgumentParser:
     def _setup_vis_parser(self):
         parser = self.commands.add_parser("vis")
         parser.set_defaults(func=self.visualize)
-        parser.add_argument("date", type=str)
 
         # General Options
         general_options = parser.add_argument_group("General Options")
+        parser.add_argument("--date", type=str, default=None, dest="date")
         general_options.add_argument(
             "--ending-delay", type=int, default=0, dest="ending_delay"
         )  # in secs
