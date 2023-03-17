@@ -1,7 +1,9 @@
 #  import multiprocessing
+
 import pickle
 
 import walkingsim.utils._logging  # Configure logging
+from walkingsim import cli
 from walkingsim.algorithms.ga import GeneticAlgorithm
 from walkingsim.utils.pygad_config import PygadConfig
 
@@ -67,4 +69,5 @@ def get_past_results():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    cli.main()
