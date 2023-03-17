@@ -1,3 +1,5 @@
+import os
+
 class GA_Train:
     def __init__(
         self,
@@ -12,7 +14,7 @@ class GA_Train:
         from walkingsim.algorithms.ga import GeneticAlgorithm
         from walkingsim.utils.pygad_config import PygadConfig
 
-        # FIXME: Pass creature & target (walking, running, etc.)
+        # FIXME: target (walking, running, etc.)
 
         parallel_processing = workers
         if use_multiprocessing:
@@ -55,12 +57,14 @@ class GYM_Train:
     ) -> None:
         self.timesteps = timesteps
         self.show_progress = show_progress
+        self.algo = algo
+        self.creature = creature
 
         import gymnasium as gym
         from stable_baselines3 import PPO
 
-        # FIXME: Pass creature & target (walking, running, etc.)
-        # FIXME: Use different algorithmes
+        # FIXME: target (walking, running, etc.)
+        # FIXME: Use different algorithms
 
         env = gym.make(
             "quadrupede-v0",
@@ -71,6 +75,9 @@ class GYM_Train:
         self.model = PPO("MultiInputPolicy", env, verbose=1)
 
     def run(self):
+        from walkingsim.utils.data_manager import DataManager
+
         self.model.learn(
             total_timesteps=self.timesteps, progress_bar=self.show_progress
         )
+        self.model.save(os.path.join(DataManager().data_dir, f"{self.algo}_{self.creature}"))

@@ -20,6 +20,10 @@ class DataManager:
     def root_dir(self):
         return self.__root_dir
 
+    @property
+    def data_dir(self):
+        return self.__data_dir
+
     @staticmethod
     def _generate_data_dirname():
         """
