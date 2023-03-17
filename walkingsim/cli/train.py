@@ -12,7 +12,6 @@ class GA_Train:
         from walkingsim.utils.pygad_config import PygadConfig
 
         # FIXME: Pass creature & target (walking, running, etc.)
-        # FIXME: Pass the render while training options
 
         parallel_processing = workers
         if use_multiprocessing:
@@ -59,7 +58,6 @@ class GYM_Train:
         from stable_baselines3 import PPO
 
         # FIXME: Pass creature & target (walking, running, etc.)
-        # FIXME: Pass the render while training options
         # FIXME: Use different algorithmes
 
         env = gym.make(

@@ -40,8 +40,7 @@ class GeneticAlgorithm:
             initial_population=config.initial_population,
             sol_per_pop=config.population_size,
             num_generations=config.num_generations,
-            num_genes=config.num_joints
-            * Simulation._GENOME_DISCRETE_INTERVALS,
+            num_genes=self.__simulation.creature_shape * Simulation._GENOME_DISCRETE_INTERVALS,
             # Evolution settings
             num_parents_mating=config.num_parents_mating,
             mutation_percent_genes=config.mutation_percent_genes,

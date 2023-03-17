@@ -96,6 +96,8 @@ class Creature:
         links: retrieve a list of all the links in the creature
         motors: retrieve a list of all the motors in the creature
     """
+    _CREATURE_HEIGHT = -1
+    _CREATURE_MOTORS = -1
 
     def __init__(
         self,

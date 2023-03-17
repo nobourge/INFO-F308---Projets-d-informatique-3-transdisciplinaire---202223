@@ -22,6 +22,7 @@ class GymEnvironment(gym.Env):
         super().__init__()
         self.__properties = properties
         self.render_mode = render_mode
+        self.__environment = ChronoEnvironment(render_mode == "human")
 
         # FIXME: Adapt the observation spaces based on the selected fitness
         self.observation_space = gym.spaces.Dict(
@@ -34,10 +35,9 @@ class GymEnvironment(gym.Env):
                 "walk_straight": gym.spaces.Box(low=-50, high=50),
             }
         )
-        self.action_space = gym.spaces.Box(low=-1, high=1, shape=(8,))
+        self.action_space = gym.spaces.Box(low=-1, high=1, shape=(self.__environment.creature_shape,))
         self.gain = 1000
 
-        self.__environment = ChronoEnvironment(render_mode == "human")
         self.__fitness = AliveBonusFitness(
             self._SIM_DURATION_IN_SECS, self._TIME_STEP
         )
@@ -46,6 +46,10 @@ class GymEnvironment(gym.Env):
 
         self.__reward_props = defaultdict(float)
         self.__reward = None
+
+    @property
+    def creature_shape(self):
+        return self.__environment.creature_shape
 
     @property
     def reward_props(self):

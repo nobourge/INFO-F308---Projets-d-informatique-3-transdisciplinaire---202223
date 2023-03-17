@@ -39,6 +39,10 @@ class Simulation:
         self.__ending_delay = ending_delay
 
     @property
+    def creature_shape(self):
+        return self.__environment.creature_shape
+
+    @property
     def reward_props(self):
         return self.__reward_props
 
