@@ -4,7 +4,7 @@ from collections import defaultdict
 class Fitness:
     def __init__(self, sim_duration: float, timestep: float) -> None:
         self._props = defaultdict(float)
-        self._props_range = defaultdict(tuple(float))
+        self._props_range = defaultdict(tuple)
         self._fitness = 0
         self._done = False
         self._timestep = timestep
@@ -16,7 +16,7 @@ class Fitness:
 
     @property
     def props_range(self):
-        return self._props_range
+        raise NotImplemented
 
     @property
     def fitness(self):
@@ -43,6 +43,10 @@ class Fitness:
 
 
 class AliveBonusFitness(Fitness):
+    @property
+    def props_range(self):
+        return {"alive_bonus": (0, 400), "speed": (-500, 500), "height_diff": (-100, 100), "forces": (-5000, 5000)}
+
     def compute(
         self,
         last_observation: dict,
@@ -82,6 +86,18 @@ class AliveBonusFitness(Fitness):
 
 
 class ForwardBonusFitness(Fitness):
+
+    @property
+    def props_range(self):
+        return {
+                "forward_bonus": (-100, 100),
+                "alive_bonus": (0, 1000),
+                "speed": (-5, 5),
+                "speed_gap": (-10, 10),
+                "height_diff": (-50, 50),
+                "walk_straight": (-50, 50),
+        }
+
     def compute(
         self,
         last_observation: dict,
