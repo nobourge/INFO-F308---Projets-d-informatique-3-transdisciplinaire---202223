@@ -43,27 +43,27 @@ class WalkingSimArgumentParser:
         )
         self.ns = Namespace()
         self.available_algorithms = ["ga", "ppo"]
+        self.env_loader = EnvironmentProps("./environments")
 
         self.commands = self.parser.add_subparsers(
             title="Command", required=True
         )
         self.setup_train_parser()
         self.setup_vis_parser()
+        self.setup_env_parser()
 
     # Setup Parser
     def setup_train_parser(self):
-        self.train_parser = self.commands.add_parser(
+        train_parser = self.commands.add_parser(
             "train",
             help="Train a model",
             aliases=["t"],
             formatter_class=ArgumentDefaultsHelpFormatter,
         )
-        self.train_parser.set_defaults(command="train")
+        train_parser.set_defaults(command="train")
 
         # General Options
-        general_options = self.train_parser.add_argument_group(
-            "General Options"
-        )
+        general_options = train_parser.add_argument_group("General Options")
         general_options.add_argument(
             "--creature",
             "-c",
@@ -101,7 +101,7 @@ class WalkingSimArgumentParser:
         )
 
         # Genetic Algorithm Options
-        ga_algo_options = self.train_parser.add_argument_group(
+        ga_algo_options = train_parser.add_argument_group(
             "Genetic Algorithm Options"
         )
         ga_algo_options.add_argument(
@@ -112,7 +112,7 @@ class WalkingSimArgumentParser:
         )
 
         # RL Algorithm Options
-        rl_algo_options = self.train_parser.add_argument_group(
+        rl_algo_options = train_parser.add_argument_group(
             "RL Algorithms Options"
         )
         rl_algo_options.add_argument(
@@ -120,20 +120,20 @@ class WalkingSimArgumentParser:
         )
 
     def setup_vis_parser(self):
-        self.vis_parser = self.commands.add_parser(
+        vis_parser = self.commands.add_parser(
             "visualize",
             help="Visualize a trained model",
             aliases=["vis", "v"],
             formatter_class=ArgumentDefaultsHelpFormatter,
         )
-        self.vis_parser.set_defaults(command="visualize")
+        vis_parser.set_defaults(command="visualize")
 
-        self.vis_parser.add_argument(
+        vis_parser.add_argument(
             "date", nargs="?", help="The date of when the model was trained"
         )
 
         # General Options
-        general_options = self.vis_parser.add_argument_group("General Options")
+        general_options = vis_parser.add_argument_group("General Options")
         general_options.add_argument(
             "--algorithm",
             "-a",
@@ -150,7 +150,23 @@ class WalkingSimArgumentParser:
             help=" Amount of seconds to wait when simulation is done",
         )
 
-    # Handle Training
+    def setup_env_parser(self):
+        env_parser = self.commands.add_parser(
+            "env",
+            help="Manage envs",
+            aliases=["e"],
+            formatter_class=ArgumentDefaultsHelpFormatter,
+        )
+        env_parser.set_defaults(command="env")
+
+        env_commands = env_parser.add_subparsers(
+            title="Env Commands", dest="env_command"
+        )
+        env_commands.add_parser(
+            "list", help="List all the available environments", aliases=["l"]
+        )
+
+    # Handle Commands
     def handle_train(self):
         if self.ns.algorithm == "ga":
             if self.ns.generations is None or self.ns.population is None:
@@ -178,21 +194,24 @@ class WalkingSimArgumentParser:
                 timesteps=self.timesteps,
             )
 
-    # Handle Visualize
     def handle_visualize(self):
         if self.ns.algorithm == "ga":
             visualize_ga(date=self.ns.date, delay=self.ns.delay)
         elif self.ns.algorithms == "ppo":
             visualize_ppo(date=self.ns.date, delay=self.ns.delay)
 
+    def handle_env(self):
+        if self.ns.env_command == "list":
+            envs = self.env_loader.list()
+            for env, description in envs.items():
+                print(f"{env}: {description}")
+
     # Run
     def run(self):
         self.parser.parse_args(namespace=self.ns)
         if self.ns.command == "train":
             try:
-                self.ns.env = EnvironmentProps("./environments").load(
-                    self.ns.environment
-                )
+                self.ns.env = self.env_loader.load(self.ns.environment)
             except FileNotFoundError:
                 self.parser.error(
                     f"Invalid environment '{self.ns.environment}'"
@@ -201,3 +220,5 @@ class WalkingSimArgumentParser:
             self.handle_train()
         elif self.ns.command == "visualize":
             self.handle_visualize()
+        elif self.ns.command == "env":
+            self.handle_env()
