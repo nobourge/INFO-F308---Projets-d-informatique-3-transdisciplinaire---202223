@@ -1,34 +1,3 @@
-"""
-# Train a model
-walkingsim train
-    --creature/-c <creature> # Select which creature to use (default: quadrupede)
-    --environment/-e <environment> # Select which environment to use (default: earth)
-    --algo <algorithm> # Select which algorithm to use (default: GA)
-    --render/--no-render # Render while training
-    --target # Select what should the model train for (default: walking)
-
-    # if algo is `GA`
-    --generations <number> # Number of generations
-    --population <number> # Number of population
-    
-    # if algo is PPO
-    --timesteps <number> # Number of timesteps
-
-# Visualize a model
-walkingsim vis <date>
-    --algo <algorithm> # Select the algorithm of which to visualize the solution (default: GA)
-    --delay <seconds> # Amount of seconds to wait when simulation is done (default: 0)
-
-# Manage envs
-walkingsim env create <name> <gravity> <path/to/ground/texture> <path/to/skybox>
-walkingsim env remove <name>
-walkingsim env list
-
-# Manage creatures
-walkingsim creature create <legs>
-"""
-
-
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 
 from walkingsim.cli.train import train_ga, train_ppo
@@ -39,7 +8,7 @@ from walkingsim.loader import EnvironmentProps
 class WalkingSimArgumentParser:
     def __init__(self):
         self.parser = ArgumentParser(
-            formatter_class=ArgumentDefaultsHelpFormatter
+            prog="walkingsim", formatter_class=ArgumentDefaultsHelpFormatter
         )
         self.ns = Namespace()
         self.available_algorithms = ["ga", "ppo"]
