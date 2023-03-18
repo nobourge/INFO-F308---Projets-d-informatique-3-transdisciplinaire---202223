@@ -59,13 +59,13 @@ class WalkingSimArgumentParser:
         render_group.add_argument(
             "--render",
             action="store_true",
-            dest="render_in_training",
+            dest="render",
             help="Do render while training",
         )
         render_group.add_argument(
             "--no-render",
             action="store_false",
-            dest="render_in_training",
+            dest="render",
             help="Do not render while training",
         )
 
@@ -74,10 +74,16 @@ class WalkingSimArgumentParser:
             "Genetic Algorithm Options"
         )
         ga_algo_options.add_argument(
-            "--generations", dest="generations", help="Number of generations"
+            "--generations",
+            dest="generations",
+            type=int,
+            help="Number of generations",
         )
         ga_algo_options.add_argument(
-            "--population", dest="population", help="Size of population"
+            "--population",
+            dest="population",
+            type=int,
+            help="Size of population",
         )
 
         # RL Algorithm Options
@@ -85,7 +91,10 @@ class WalkingSimArgumentParser:
             "RL Algorithms Options"
         )
         rl_algo_options.add_argument(
-            "--timesteps", dest="timesteps", help="Number of timesteps"
+            "--timesteps",
+            dest="timesteps",
+            type=int,
+            help="Number of timesteps",
         )
 
     def setup_vis_parser(self):
@@ -115,6 +124,7 @@ class WalkingSimArgumentParser:
             "--delay",
             "-d",
             dest="delay",
+            type=int,
             default=0,
             help=" Amount of seconds to wait when simulation is done",
         )
@@ -160,13 +170,13 @@ class WalkingSimArgumentParser:
                 creature=self.ns.creature,
                 env=self.ns.env,
                 visualize=self.ns.render,
-                timesteps=self.timesteps,
+                timesteps=self.ns.timesteps,
             )
 
     def handle_visualize(self):
         if self.ns.algorithm == "ga":
             visualize_ga(date=self.ns.date, delay=self.ns.delay)
-        elif self.ns.algorithms == "ppo":
+        elif self.ns.algorithm == "ppo":
             visualize_ppo(date=self.ns.date, delay=self.ns.delay)
 
     def handle_env(self):
