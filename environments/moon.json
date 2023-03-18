@@ -1,4 +1,8 @@
 {
     "description": "This environment represents the Moon",
-    "gravity": [0, -1.62, 0]
+    "gravity": [0, -1.62, 0],
+    "textures": {
+        "ground": "./resources/materials/floor/concrete.jpg",
+        "skybox": "./resources/materials/skybox/ocean/"
+    }
 }
