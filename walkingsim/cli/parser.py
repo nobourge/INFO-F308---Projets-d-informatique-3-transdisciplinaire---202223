@@ -32,7 +32,7 @@ walkingsim creature create <legs>
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 
 from walkingsim.cli.train import train_ga, train_ppo
-from walkingsim.cli.vis import GA_Vis, GYM_Vis
+from walkingsim.cli.vis import visualize_ga, visualize_ppo
 from walkingsim.loader import EnvironmentProps
 
 
@@ -181,9 +181,9 @@ class WalkingSimArgumentParser:
     # Handle Visualize
     def handle_visualize(self):
         if self.ns.algorithm == "ga":
-            GA_Vis(self.ns.date, self.ns.delay).run()
-        else:
-            GYM_Vis(self.ns.date).run()
+            visualize_ga(date=self.ns.date, delay=self.ns.delay)
+        elif self.ns.algorithms == "ppo":
+            visualize_ppo(date=self.ns.date, delay=self.ns.delay)
 
     # Run
     def run(self):
