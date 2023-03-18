@@ -1,6 +1,6 @@
 import gymnasium as gym
-from gymnasium.envs.registration import EnvSpec
 import numpy
+from gymnasium.envs.registration import EnvSpec
 from stable_baselines3 import PPO
 
 from walkingsim.utils.baselines_config import BaselinesConfig

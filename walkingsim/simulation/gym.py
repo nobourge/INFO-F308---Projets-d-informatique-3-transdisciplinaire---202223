@@ -30,7 +30,6 @@ class Gym_Simulation(BaseSimulation, gym.Env):
 
         self.render_mode = "human" if visualize else "rgb_array"
 
-        self._fitness 
         obs_dict = dict()
         for key, value in self._fitness.props_range.items():
             low, high = value

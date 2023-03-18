@@ -26,7 +26,7 @@ class Fitness:
         return self._done
 
     def reset(self):
-        self._props.clear()
+        self._props = dict.fromkeys(self.props_range.keys(), 0.0)
         self._fitness = 0
         self._done = False
 
@@ -41,10 +41,14 @@ class Fitness:
 
 
 class AliveBonusFitness(Fitness):
-
     @property
     def props_range(self):
-        return {"alive_bonus": (0, 400), "speed": (-500, 500), "height_diff": (-100, 100), "forces": (-5000, 5000)}
+        return {
+            "alive_bonus": (0, 400),
+            "speed": (-500, 500),
+            "height_diff": (-100, 100),
+            "forces": (-5000, 5000),
+        }
 
     def compute(
         self,
@@ -85,16 +89,15 @@ class AliveBonusFitness(Fitness):
 
 
 class ForwardBonusFitness(Fitness):
-
     @property
     def props_range(self):
         return {
-                "forward_bonus": (-100, 100),
-                "alive_bonus": (0, 1000),
-                "speed": (-5, 5),
-                "speed_gap": (-10, 10),
-                "height_diff": (-50, 50),
-                "walk_straight": (-50, 50),
+            "forward_bonus": (-100, 100),
+            "alive_bonus": (0, 1000),
+            "speed": (-5, 5),
+            "speed_gap": (-10, 10),
+            "height_diff": (-50, 50),
+            "walk_straight": (-50, 50),
         }
 
     def compute(
