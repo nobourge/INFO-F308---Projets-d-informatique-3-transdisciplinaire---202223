@@ -4,6 +4,7 @@ from collections import defaultdict
 class Fitness:
     def __init__(self, sim_duration: float, timestep: float) -> None:
         self._props = defaultdict(float)
+        self._props_range = defaultdict(tuple(float))
         self._fitness = 0
         self._done = False
         self._timestep = timestep
@@ -12,6 +13,10 @@ class Fitness:
     @property
     def props(self):
         return self._props
+
+    @property
+    def props_range(self):
+        return self._props_range
 
     @property
     def fitness(self):
@@ -23,6 +28,7 @@ class Fitness:
 
     def reset(self):
         self._props.clear()
+        self._props_range.clear()
         self._fitness = 0
         self._done = False
 
