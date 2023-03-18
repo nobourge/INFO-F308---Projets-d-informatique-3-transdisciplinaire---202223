@@ -31,7 +31,7 @@ walkingsim creature create <legs>
 
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 
-from walkingsim.cli.train import GA_Train, GYM_Train
+from walkingsim.cli.train import train_ga, train_ppo
 from walkingsim.cli.vis import GA_Vis, GYM_Vis
 from walkingsim.loader import EnvironmentProps
 
@@ -151,36 +151,32 @@ class WalkingSimArgumentParser:
         )
 
     # Handle Training
-    def handle_train_ga(self):
-        if self.ns.generations is None or self.ns.population is None:
-            self.parser.error(
-                "When using GA algorithm, you must pass --generations and --population"
+    def handle_train(self):
+        if self.ns.algorithm == "ga":
+            if self.ns.generations is None or self.ns.population is None:
+                self.parser.error(
+                    "When using GA algorithm, you must pass --generations and --population"
+                )
+
+            train_ga(
+                creature=self.ns.creature,
+                env=self.ns.env,
+                visualize=self.ns.render,
+                population_size=self.ns.population,
+                num_generations=self.ns.generations,
             )
+        elif self.ns.algorithm == "ppo":
+            if self.ns.timesteps is None:
+                self.parser.error(
+                    "When using any RL algorithms, you must pass --timesteps"
+                )
 
-        GA_Train(
-            creature=self.ns.creature,
-            env=self.ns.env,
-            population_size=self.ns.population,
-            num_generations=self.ns.generations,
-            workers=None,
-            use_multiprocessing=False,
-            visualize=self.ns.render,
-        ).run()
-
-    def handle_train_rl(self):
-        if self.ns.timesteps is None:
-            self.parser.error(
-                "When using any RL algorithms, you must pass --timesteps"
+            train_ppo(
+                creature=self.ns.creature,
+                env=self.ns.env,
+                visualize=self.ns.render,
+                timesteps=self.timesteps,
             )
-
-        GYM_Train(
-            creature=self.ns.creature,
-            env=self.ns.env,
-            timesteps=self.timesteps,
-            algo=self.ns.algorithm,
-            show_progress=True,
-            visualize=self.ns.render,
-        ).run()
 
     # Handle Visualize
     def handle_visualize(self):
@@ -202,9 +198,6 @@ class WalkingSimArgumentParser:
                     f"Invalid environment '{self.ns.environment}'"
                 )
 
-            if self.ns.algorithm == "ga":
-                self.handle_train_ga()
-            else:
-                self.handle_train_rl()
+            self.handle_train()
         elif self.ns.command == "visualize":
             self.handle_visualize()
