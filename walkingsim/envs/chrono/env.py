@@ -116,7 +116,9 @@ class ChronoEnvironment:
 
     def render(self):
         if self.__visualize and self.__visualizer is None:
-            self.__visualizer = ChronoVisualizer(self.__environment, self.__properties)
+            self.__visualizer = ChronoVisualizer(
+                self.__environment, self.__properties
+            )
             self.__visualizer.setup()
 
         if self.__visualizer is not None:

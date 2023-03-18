@@ -3,7 +3,9 @@ import pychrono.irrlicht as chronoirr
 
 
 class ChronoVisualizer:
-    def __init__(self, system: chrono.ChSystem, properties: dict = None) -> None:
+    def __init__(
+        self, system: chrono.ChSystem, properties: dict = None
+    ) -> None:
         self.__visualizer = chronoirr.ChVisualSystemIrrlicht()
         self.__system = system
         self.__properties = properties if properties is not None else {}
@@ -13,7 +15,9 @@ class ChronoVisualizer:
         self.__visualizer.SetWindowSize(1024, 768)
         self.__visualizer.SetWindowTitle("3D muscle-based walking sim")
         self.__visualizer.Initialize()
-        skybox_texture = self.__properties.get("textures", {}).get("skybox", None)
+        skybox_texture = self.__properties.get("textures", {}).get(
+            "skybox", None
+        )
         if skybox_texture:
             self.__visualizer.AddSkyBox(skybox_texture)
         else:
