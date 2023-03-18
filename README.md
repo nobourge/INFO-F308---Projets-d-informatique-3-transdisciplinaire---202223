@@ -18,7 +18,7 @@ conda env update -n infof308-chrono -f environment.yml --prune
 
 ## Usage
 
-```shell
+```plaintext
 usage: walkingsim [-h] {train,t,visualize,vis,v,env,e} ...
 
 optional arguments:
@@ -32,7 +32,7 @@ Command:
 ```
 
 To train a model, you wan use the `train` command:
-```shell
+```plaintext
 usage: walkingsim train [-h] [--creature CREATURE] [--environment ENVIRONMENT] [--algorithm {ga,ppo}]
                         [--render | --no-render] [--generations GENERATIONS] [--population POPULATION]
                         [--timesteps TIMESTEPS]
@@ -62,7 +62,7 @@ RL Algorithms Options:
 ```
 
 To visualize a trained model, use the `visualize` command:
-```shell
+```plaintext
 usage: walkingsim visualize [-h] [--algorithm {ga,ppo}] [--delay DELAY] [date]
 
 positional arguments:
@@ -79,7 +79,7 @@ General Options:
 ```
 
 If you want to see a list of all the available environment, use the `env` command:
-```shell
+```plaintext
 usage: walkingsim env [-h] {list,l} ...
 
 optional arguments:
