@@ -1,150 +1,210 @@
-from argparse import Action, ArgumentParser
+"""
+# Train a model
+walkingsim train
+    --creature/-c <creature> # Select which creature to use (default: quadrupede)
+    --environment/-e <environment> # Select which environment to use (default: earth)
+    --algo <algorithm> # Select which algorithm to use (default: GA)
+    --render/--no-render # Render while training
+    --target # Select what should the model train for (default: walking)
 
-from loguru import logger
+    # if algo is `GA`
+    --generations <number> # Number of generations
+    --population <number> # Number of population
+    
+    # if algo is PPO
+    --timesteps <number> # Number of timesteps
+
+# Visualize a model
+walkingsim vis <date>
+    --algo <algorithm> # Select the algorithm of which to visualize the solution (default: GA)
+    --delay <seconds> # Amount of seconds to wait when simulation is done (default: 0)
+
+# Manage envs
+walkingsim env create <name> <gravity> <path/to/ground/texture> <path/to/skybox>
+walkingsim env remove <name>
+walkingsim env list
+
+# Manage creatures
+walkingsim creature create <legs>
+"""
+
+
+from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 
 from walkingsim.cli.train import GA_Train, GYM_Train
 from walkingsim.cli.vis import GA_Vis, GYM_Vis
 from walkingsim.loader import EnvironmentProps
 
 
-class EnvironmentArgumentAction(Action):
-    """This is a custom Action for argparse. It automatically loads the environment props"""
-
-    def __init__(
-        self, option_strings, dest, required=False, help=None, metavar=None
-    ) -> None:
-        default_env_props = EnvironmentProps("./environments").load("default")
-        super().__init__(
-            option_strings,
-            dest,
-            None,
-            None,
-            default_env_props,
-            str,
-            ["default", "moon", "mars"],
-            required,
-            help,
-            metavar,
-        )
-
-    def __call__(
-        self, parser: ArgumentParser, namespace, values, option_string=None
-    ) -> None:
-        env_props = EnvironmentProps("./environments").load(values)
-        setattr(namespace, self.dest, env_props)
-
-
 class WalkingSimArgumentParser:
-    def __init__(self) -> None:
-        self.parser = ArgumentParser()
-        self.commands = self.parser.add_subparsers(title="Commands")
-        self._setup_train_parser()
-        self._setup_vis_parser()
+    def __init__(self):
+        self.parser = ArgumentParser(
+            formatter_class=ArgumentDefaultsHelpFormatter
+        )
+        self.ns = Namespace()
+        self.available_algorithms = ["ga", "ppo"]
 
-    def _setup_train_parser(self):
-        parser = self.commands.add_parser("train")
-        parser.set_defaults(func=self.train)
-        parser.add_argument("creature", type=str)
+        self.commands = self.parser.add_subparsers(
+            title="Command", required=True
+        )
+        self.setup_train_parser()
+        self.setup_vis_parser()
+
+    # Setup Parser
+    def setup_train_parser(self):
+        self.train_parser = self.commands.add_parser(
+            "train",
+            help="Train a model",
+            aliases=["t"],
+            formatter_class=ArgumentDefaultsHelpFormatter,
+        )
+        self.train_parser.set_defaults(command="train")
 
         # General Options
-        general_options = parser.add_argument_group("General Options")
+        general_options = self.train_parser.add_argument_group(
+            "General Options"
+        )
+        general_options.add_argument(
+            "--creature",
+            "-c",
+            dest="creature",
+            default="quadrupede",
+            help="Creature to use in simulation",
+        )
         general_options.add_argument(
             "--environment",
             "-e",
-            action=EnvironmentArgumentAction,
             dest="environment",
+            default="default",
+            help="Environment in which the simulation will be executed",
         )
         general_options.add_argument(
-            "--target", "-t", default="walk", type=str, dest="target"
+            "--algorithm",
+            "-a",
+            dest="algorithm",
+            default="ga",
+            choices=self.available_algorithms,
+            help="The algorithm to use to train the model",
         )
-        general_options.add_argument(
-            "--render", action="store_true", default=False, dest="do_render"
+        render_group = general_options.add_mutually_exclusive_group()
+        render_group.add_argument(
+            "--render",
+            action="store_true",
+            dest="render_in_training",
+            help="Do render while training",
         )
-        general_options.add_argument(
-            "--use-gym", action="store_true", default=False, dest="use_gym"
-        )
-
-        # Genetic Algorithm options
-        ga_options = parser.add_argument_group("Genetic Algorithm Options")
-        ga_options.add_argument(
-            "--process", action="store_true", dest="use_multiprocessing"
-        )
-        ga_options.add_argument(
-            "--workers", "-w", default=None, type=str, dest="workers"
-        )
-        ga_options.add_argument(
-            "--generations", type=int, dest="num_generations"
-        )
-        ga_options.add_argument(
-            "--population", type=int, dest="population_size"
+        render_group.add_argument(
+            "--no-render",
+            action="store_false",
+            dest="render_in_training",
+            help="Do not render while training",
         )
 
-        # Gym Options
-        gym_options = parser.add_argument_group("Gym Options")
-        gym_options.add_argument(
-            "--algo", default="PPO", type=str, dest="gym_algo"
+        # Genetic Algorithm Options
+        ga_algo_options = self.train_parser.add_argument_group(
+            "Genetic Algorithm Options"
         )
-        gym_options.add_argument("--timesteps", type=int, dest="gym_timesteps")
-        gym_options.add_argument(
-            "--progress", action="store_true", dest="gym_progress_bar"
+        ga_algo_options.add_argument(
+            "--generations", dest="generations", help="Number of generations"
+        )
+        ga_algo_options.add_argument(
+            "--population", dest="population", help="Size of population"
         )
 
-    def _setup_vis_parser(self):
-        parser = self.commands.add_parser("vis")
-        parser.set_defaults(func=self.visualize)
+        # RL Algorithm Options
+        rl_algo_options = self.train_parser.add_argument_group(
+            "RL Algorithms Options"
+        )
+        rl_algo_options.add_argument(
+            "--timesteps", dest="timesteps", help="Number of timesteps"
+        )
+
+    def setup_vis_parser(self):
+        self.vis_parser = self.commands.add_parser(
+            "visualize",
+            help="Visualize a trained model",
+            aliases=["vis", "v"],
+            formatter_class=ArgumentDefaultsHelpFormatter,
+        )
+        self.vis_parser.set_defaults(command="visualize")
+
+        self.vis_parser.add_argument(
+            "date", nargs="?", help="The date of when the model was trained"
+        )
 
         # General Options
-        general_options = parser.add_argument_group("General Options")
-        parser.add_argument("--date", type=str, default=None, dest="date")
+        general_options = self.vis_parser.add_argument_group("General Options")
         general_options.add_argument(
-            "--ending-delay", type=int, default=0, dest="ending_delay"
-        )  # in secs
+            "--algorithm",
+            "-a",
+            dest="algorithm",
+            default="ga",
+            choices=self.available_algorithms,
+            help="The algorithm to visualize",
+        )
         general_options.add_argument(
-            "--use-gym", action="store_true", dest="use_gym", default=False
+            "--delay",
+            "-d",
+            dest="delay",
+            default=0,
+            help=" Amount of seconds to wait when simulation is done",
         )
 
-    def train(self, args):
-        if not args.use_gym:
-            if args.population_size is None or args.num_generations is None:
-                logger.error(
-                    "When using the genetic algorithm, you must pass the --population and --generations argument"
-                )
-                return -1
+    # Handle Training
+    def handle_train_ga(self):
+        if self.ns.generations is None or self.ns.population is None:
+            self.parser.error(
+                "When using GA algorithm, you must pass --generations and --population"
+            )
 
-            return GA_Train(
-                creature=args.creature,
-                env=args.environment,
-                population_size=args.population_size,
-                num_generations=args.num_generations,
-                workers=args.workers,
-                use_multiprocessing=args.use_multiprocessing,
-                visualize=args.do_render,
-            ).run()
+        GA_Train(
+            creature=self.ns.creature,
+            env=self.ns.env,
+            population_size=self.ns.population,
+            num_generations=self.ns.generations,
+            workers=None,
+            use_multiprocessing=False,
+            visualize=self.ns.render,
+        ).run()
+
+    def handle_train_rl(self):
+        if self.ns.timesteps is None:
+            self.parser.error(
+                "When using any RL algorithms, you must pass --timesteps"
+            )
+
+        GYM_Train(
+            creature=self.ns.creature,
+            env=self.ns.env,
+            timesteps=self.timesteps,
+            algo=self.ns.algorithm,
+            show_progress=True,
+            visualize=self.ns.render,
+        ).run()
+
+    # Handle Visualize
+    def handle_visualize(self):
+        if self.ns.algorithm == "ga":
+            GA_Vis(self.ns.date, self.ns.delay).run()
         else:
-            if args.gym_timesteps is None:
-                logger.error(
-                    "When using gym, you must pass the --timesteps argument"
-                )
-                return -1
+            GYM_Vis(self.ns.date).run()
 
-            return GYM_Train(
-                creature=args.creature,
-                env=args.environment,
-                timesteps=args.gym_timesteps,
-                algo=args.gym_algo,
-                show_progress=args.gym_progress_bar,
-                visualize=args.do_render,
-            ).run()
-
-    def visualize(self, args):
-        if args.use_gym:
-            return GYM_Vis(args.date).run()
-        else:
-            return GA_Vis(args.date, args.ending_delay).run()
-
+    # Run
     def run(self):
-        args = self.parser.parse_args()
-        if args.func is None:
-            raise RuntimeError("An error occured !")
+        self.parser.parse_args(namespace=self.ns)
+        if self.ns.command == "train":
+            try:
+                self.ns.env = EnvironmentProps("./environments").load(
+                    self.ns.environment
+                )
+            except FileNotFoundError:
+                self.parser.error(
+                    f"Invalid environment '{self.ns.environment}'"
+                )
 
-        return args.func(args)
+            if self.ns.algorithm == "ga":
+                self.handle_train_ga()
+            else:
+                self.handle_train_rl()
+        elif self.ns.command == "visualize":
+            self.handle_visualize()
