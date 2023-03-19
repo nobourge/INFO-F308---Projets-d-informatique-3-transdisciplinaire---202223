@@ -11,13 +11,19 @@ class App:
         # Widget creation
         self.__content = ttk.Frame(self.__root, padding="3 3 12 12")
         self.__content.columnconfigure(0, weight=1)
-        self.__win_title = ttk.Label(self.__content, text="3D Walking simulator")
+        self.__win_title = ttk.Label(self.__content, text="3D Walking simulator", padding=" 20 0 20 0")
         self.__main_tabs = ttk.Notebook(self.__content)
         self.__sim_tab = ttk.Frame(self.__main_tabs)
         self.__vis_tab = ttk.Frame(self.__main_tabs)
         self.__main_tabs.add(self.__sim_tab, text='Simulation')
         self.__main_tabs.add(self.__vis_tab, text='Visualisation')
         #  self.__mainframe = ttk.Frame(self.__content,)
+
+        # Vis tab
+        self.__sol_files_box = Listbox(self.__vis_tab)
+        self.__sol_files_box.insert(0, "File nb1")
+        self.__sol_files_box.grid(column=0, row=0)
+
         # Widget grid placement
         self.__content.grid(column=0, row=0, sticky=E + W)
         self.__win_title.grid(column=0, row=0)
