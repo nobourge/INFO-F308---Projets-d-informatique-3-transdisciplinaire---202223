@@ -4,10 +4,11 @@ from tkinter import ttk
 
 class App:
     def __init__(self):
-        self.__root = Tk()        
+        self.__root = Tk()
+        self.__root.title("3D walking simulator")
         # Widget creation
         self.__content = ttk.Frame(self.__root, padding="3 3 12 12")
-        self.__win_title = ttk.Label(self.__content, text="Walking simulator")
+        self.__win_title = ttk.Label(self.__content, text="3D Walking simulator")
         self.__main_tabs = ttk.Notebook(self.__root)
         self.__sim_tab = ttk.Frame(self.__main_tabs)
         self.__vis_tab = ttk.Frame(self.__main_tabs)
