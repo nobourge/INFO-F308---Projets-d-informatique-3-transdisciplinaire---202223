@@ -12,7 +12,6 @@ class App:
         self.__root.title("3D walking simulator")
         self.center(500, 400)
         self.setup_tabs()
-        self.setup_sim_tab()
 
         # XXX DEBUG
         self._add_debug_borders()
@@ -45,17 +44,6 @@ class App:
             self.__tabs, relief="ridge", padding="5 5 5 5"
         )
         self.__tabs.add(self.__vis_tab, text="Visualisation")
-
-    def setup_sim_tab(self):
-        env_select_label = ttk.Label(self.__sim_tab, text="Environment")
-        env_select_label.grid(row=0, column=0, padx="0 10")
-
-        self.__train_algo_var = StringVar()
-        env_select = ttk.Combobox(
-            self.__sim_tab, textvariable=self.__train_algo_var
-        )
-        env_select["values"] = ["default", "moon", "mars"]
-        env_select.grid(row=0, column=1, sticky=(W, E))
 
     def _add_debug_borders(self):
         for e in self.__content, self.__win_title:
