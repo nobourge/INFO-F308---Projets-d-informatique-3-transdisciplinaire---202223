@@ -20,16 +20,22 @@ class App:
         self.__content.columnconfigure(0, weight=1)
         self.__content.rowconfigure(1, weight=1)
 
-        self.__win_title = ttk.Label(self.__content, text="3D Walking simulator", padding=" 20 0 20 0")
+        self.__win_title = ttk.Label(
+            self.__content, text="3D Walking simulator", padding=" 20 0 20 0"
+        )
         self.__win_title.grid(row=0, column=0)
 
         self.__tabs = ttk.Notebook(self.__content)
         self.__tabs.grid(row=1, column=0, sticky=NSEW)
 
-        self.__sim_tab = ttk.Frame(self.__tabs, relief="ridge", padding="5 5 5 5")
+        self.__sim_tab = ttk.Frame(
+            self.__tabs, relief="ridge", padding="5 5 5 5"
+        )
         self.__tabs.add(self.__sim_tab, text="Simulation")
 
-        self.__vis_tab = ttk.Frame(self.__tabs, relief="ridge", padding="5 5 5 5")
+        self.__vis_tab = ttk.Frame(
+            self.__tabs, relief="ridge", padding="5 5 5 5"
+        )
         self.__tabs.add(self.__vis_tab, text="Visualisation")
 
     def setup_sim_tab(self):
@@ -44,32 +50,60 @@ class App:
         algo_select_label = ttk.Label(self.__vis_tab, text="Algorithm:")
         algo_select_label.grid(row=0, column=0, padx="0 10")
 
-        algo_var = StringVar()
-        algo_select = ttk.Combobox(self.__vis_tab, textvariable=algo_var)
+        self.__vis_algo_var = StringVar()
+        algo_select = ttk.Combobox(
+            self.__vis_tab, textvariable=self.__vis_algo_var
+        )
         algo_select["values"] = ("GA", "PPO")
-        algo_select.grid(row=0, column=1, sticky=(W,E))
+        algo_select.grid(row=0, column=1, sticky=(W, E))
+        algo_select.bind(
+            "<<ComboboxSelected>>", self._vis_tab_handle_algo_select
+        )
 
         vis_files_label = ttk.Label(self.__vis_tab, text="Solutions")
-        vis_files_label.grid(row=1, column=0, columnspan=2, sticky=(W,E))
+        vis_files_label.grid(row=1, column=0, columnspan=2, sticky=(W, E))
 
-        # self.__sol_files_box = Listbox(self.__vis_tab)
-        # self.__sol_files_box.grid(column=0, row=0)
-        # rootdir = '../solutions/'
-        # for i, file in enumerate(os.listdir(rootdir), 0):
-        #     d = os.path.join(rootdir, file)
-        #     self.__sol_files_box.insert(i, file)
+        self.__vis_files_var = StringVar()
+        self.__vis_files = Listbox(
+            self.__vis_tab, listvariable=self.__vis_files_var
+        )
+        self.__vis_files.grid(
+            row=2, column=0, columnspan=2, sticky=(W, E, N, S)
+        )
+        self.__vis_files.bind(
+            "<<ListboxSelect>>", self._vis_tab_handle_files_select
+        )
 
-        vis_var = StringVar(value=["20230319-114700", "20230319-150321"])
-        vis_files = Listbox(self.__vis_tab, listvariable=vis_var)
-        vis_files.grid(row=2, column=0, columnspan=2, sticky=(W,E,N,S))
-
-        vis_btn = ttk.Button(self.__vis_tab, text="Visualize")
-        vis_btn.grid(row=3, column=1, sticky=(E,S))
+        self.__vis_btn = ttk.Button(
+            self.__vis_tab,
+            text="Visualize",
+            command=self._vis_tab_visualize,
+            state="disabled",
+        )
+        self.__vis_btn.grid(row=3, column=1, sticky=(E, S))
 
     def _add_debug_borders(self):
         for e in self.__content, self.__win_title:
             e["borderwidth"] = 3
-            e["relief"] = "solid" 
+            e["relief"] = "solid"
+
+    def _vis_tab_handle_algo_select(self, ev):
+        algo = self.__vis_algo_var.get().lower()
+        rootdir = os.path.join("solutions", algo)
+        self.__vis_btn.state(["disabled"])
+
+        files = []
+        for file in os.listdir(rootdir):
+            files.append(file)
+
+        self.__vis_files_var.set(files)
+
+    def _vis_tab_handle_files_select(self, ev):
+        if len(self.__vis_files.curselection()) > 0:
+            self.__vis_btn.state(["!disabled"])
+
+    def _vis_tab_visualize(self):
+        print(self.__vis_files.curselection())
 
     def run(self):
         self.__root.mainloop()
