@@ -7,9 +7,9 @@ class SimView(ttk.Frame):
     def __init__(self, master=None, **kwargs) -> None:
         super().__init__(master, **kwargs)
         self._setup()
-        self._algo_options_callbacks = dict()
-        self._algo_options_callbacks["Algorithme génétique"] = self._show_ga_options
-        self._algo_options_callbacks["PPO"] = self._show_ppo_options
+        self._algo_options_cbs = dict()
+        self._algo_options_cbs["Algorithme génétique"] = (self._show_ga_options, self._hide_ga_options)
+        self._algo_options_cbs["PPO"] = (self._show_ppo_options, self._hide_ppo_options)
 
     def _setup(self):
         # Environment selection
@@ -50,13 +50,26 @@ class SimView(ttk.Frame):
         )
 
     def _handle_select_algo_field(self, ev):
-        self._algo_options_callbacks[self.__algo_var.get()]()
+        self._algo_options_cbs[self.__algo_var.get()][0]()
 
     def _show_ga_options(self):
-        print("ga options")
+        self._ga_pop_lbl = ttk.Label(self, text="Taille population")
+        self._ga_pop_lbl.grid(row=4, column=0, padx="0 10", sticky=W)
+        self.__ga_pop_var = StringVar()
+        self._ga_pop_field = ttk.Entry(self, textvariable=self.__ga_pop_var)
+        self._ga_pop_field.grid(row=4, column=1, sticky=(W, E))
+
+    def _hide_ga_options(self):
+        self._ga_pop_lbl.grid_forget()
+        self._ga_pop_field.grid_forget()
 
     def _show_ppo_options(self):
-        print("ppo options")
+        self._algo_options_cbs[self.__algo_var.get()][1]()
+
+    def _hide_ppo_options(self):
+        self._ga_pop_lbl.grid_forget()
+        self._ga_pop_field.grid_forget()
+
 
     def _add_debug_borders(self, elem):
             elem["borderwidth"] = 3
