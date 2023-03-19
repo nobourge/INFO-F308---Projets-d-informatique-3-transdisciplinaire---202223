@@ -33,9 +33,9 @@ Command:
 
 To train a model, you wan use the `train` command:
 ```plaintext
-usage: walkingsim train [-h] [--creature CREATURE] [--environment ENVIRONMENT] [--algorithm {ga,ppo}]
-                        [--render | --no-render] [--generations GENERATIONS] [--population POPULATION]
-                        [--timesteps TIMESTEPS]
+usage: walkingsim train [-h] [--creature CREATURE] [--target {walking-v0,walking-v1}]
+                        [--environment ENVIRONMENT] [--algorithm {ga,ppo}] [--render | --no-render]
+                        [--generations GENERATIONS] [--population POPULATION] [--timesteps TIMESTEPS]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -43,6 +43,8 @@ optional arguments:
 General Options:
   --creature CREATURE, -c CREATURE
                         Creature to use in simulation (default: quadrupede)
+  --target {walking-v0,walking-v1}, -t {walking-v0,walking-v1}
+                        The fitness function to use (default: walking-v0)
   --environment ENVIRONMENT, -e ENVIRONMENT
                         Environment in which the simulation will be executed (default: default)
   --algorithm {ga,ppo}, -a {ga,ppo}

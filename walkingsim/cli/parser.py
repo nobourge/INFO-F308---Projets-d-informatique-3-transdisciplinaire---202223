@@ -2,6 +2,7 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 
 from walkingsim.cli.train import train_ga, train_ppo
 from walkingsim.cli.vis import visualize_ga, visualize_ppo
+from walkingsim.fitness import fitnesses
 from walkingsim.loader import EnvironmentProps
 
 
@@ -12,6 +13,7 @@ class WalkingSimArgumentParser:
         )
         self.ns = Namespace()
         self.available_algorithms = ["ga", "ppo"]
+        self.available_fitnesses = list(fitnesses.keys())
         self.env_loader = EnvironmentProps("./environments")
 
         self.commands = self.parser.add_subparsers(
@@ -39,6 +41,14 @@ class WalkingSimArgumentParser:
             dest="creature",
             default="quadrupede",
             help="Creature to use in simulation",
+        )
+        general_options.add_argument(
+            "--target",
+            "-t",
+            dest="target",
+            default="walking-v0",
+            choices=self.available_fitnesses,
+            help="The fitness function to use",
         )
         general_options.add_argument(
             "--environment",
