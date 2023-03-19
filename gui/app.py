@@ -7,12 +7,18 @@ class App:
     def __init__(self):
         self.__root = Tk()
         self.__root.title("3D walking simulator")
+        self.center(500, 400)
         self.setup_tabs()
         self.setup_sim_tab()
         self.setup_vis_tab()
 
         # XXX DEBUG
         self._add_debug_borders()
+
+    def center(self, width, height):
+        x = int((self.__root.winfo_screenwidth() / 2) - (width / 2))
+        y = int((self.__root.winfo_screenheight() / 2) - (height / 2))
+        self.__root.geometry(f"{width}x{height}+{x}+{y}")
 
     def setup_tabs(self):
         self.__content = ttk.Frame(self.__root, padding="10 10 10 10")
