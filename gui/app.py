@@ -1,3 +1,4 @@
+import os
 from tkinter import *
 from tkinter import ttk
 
@@ -21,8 +22,11 @@ class App:
 
         # Vis tab
         self.__sol_files_box = Listbox(self.__vis_tab)
-        self.__sol_files_box.insert(0, "File nb1")
         self.__sol_files_box.grid(column=0, row=0)
+        rootdir = '../solutions/'
+        for i, file in enumerate(os.listdir(rootdir), 0):
+            d = os.path.join(rootdir, file)
+            self.__sol_files_box.insert(i, file)
 
         # Widget grid placement
         self.__content.grid(column=0, row=0, sticky=E + W)
