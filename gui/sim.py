@@ -10,8 +10,9 @@ class SimView(ttk.Frame):
         self._setup()
         # Dynamic options callbacks
         self._algo_options_cbs = dict()
-        self._algo_options_cbs["Algorithme génétique"] = (self._show_ga_options, self._hide_ppo_options)
-        self._algo_options_cbs["PPO"] = (self._show_ppo_options, self._hide_ga_options)
+        self._algo_options_cbs["Algorithme génétique"] = self._show_ga_options
+        self._algo_options_cbs["PPO"] = self._show_ppo_options
+        self._current_algo_options = []
 
     def _setup(self):
         # Environment selection
@@ -51,10 +52,10 @@ class SimView(ttk.Frame):
         )
 
     def _handle_select_algo_field(self, ev):
-        self._algo_options_cbs[self.__algo_var.get()][0]()
+        self._algo_options_cbs[self.__algo_var.get()]()
 
     def _show_ga_options(self):
-        self._algo_options_cbs[self.__algo_var.get()][1]()
+        self._hide_algo_options()
 
         self._ga_pop_lbl = ttk.Label(self, text="Taille population")
         self._ga_pop_lbl.grid(row=4, column=0, padx="0 10", sticky=W)
@@ -68,18 +69,11 @@ class SimView(ttk.Frame):
         self._ga_gen_field = ttk.Entry(self, textvariable=self.__ga_gen_var)
         self._ga_gen_field.grid(row=5, column=1, sticky=(W, E))
 
-    def _hide_ga_options(self):
-        try:
-            self._ga_gen_lbl.grid_forget()
-            self._ga_gen_field.grid_forget()
-            self._ga_pop_lbl.grid_forget()
-            self._ga_pop_field.grid_forget()
-        except AttributeError:
-            logger.debug("first algo to be selected")
-            
+        self._current_algo_options.extend([self._ga_pop_lbl, self._ga_pop_field, self._ga_gen_lbl, self._ga_gen_field])
+
 
     def _show_ppo_options(self):
-        self._algo_options_cbs[self.__algo_var.get()][1]()
+        self._hide_algo_options()
 
         self._ppo_iter_lbl = ttk.Label(self, text="Nombre d'itérations")
         self._ppo_iter_lbl.grid(row=4, column=0, padx="0 10", sticky=W)
@@ -87,12 +81,11 @@ class SimView(ttk.Frame):
         self._ppo_iter_field = ttk.Entry(self, textvariable=self.__ppo_iter_var)
         self._ppo_iter_field.grid(row=4, column=1, sticky=(W, E))
 
-    def _hide_ppo_options(self):
-        try:
-            self._ppo_iter_lbl.grid_forget()
-            self._ppo_iter_field.grid_forget()
-        except AttributeError:
-            logger.debug("first algo to be selected")
+        self._current_algo_options.extend([self._ppo_iter_lbl, self._ppo_iter_field])
+
+    def _hide_algo_options(self):
+        for opt in self._current_algo_options:
+            opt.grid_forget()
 
 
     def _add_debug_borders(self, elem):
