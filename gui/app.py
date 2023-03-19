@@ -23,7 +23,10 @@ class App:
         self.__win_title.grid(column=0, row=0)
         self.__main_tabs.grid(column=0, row=1, columnspan=2, rowspan=1)
 
-        # Debug borders
+        # XXX DEBUG
+        self._add_debug_borders()
+
+    def _add_debug_borders(self):
         for e in self.__content, self.__win_title:
             e["borderwidth"] = 3
             e["relief"] = "solid" 
