@@ -80,6 +80,8 @@ class VisView(ttk.Frame):
         rootdir = os.path.join("solutions", self.selected_algo)
         if os.path.exists(rootdir):
             self._solutions_var.set(os.listdir(rootdir))
+        else:
+            self._solutions_var.set([])
 
         self._vis_btn.state(["disabled"])
 
