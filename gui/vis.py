@@ -2,6 +2,8 @@ import os
 import tkinter as tk
 from tkinter import messagebox, ttk
 
+from gui.shell import ShellCommandDialog
+
 
 class VisView(ttk.Frame):
     def __init__(self, master=None, **kwargs) -> None:
@@ -62,6 +64,18 @@ class VisView(ttk.Frame):
 
         return self._solutions_lbox.get(indexes[0])
 
+    @property
+    def walkingsim_command(self):
+        # NOTE: -u is important for showing the output in the dialog
+        cmd = "python -u -m walkingsim visualize"
+        if self.selected_algo is not None:
+            cmd += f" --algo {self.selected_algo}"
+
+        if self.selected_solution is not None:
+            cmd += f" {self.selected_solution}"
+
+        return cmd
+
     def _handle_select_algo_field(self, ev):
         rootdir = os.path.join("solutions", self.selected_algo)
         if os.path.exists(rootdir):
@@ -74,10 +88,9 @@ class VisView(ttk.Frame):
             self._vis_btn.state(["!disabled"])
 
     def _handle_vis_btn(self):
-        # TODO: Run the simulation in a custom dialog
         if self.selected_solution is None:
             messagebox.showwarning(
                 title="No Solution", message="You must select a solution"
             )
         else:
-            print(self.selected_solution, self.selected_algo)
+            ShellCommandDialog(self, self.walkingsim_command)
