@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 
 from gui.vis import VisView
+from gui.sim import SimView
 
 
 class App:
@@ -35,8 +36,8 @@ class App:
         self.__tabs = ttk.Notebook(self.__content)
         self.__tabs.grid(row=1, column=0, sticky=NSEW)
 
-        self.__sim_tab = ttk.Frame(
-            self.__tabs, relief="ridge", padding="5 5 5 5"
+        self.__sim_tab = SimView(
+                self.__tabs, relief="ridge", padding="5 5 5 5"
         )
         self.__tabs.add(self.__sim_tab, text="Simulation")
 
