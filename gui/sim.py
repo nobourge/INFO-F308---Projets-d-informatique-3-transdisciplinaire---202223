@@ -2,19 +2,20 @@ import os
 from tkinter import *
 from tkinter import messagebox, ttk
 
+from loguru import logger
 
 class SimView(ttk.Frame):
     def __init__(self, master=None, **kwargs) -> None:
         super().__init__(master, **kwargs)
         self._setup()
+        # Dynamic options callbacks
         self._algo_options_cbs = dict()
-        self._algo_options_cbs["Algorithme génétique"] = (self._show_ga_options, self._hide_ga_options)
-        self._algo_options_cbs["PPO"] = (self._show_ppo_options, self._hide_ppo_options)
+        self._algo_options_cbs["Algorithme génétique"] = (self._show_ga_options, self._hide_ppo_options)
+        self._algo_options_cbs["PPO"] = (self._show_ppo_options, self._hide_ga_options)
 
     def _setup(self):
         # Environment selection
         self._env_select_label = ttk.Label(self, text="Environnement")
-        #  self._add_debug_borders(self._env_select_label)
         self._env_select_label.grid(row=0, column=0, padx="0 10", sticky=W)
         self.__env_var = StringVar()
         self._env_select_field = ttk.Combobox(
@@ -53,22 +54,45 @@ class SimView(ttk.Frame):
         self._algo_options_cbs[self.__algo_var.get()][0]()
 
     def _show_ga_options(self):
+        self._algo_options_cbs[self.__algo_var.get()][1]()
+
         self._ga_pop_lbl = ttk.Label(self, text="Taille population")
         self._ga_pop_lbl.grid(row=4, column=0, padx="0 10", sticky=W)
         self.__ga_pop_var = StringVar()
         self._ga_pop_field = ttk.Entry(self, textvariable=self.__ga_pop_var)
         self._ga_pop_field.grid(row=4, column=1, sticky=(W, E))
 
+        self._ga_gen_lbl = ttk.Label(self, text="Nombre de générations")
+        self._ga_gen_lbl.grid(row=5, column=0, padx="0 10", sticky=W)
+        self.__ga_gen_var = StringVar()
+        self._ga_gen_field = ttk.Entry(self, textvariable=self.__ga_gen_var)
+        self._ga_gen_field.grid(row=5, column=1, sticky=(W, E))
+
     def _hide_ga_options(self):
-        self._ga_pop_lbl.grid_forget()
-        self._ga_pop_field.grid_forget()
+        try:
+            self._ga_gen_lbl.grid_forget()
+            self._ga_gen_field.grid_forget()
+            self._ga_pop_lbl.grid_forget()
+            self._ga_pop_field.grid_forget()
+        except AttributeError:
+            logger.debug("first algo to be selected")
+            
 
     def _show_ppo_options(self):
         self._algo_options_cbs[self.__algo_var.get()][1]()
 
+        self._ppo_iter_lbl = ttk.Label(self, text="Nombre d'itérations")
+        self._ppo_iter_lbl.grid(row=4, column=0, padx="0 10", sticky=W)
+        self.__ppo_iter_var = StringVar()
+        self._ppo_iter_field = ttk.Entry(self, textvariable=self.__ppo_iter_var)
+        self._ppo_iter_field.grid(row=4, column=1, sticky=(W, E))
+
     def _hide_ppo_options(self):
-        self._ga_pop_lbl.grid_forget()
-        self._ga_pop_field.grid_forget()
+        try:
+            self._ppo_iter_lbl.grid_forget()
+            self._ppo_iter_field.grid_forget()
+        except AttributeError:
+            logger.debug("first algo to be selected")
 
 
     def _add_debug_borders(self, elem):
