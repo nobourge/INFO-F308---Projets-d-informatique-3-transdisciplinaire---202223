@@ -72,6 +72,7 @@ class GeneticAlgorithm:
             parallel_processing=config.parallel_processing,
             save_solutions=config.save_solutions,
             # Space
+            gene_space=config.gene_space,
             init_range_low=config.init_range_low,
             init_range_high=config.init_range_high,
             random_mutation_min_val=config.random_mutation_min_val,
