@@ -22,10 +22,10 @@ def train_ga(
         population_size=population_size,
         num_joints=8,  # FIXME: Load this from the creature
         save_solutions=False,
-        init_range_low=-1500,
-        init_range_high=1500,
-        random_mutation_min_val=-1500,
-        random_mutation_max_val=1500,
+        init_range_low=-1000,
+        init_range_high=1000,
+        random_mutation_min_val=-1000,
+        random_mutation_max_val=1000,
     )
     model = GeneticAlgorithm(
         config=config,
