@@ -22,7 +22,12 @@ class ShellCommandDialog(tk.Toplevel):
         self.rowconfigure(0, pad="5")
         self.rowconfigure(1, weight=1)
 
-        self._cmd_text = tk.StringVar(value=self._command)
+        if isinstance(self._command, list):
+            cmd_str = " ".join(self._command)
+        else:
+            cmd_str = self._command
+
+        self._cmd_text = tk.StringVar(value=cmd_str)
         self._cmd = ttk.Entry(
             self,
             textvariable=self._cmd_text,

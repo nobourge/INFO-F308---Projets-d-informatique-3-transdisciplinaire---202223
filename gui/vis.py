@@ -67,12 +67,12 @@ class VisView(ttk.Frame):
     @property
     def walkingsim_command(self):
         # NOTE: -u is important for showing the output in the dialog
-        cmd = f"{sys.executable} -u -m walkingsim visualize"
+        cmd = [sys.executable, "-u", "-m", "walkingsim", "visualize"]
         if self.selected_algo is not None:
-            cmd += f" --algo {self.selected_algo}"
+            cmd += ["--algorithm", self.selected_algo]
 
         if self.selected_solution is not None:
-            cmd += f" {self.selected_solution}"
+            cmd += [self.selected_solution]
 
         return cmd
 
