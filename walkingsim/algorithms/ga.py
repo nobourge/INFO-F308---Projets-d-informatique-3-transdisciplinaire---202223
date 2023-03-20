@@ -218,8 +218,8 @@ class GeneticAlgorithm:
         self.sim_data["best_solution"] = best_solution
         self.sim_data["solutions"] = self.ga.solutions
 
-        logger.error("Best genome: {}".format(best_solution))
-        logger.error("Best fitness: {}".format(best_fitness))
+        logger.info("Best genome: {}".format(best_solution))
+        logger.info("Best fitness: {}".format(best_fitness))
 
         self.progress_gens.close()
         if self.progress_sims is not None:
