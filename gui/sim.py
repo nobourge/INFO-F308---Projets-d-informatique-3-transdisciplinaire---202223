@@ -1,3 +1,5 @@
+from gui.shell import ShellCommandDialog
+
 import os
 from tkinter import *
 from tkinter import messagebox, ttk
@@ -11,11 +13,18 @@ class SimView(ttk.Frame):
         self._setup()
         # Dynamic options callbacks
         self._algo_options_cbs = dict()
-        self._algo_options_cbs["Algorithme génétique"] = self._show_ga_options
+        self._algo_options_cbs["GA"] = self._show_ga_options
         self._algo_options_cbs["PPO"] = self._show_ppo_options
         self._current_algo_options = []
 
     def _setup(self):
+        self.columnconfigure(1, weight=1)
+        self.rowconfigure(0, pad="20")
+        self.rowconfigure(1, pad="20")
+        self.rowconfigure(2, pad="20")
+        self.rowconfigure(5, pad="20")
+        self.rowconfigure(6, pad="20")
+        self.rowconfigure(7, pad="20")
         # Environment selection
         self._env_select_label = ttk.Label(self, text="Environnement")
         self._env_select_label.grid(row=0, column=0, padx="0 10", sticky=W)
@@ -23,7 +32,7 @@ class SimView(ttk.Frame):
         self._env_select_field = ttk.Combobox(
             self, textvariable=self.__env_var
         )
-        self._env_select_field["values"] = ["default", "lune", "mars"]
+        self._env_select_field["values"] = ["default", "moon", "mars"]
         self._env_select_field.grid(row=0, column=1, sticky=(W, E))
 
         # Creature config
@@ -35,7 +44,7 @@ class SimView(ttk.Frame):
         self._creature_select_field = ttk.Combobox(
             self, textvariable=self.__creature_var
         )
-        self._creature_select_field["values"] = ["quadrupède", "bipède"]
+        self._creature_select_field["values"] = ["quadrupede", "bipede"]
         self._creature_select_field.grid(row=1, column=1, sticky=(W, E))
 
         # Algorithm config
@@ -51,12 +60,39 @@ class SimView(ttk.Frame):
         self._algo_select_field = ttk.Combobox(
             self, textvariable=self.__algo_var
         )
-        self._algo_select_field["values"] = ["Algorithme génétique", "PPO"]
+        self._algo_select_field["values"] = ["GA", "PPO"]
         self._algo_select_field.grid(row=3, column=1, sticky=(W, E))
 
         self._algo_select_field.bind(
             "<<ComboboxSelected>>", self._handle_select_algo_field
         )
+
+        # Sim Button
+        self._sim_btn = ttk.Button(
+            self,
+            text="Simulate",
+            command=self._handle_sim_btn,
+        )
+        self._sim_btn.grid(row=5, column=1, sticky=SE)
+
+    @property
+    def walkingsim_command(self):
+        # NOTE: -u is important for showing the output in the dialog
+        cmd = "python -u -m walkingsim train"
+        cmd += f" --environment {self.__env_var.get().lower()}"
+        cmd += f" --creature {self.__creature_var.get().lower()}"
+        cmd += f" --algo {self.__algo_var.get().lower()}"
+
+        if self.__algo_var.get() == "GA":
+            cmd += f" --population {self.__ga_pop_var.get()}"
+            cmd += f" --generations {self.__ga_gen_var.get()}"
+        elif self.__algo_var.get() == "PPO":
+            cmd += f" --timesteps {self.__ppo_iter_var.get()}"
+
+        return cmd
+
+    def _handle_sim_btn(self):
+        ShellCommandDialog(self, self.walkingsim_command)
 
     def _handle_select_algo_field(self, ev):
         self._algo_options_cbs[self.__algo_var.get()]()
