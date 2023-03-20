@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 
 from gui.shell import ShellCommandDialog
-
+import sys
 
 class VisView(ttk.Frame):
     def __init__(self, master=None, **kwargs) -> None:
@@ -67,7 +67,7 @@ class VisView(ttk.Frame):
     @property
     def walkingsim_command(self):
         # NOTE: -u is important for showing the output in the dialog
-        cmd = "python -u -m walkingsim visualize"
+        cmd = f"{sys.executable} -u -m walkingsim visualize"
         if self.selected_algo is not None:
             cmd += f" --algo {self.selected_algo}"
 

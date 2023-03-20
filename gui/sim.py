@@ -1,5 +1,6 @@
 from gui.shell import ShellCommandDialog
 
+import sys
 import os
 from tkinter import *
 from tkinter import messagebox, ttk
@@ -78,7 +79,7 @@ class SimView(ttk.Frame):
     @property
     def walkingsim_command(self):
         # NOTE: -u is important for showing the output in the dialog
-        cmd = "python -u -m walkingsim train"
+        cmd = f"{sys.executable} -u -m walkingsim train"
         cmd += f" --environment {self.__env_var.get().lower()}"
         cmd += f" --creature {self.__creature_var.get().lower()}"
         cmd += f" --algo {self.__algo_var.get().lower()}"
