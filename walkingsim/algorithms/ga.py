@@ -29,10 +29,7 @@ class GeneticAlgorithm:
         best_solution=None,
     ):
         self._dm = DataManager(self._dm_group)
-        config_dict = config._asdict()
-        self._dm.save_log_file(
-            "pygad_config.csv", list(config_dict.keys()), config_dict
-        )
+        self._config = config._asdict()
 
         self.data_log = []
         self._env_props = env_props
@@ -177,6 +174,9 @@ class GeneticAlgorithm:
         Saves the final results dictionary in a .dat file.
         Saves it as best if applicable.
         """
+        self._dm.save_log_file(
+            "pygad_config.csv", list(self._config.keys()), self._config
+        )
         self._dm.save_local_dat_file("sim_data.dat", self.sim_data)
         self._dm.save_global_dat_file("last_sim.dat", self._dm.date)
 
