@@ -5,9 +5,12 @@ from tkinter import ttk
 from gui.sim import SimView
 from gui.vis import VisView
 
+from loguru import logger
+
 
 class App:
     def __init__(self):
+        logger.info("Starting app")
         self.__root = Tk()
         self.__root.title("3D walking simulator")
         self.center(500, 400)
@@ -17,11 +20,13 @@ class App:
         self._add_debug_borders()
 
     def center(self, width, height):
+
         x = int((self.__root.winfo_screenwidth() / 2) - (width / 2))
         y = int((self.__root.winfo_screenheight() / 2) - (height / 2))
         self.__root.geometry(f"{width}x{height}+{x}+{y}")
 
     def setup_tabs(self):
+        logger.info("Setting up tabs")
         self.__content = ttk.Frame(self.__root, padding="10 10 10 10")
         self.__content.place(relwidth=1, relheight=1)
         self.__content.columnconfigure(0, weight=1)
@@ -46,11 +51,13 @@ class App:
         self.__tabs.add(self.__vis_tab, text="Visualisation")
 
     def _add_debug_borders(self):
+        logger.info("Adding debug borders")
         for e in self.__content, self.__win_title:
             e["borderwidth"] = 3
             e["relief"] = "solid"
 
     def run(self):
+        logger.info("Running app")
         self.__root.mainloop()
 
 

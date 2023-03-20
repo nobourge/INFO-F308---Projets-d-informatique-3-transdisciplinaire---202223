@@ -8,9 +8,9 @@ import sys
 class VisView(ttk.Frame):
     def __init__(self, master=None, **kwargs) -> None:
         super().__init__(master, **kwargs)
-        self._setup()
+        self._setup_configuration()
 
-    def _setup(self):
+    def _setup_configuration(self):
         self.rowconfigure(0, pad="5")
         self.rowconfigure(2, weight=1)
         self.rowconfigure(3, pad="5")
