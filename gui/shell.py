@@ -9,14 +9,14 @@ class ShellCommandDialog(tk.Toplevel):
         super().__init__(master, **kwargs, padx="10", pady="10")
         self._command = command
         self._done = Event()
-        self._setup()
+        self._setup_configuration()
 
     def center(self, width, height):
         x = int((self.winfo_screenwidth() / 2) - (width / 2))
         y = int((self.winfo_screenheight() / 2) - (height / 2))
         self.geometry(f"{width}x{height}+{x}+{y}")
 
-    def _setup(self):
+    def _setup_configuration(self):
         self.center(400, 300)
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, pad="5")

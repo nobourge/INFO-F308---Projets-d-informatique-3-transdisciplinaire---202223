@@ -9,7 +9,7 @@ class GA_Simulation(BaseSimulation):
         fitness: str = "walking-v0",
         visualize: bool = False,
         timestep: float = 5e-3,
-        duration: float = 5,
+        duration: float = 10,
         ending_delay: float = 0,
     ) -> None:
         super().__init__(
