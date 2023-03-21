@@ -25,6 +25,7 @@ class GeneticAlgorithm:
         creature: str = "quadrupede",
         fitness: str = "walking-v0",
         visualize: bool = False,
+        duration: int = 5,
         ending_delay: int = 0,
         timestep: float = 1e-2,
         best_solution=None,
@@ -42,6 +43,7 @@ class GeneticAlgorithm:
             visualize=self._visualize,
             ending_delay=ending_delay,
             timestep=timestep,
+            duration=duration,
         )
 
         self.sim_data = {

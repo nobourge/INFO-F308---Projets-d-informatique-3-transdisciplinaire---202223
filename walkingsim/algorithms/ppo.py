@@ -18,6 +18,7 @@ class PPO_Algo:
         fitness: str = "walking-v0",
         visualize: bool = False,
         timestep: float = 1e-2,
+        duration: int = 5,
         model: PPO = None,
     ) -> None:
         self._dm = DataManager(self._dm_group)
@@ -38,6 +39,7 @@ class PPO_Algo:
             visualize=visualize,
             fitness=fitness,
             timestep=timestep,
+            duration=duration,
         )
         if model is None:
             self._model = PPO("MultiInputPolicy", self._env, verbose=1)

@@ -72,6 +72,14 @@ class WalkingSimArgumentParser:
             type=float,
             help="The duration of a timestep"
         )
+        general_options.add_argument(
+            "--duration",
+            "-d",
+            dest="duration",
+            default=5,
+            type=int,
+            help="The maximum duration of a single simulation"
+        )
         render_group = general_options.add_mutually_exclusive_group()
         render_group.add_argument(
             "--render",
@@ -182,6 +190,7 @@ class WalkingSimArgumentParser:
                 env=self.ns.env,
                 visualize=self.ns.render,
                 timestep=self.ns.timestep,
+                duration=self.ns.duration,
                 timesteps=self.ns.cycle_timesteps,
                 population_size=self.ns.population,
                 num_generations=self.ns.generations,
@@ -196,6 +205,7 @@ class WalkingSimArgumentParser:
                 creature=self.ns.creature,
                 env=self.ns.env,
                 visualize=self.ns.render,
+                duration=self.ns.duration,
                 timestep=self.ns.timestep,
                 timesteps=self.ns.timesteps,
             )
