@@ -3,6 +3,7 @@ def train_ga(
     creature: str,
     env: dict,
     visualize: bool = False,
+    timestep: float = 1e-2,
     population_size: int,
     num_generations: int,
 ):
@@ -41,20 +42,21 @@ def train_ga(
         env_props=env,
         creature=creature,
         visualize=visualize,
+        timestep=timestep,
     )
     model.train()
     model.save()
 
 
 def train_ppo(
-    *, creature: str, env: dict, visualize: bool = False, timesteps: int
+    *, creature: str, env: dict, visualize: bool = False, timestep: float = 1e-2, timesteps: int
 ):
     from walkingsim.algorithms.ppo import PPO_Algo
     from walkingsim.utils.baselines_config import BaselinesConfig
 
     config = BaselinesConfig(timesteps=timesteps, show_progress=True)
     model = PPO_Algo(
-        config=config, env_props=env, creature=creature, visualize=visualize
+        config=config, env_props=env, creature=creature, visualize=visualize, timestep=timestep,
     )
     model.train()
     model.save()

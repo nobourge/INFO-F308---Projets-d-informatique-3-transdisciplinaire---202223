@@ -26,6 +26,7 @@ class GeneticAlgorithm:
         fitness: str = "walking-v0",
         visualize: bool = False,
         ending_delay: int = 0,
+        timestep: float = 1e-2,
         best_solution=None,
     ):
         self._dm = DataManager(self._dm_group)
@@ -40,6 +41,7 @@ class GeneticAlgorithm:
             fitness=fitness,
             visualize=self._visualize,
             ending_delay=ending_delay,
+            timestep=timestep,
         )
 
         self.sim_data = {

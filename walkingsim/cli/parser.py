@@ -65,6 +65,13 @@ class WalkingSimArgumentParser:
             choices=self.available_algorithms,
             help="The algorithm to use to train the model",
         )
+        general_options.add_argument(
+            "--timestep",
+            dest="timestep",
+            default=1e-2,
+            type=float,
+            help="The duration of a timestep"
+        )
         render_group = general_options.add_mutually_exclusive_group()
         render_group.add_argument(
             "--render",
@@ -167,6 +174,7 @@ class WalkingSimArgumentParser:
                 creature=self.ns.creature,
                 env=self.ns.env,
                 visualize=self.ns.render,
+                timestep=self.ns.timestep,
                 population_size=self.ns.population,
                 num_generations=self.ns.generations,
             )
@@ -180,6 +188,7 @@ class WalkingSimArgumentParser:
                 creature=self.ns.creature,
                 env=self.ns.env,
                 visualize=self.ns.render,
+                timestep=self.ns.timestep,
                 timesteps=self.ns.timesteps,
             )
 
