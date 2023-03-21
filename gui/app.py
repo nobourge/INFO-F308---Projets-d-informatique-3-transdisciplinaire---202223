@@ -2,10 +2,10 @@ import os
 from tkinter import *
 from tkinter import ttk
 
+from loguru import logger
+
 from gui.sim import SimView
 from gui.vis import VisView
-
-from loguru import logger
 
 
 class App:

@@ -48,7 +48,7 @@ class WalkingFitnessV0(Fitness):
             "speed": (-500, 500),
             "height_diff": (-100, 100),
             "forces": (-5000, 5000),
-            "distance": (-1000, 1000)
+            "distance": (-1000, 1000),
         }
 
     def compute(

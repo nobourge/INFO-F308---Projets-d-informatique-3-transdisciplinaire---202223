@@ -1,11 +1,11 @@
-from gui.shell import ShellCommandDialog
-
-import sys
 import os
+import sys
 from tkinter import *
 from tkinter import messagebox, ttk
 
 from loguru import logger
+
+from gui.shell import ShellCommandDialog
 
 
 class SimView(ttk.Frame):
@@ -37,8 +37,7 @@ class SimView(ttk.Frame):
         self.rowconfigure(7, pad="20")
         # Environment selection
         self._env_select_label = ttk.Label(self, text="Environnement")
-        self._env_select_label.grid(row=0, column=0, padx="0 10",
-                                    sticky=W)
+        self._env_select_label.grid(row=0, column=0, padx="0 10", sticky=W)
         self.__env_var = StringVar()
         self._env_select_field = ttk.Combobox(
             self, textvariable=self.__env_var
@@ -50,8 +49,7 @@ class SimView(ttk.Frame):
         self._creature_select_lbl = ttk.Label(
             self, text="Choix de la créature"
         )
-        self._creature_select_lbl.grid(row=1, column=0, padx="0 10",
-                                       sticky=W)
+        self._creature_select_lbl.grid(row=1, column=0, padx="0 10", sticky=W)
         self.__creature_var = StringVar()
         self._creature_select_field = ttk.Combobox(
             self, textvariable=self.__creature_var
@@ -66,10 +64,8 @@ class SimView(ttk.Frame):
         self._algo_config_lbl.grid(
             row=2, column=0, padx="0 10", columnspan=2, sticky=W
         )
-        self._algo_select_lbl = ttk.Label(self,
-                                          text="Choix de l'algorithme")
-        self._algo_select_lbl.grid(row=3, column=0, padx="0 10",
-                                   sticky=W)
+        self._algo_select_lbl = ttk.Label(self, text="Choix de l'algorithme")
+        self._algo_select_lbl.grid(row=3, column=0, padx="0 10", sticky=W)
         self.__algo_var = StringVar()
         self._algo_select_field = ttk.Combobox(
             self, textvariable=self.__algo_var
@@ -120,15 +116,13 @@ class SimView(ttk.Frame):
         self._ga_pop_lbl = ttk.Label(self, text="Taille population")
         self._ga_pop_lbl.grid(row=4, column=0, padx="0 10", sticky=W)
         self.__ga_pop_var = StringVar()
-        self._ga_pop_field = ttk.Entry(self,
-                                       textvariable=self.__ga_pop_var)
+        self._ga_pop_field = ttk.Entry(self, textvariable=self.__ga_pop_var)
         self._ga_pop_field.grid(row=4, column=1, sticky=(W, E))
 
         self._ga_gen_lbl = ttk.Label(self, text="Nombre de générations")
         self._ga_gen_lbl.grid(row=5, column=0, padx="0 10", sticky=W)
         self.__ga_gen_var = StringVar()
-        self._ga_gen_field = ttk.Entry(self,
-                                       textvariable=self.__ga_gen_var)
+        self._ga_gen_field = ttk.Entry(self, textvariable=self.__ga_gen_var)
         self._ga_gen_field.grid(row=5, column=1, sticky=(W, E))
 
         self._current_algo_options.extend(

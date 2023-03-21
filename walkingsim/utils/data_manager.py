@@ -41,7 +41,7 @@ class DataManager:
 
     def _ensure_data_dir(self):
         if os.path.exists(self.__data_dir):
-            return 
+            return
 
         self._create_data_dir()
 

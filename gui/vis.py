@@ -1,9 +1,10 @@
 import os
+import sys
 import tkinter as tk
 from tkinter import messagebox, ttk
 
 from gui.shell import ShellCommandDialog
-import sys
+
 
 class VisView(ttk.Frame):
     def __init__(self, master=None, **kwargs) -> None:
