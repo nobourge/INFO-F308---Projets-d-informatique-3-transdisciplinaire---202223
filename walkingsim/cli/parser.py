@@ -153,6 +153,13 @@ class WalkingSimArgumentParser:
             help="The algorithm to visualize",
         )
         general_options.add_argument(
+            "--timestep",
+            dest="timestep",
+            default=1e-2,
+            type=float,
+            help="The duration of a timestep"
+        )
+        general_options.add_argument(
             "--delay",
             "-d",
             dest="delay",
@@ -212,9 +219,9 @@ class WalkingSimArgumentParser:
 
     def handle_visualize(self):
         if self.ns.algorithm == "ga":
-            visualize_ga(date=self.ns.date, delay=self.ns.delay)
+            visualize_ga(date=self.ns.date, timestep=self.ns.timestep, delay=self.ns.delay)
         elif self.ns.algorithm == "ppo":
-            visualize_ppo(date=self.ns.date, delay=self.ns.delay)
+            visualize_ppo(date=self.ns.date, timestep=self.ns.timestep, delay=self.ns.delay)
 
     def handle_env(self):
         if self.ns.env_command == "list":

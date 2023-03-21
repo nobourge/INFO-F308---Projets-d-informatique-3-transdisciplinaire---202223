@@ -60,7 +60,7 @@ class PPO_Algo:
         self._model.save(self._dm.get_local_path("model"))
 
     @classmethod
-    def load(cls, date: str, visualize: bool = False):
+    def load(cls, date: str, visualize: bool = False, timestep: float = 1e-2):
         dm = DataManager(cls._dm_group, date, fail_if_exists=False)
         params = dm.load_local_dat_file("params.dat")
         model = PPO.load(dm.get_local_path("model"))
@@ -69,6 +69,7 @@ class PPO_Algo:
             env_props=params["props"],
             creature=params["creature"],
             visualize=visualize,
+            timestep=timestep,
             model=model,
         )
 
