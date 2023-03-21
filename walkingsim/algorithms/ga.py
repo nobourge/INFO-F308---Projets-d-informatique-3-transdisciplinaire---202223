@@ -140,7 +140,7 @@ class GeneticAlgorithm:
 
         forces_list = np.array(individual).reshape(
             (
-                self._simulation.genome_discrete_intervals,
+                self.sim_data["config"].timesteps,
                 self._simulation.creature_shape,
             )
         )
@@ -237,7 +237,7 @@ class GeneticAlgorithm:
     def visualize(self):
         forces_list = np.array(self.sim_data["best_solution"]).reshape(
             (
-                self._simulation.genome_discrete_intervals,
+                self.sim_data["config"].timesteps,
                 self._simulation.creature_shape,
             )
         )
