@@ -70,7 +70,7 @@ class WalkingSimArgumentParser:
             dest="timestep",
             default=1e-2,
             type=float,
-            help="The duration of a timestep"
+            help="The duration of a timestep",
         )
         general_options.add_argument(
             "--duration",
@@ -78,7 +78,7 @@ class WalkingSimArgumentParser:
             dest="duration",
             default=5,
             type=int,
-            help="The maximum duration of a single simulation"
+            help="The maximum duration of a single simulation",
         )
         render_group = general_options.add_mutually_exclusive_group()
         render_group.add_argument(
@@ -157,7 +157,7 @@ class WalkingSimArgumentParser:
             dest="timestep",
             default=1e-2,
             type=float,
-            help="The duration of a timestep"
+            help="The duration of a timestep",
         )
         general_options.add_argument(
             "--delay",
@@ -219,9 +219,17 @@ class WalkingSimArgumentParser:
 
     def handle_visualize(self):
         if self.ns.algorithm == "ga":
-            visualize_ga(date=self.ns.date, timestep=self.ns.timestep, delay=self.ns.delay)
+            visualize_ga(
+                date=self.ns.date,
+                timestep=self.ns.timestep,
+                delay=self.ns.delay,
+            )
         elif self.ns.algorithm == "ppo":
-            visualize_ppo(date=self.ns.date, timestep=self.ns.timestep, delay=self.ns.delay)
+            visualize_ppo(
+                date=self.ns.date,
+                timestep=self.ns.timestep,
+                delay=self.ns.delay,
+            )
 
     def handle_env(self):
         if self.ns.env_command == "list":

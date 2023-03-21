@@ -195,7 +195,11 @@ class GeneticAlgorithm:
 
     @classmethod
     def load(
-        cls, date: str = None, visualize: bool = False, timestep: float = 1e-2, ending_delay: int = 0
+        cls,
+        date: str = None,
+        visualize: bool = False,
+        timestep: float = 1e-2,
+        ending_delay: int = 0,
     ):
         dm = DataManager(cls._dm_group, date, False)
         if date is None:

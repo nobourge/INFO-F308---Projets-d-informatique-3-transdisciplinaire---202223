@@ -53,14 +53,25 @@ def train_ga(
 
 
 def train_ppo(
-    *, creature: str, env: dict, visualize: bool = False, duration: int = 5, timestep: float = 1e-2, timesteps: int
+    *,
+    creature: str,
+    env: dict,
+    visualize: bool = False,
+    duration: int = 5,
+    timestep: float = 1e-2,
+    timesteps: int,
 ):
     from walkingsim.algorithms.ppo import PPO_Algo
     from walkingsim.utils.baselines_config import BaselinesConfig
 
     config = BaselinesConfig(timesteps=timesteps, show_progress=True)
     model = PPO_Algo(
-        config=config, env_props=env, creature=creature, visualize=visualize, duration=duration, timestep=timestep,
+        config=config,
+        env_props=env,
+        creature=creature,
+        visualize=visualize,
+        duration=duration,
+        timestep=timestep,
     )
     model.train()
     model.save()
