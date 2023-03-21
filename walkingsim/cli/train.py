@@ -4,6 +4,7 @@ def train_ga(
     env: dict,
     visualize: bool = False,
     timestep: float = 1e-2,
+    timesteps: int = 500,
     population_size: int,
     num_generations: int,
 ):
@@ -36,6 +37,7 @@ def train_ga(
         init_range_high=1,
         random_mutation_min_val=-1,
         random_mutation_max_val=1,
+        timesteps=timesteps,
     )
     model = GeneticAlgorithm(
         config=config,

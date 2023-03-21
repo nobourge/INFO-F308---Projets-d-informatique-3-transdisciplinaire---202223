@@ -102,6 +102,13 @@ class WalkingSimArgumentParser:
             type=int,
             help="Size of population",
         )
+        ga_algo_options.add_argument(
+            "--cycle-timesteps",
+            dest="cycle_timesteps",
+            type=int,
+            default=500,
+            help="Number of timesteps per cycle",
+        )
 
         # RL Algorithm Options
         rl_algo_options = train_parser.add_argument_group(
@@ -175,6 +182,7 @@ class WalkingSimArgumentParser:
                 env=self.ns.env,
                 visualize=self.ns.render,
                 timestep=self.ns.timestep,
+                timesteps=self.ns.cycle_timesteps,
                 population_size=self.ns.population,
                 num_generations=self.ns.generations,
             )
