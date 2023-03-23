@@ -31,7 +31,7 @@ Command:
     env (e)             Manage envs
 ```
 
-To train a model, you wan use the `train` command:
+To train a model, you want to use the `train` command:
 ```plaintext
 usage: walkingsim train [-h] [--creature CREATURE] [--target {walking-v0,walking-v1}]
                         [--environment ENVIRONMENT] [--algorithm {ga,ppo}] [--render | --no-render]
