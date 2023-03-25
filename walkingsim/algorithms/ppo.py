@@ -6,8 +6,11 @@ from stable_baselines3 import PPO
 from walkingsim.utils.baselines_config import BaselinesConfig
 from walkingsim.utils.data_manager import DataManager
 
+# logger
+from loguru import logger
 
 class PPO_Algo:
+    logger.info("PPO Algorithm")
     _dm_group = "ppo"
 
     def __init__(
@@ -21,6 +24,7 @@ class PPO_Algo:
         duration: int = 5,
         model: PPO = None,
     ) -> None:
+        logger.debug("PPO_Algo.__init__")
         self._dm = DataManager(self._dm_group)
         self._config = config
         self._env_props = env_props

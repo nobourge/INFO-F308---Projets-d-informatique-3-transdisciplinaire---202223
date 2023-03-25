@@ -5,6 +5,7 @@ from tkinter import messagebox, ttk
 
 from gui.shell import ShellCommandDialog
 
+from loguru import logger
 
 class VisView(ttk.Frame):
     def __init__(self, master=None, **kwargs) -> None:
@@ -34,6 +35,8 @@ class VisView(ttk.Frame):
             row=1, column=0, columnspan=2, sticky=tk.EW
         )
         self._solutions_var = tk.StringVar()
+        logger.debug(f"self._solutions_var: {self._solutions_var.get()}")
+        logger.debug(f"self._solutions_var: {self._solutions_var}")
         self._solutions_lbox = tk.Listbox(
             self, listvariable=self._solutions_var
         )
@@ -78,10 +81,22 @@ class VisView(ttk.Frame):
         return cmd
 
     def _handle_select_algo_field(self, ev):
-        rootdir = os.path.join("solutions", self.selected_algo)
+        logger.debug("handle_select_algo_field()")
+        logger.debug(f"os.path: {os.path}")
+
+        # rootdir = os.path.join("solutions", self.selected_algo)
+
+        #relative path :
+        relative_path_to_solutions = "../solutions"
+        rootdir = os.path.join(relative_path_to_solutions, self.selected_algo)
+        logger.debug(f"rootdir: {rootdir}")
         if os.path.exists(rootdir):
             self._solutions_var.set(os.listdir(rootdir))
+            logger.debug(f"os.listdir(rootdir): {os.listdir(rootdir)}")
+            logger.debug(f"self._solutions_var: {self._solutions_var.get()}")
         else:
+            logger.debug(f"rootdir: {rootdir} does not exist")
+            logger.info(f"No solution for {self.selected_algo} found")
             self._solutions_var.set([])
 
         self._vis_btn.state(["disabled"])

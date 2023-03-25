@@ -14,7 +14,8 @@ class WalkingSimArgumentParser:
         self.ns = Namespace()
         self.available_algorithms = ["ga", "ppo"]
         self.available_fitnesses = list(fitnesses.keys())
-        self.env_loader = EnvironmentProps("./environments")
+        # self.env_loader = EnvironmentProps("./environments")
+        self.env_loader = EnvironmentProps("environments")
 
         self.commands = self.parser.add_subparsers(
             title="Command", required=True

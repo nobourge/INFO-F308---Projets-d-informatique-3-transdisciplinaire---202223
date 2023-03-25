@@ -89,9 +89,13 @@ class SimView(ttk.Frame):
     def walkingsim_command(self):
         # NOTE: -u is important for showing the output in the dialog
         logger.info("Building walkingsim command")
+        logger.debug("sys.executable: " + sys.executable)
         cmd = [sys.executable, "-u", "-m", "walkingsim", "train"]
+        logger.debug("--environment: " + self.__env_var.get().lower())
         cmd += ["--environment", self.__env_var.get().lower()]
+        logger.debug("--creature: " + self.__creature_var.get().lower())
         cmd += ["--creature", self.__creature_var.get().lower()]
+        logger.debug("--algorithm: " + self.__algo_var.get().lower())
         cmd += ["--algorithm", self.__algo_var.get().lower()]
 
         if self.__algo_var.get() == "GA":
@@ -100,11 +104,14 @@ class SimView(ttk.Frame):
         elif self.__algo_var.get() == "PPO":
             cmd += ["--timesteps", self.__ppo_iter_var.get()]
 
+        logger.debug(f"Command: {cmd}")
+
         return cmd
 
     def _handle_sim_btn(self):
         logger.info("Handling simulation button click")
         ShellCommandDialog(self, self.walkingsim_command)
+        logger.debug("ShellCommandDialog : " + str(ShellCommandDialog))
 
     def _handle_select_algo_field(self, ev):
         self._algo_options_cbs[self.__algo_var.get()]()
