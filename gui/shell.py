@@ -3,15 +3,21 @@ from subprocess import PIPE, Popen, TimeoutExpired
 from threading import Event, Thread
 from tkinter import ttk
 
+from loguru import logger
 
 class ShellCommandDialog(tk.Toplevel):
+    logger.debug("")
     def __init__(self, master, command, **kwargs) -> None:
+        logger.debug("ShellCommandDialog __init__")
         super().__init__(master, **kwargs, padx="10", pady="10")
+
         self._command = command
+        logger.debug(f"self._command: {self._command}")
         self._done = Event()
         self._setup_configuration()
 
     def center(self, width, height):
+        logger.debug("")
         x = int((self.winfo_screenwidth() / 2) - (width / 2))
         y = int((self.winfo_screenheight() / 2) - (height / 2))
         self.geometry(f"{width}x{height}+{x}+{y}")
@@ -28,6 +34,7 @@ class ShellCommandDialog(tk.Toplevel):
             cmd_str = self._command
 
         self._cmd_text = tk.StringVar(value=cmd_str)
+        logger.debug(f"self._cmd_text: {self._cmd_text}")
         self._cmd = ttk.Entry(
             self,
             textvariable=self._cmd_text,

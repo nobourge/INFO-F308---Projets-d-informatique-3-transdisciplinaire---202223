@@ -70,6 +70,7 @@ class VisView(ttk.Frame):
 
     @property
     def walkingsim_command(self):
+        logger.debug("walkingsim_command()")
         # NOTE: -u is important for showing the output in the dialog
         cmd = [sys.executable, "-u", "-m", "walkingsim", "visualize"]
         if self.selected_algo is not None:
@@ -78,17 +79,32 @@ class VisView(ttk.Frame):
         if self.selected_solution is not None:
             cmd += [self.selected_solution]
 
+        logger.debug(f"cmd: {cmd}")
+
         return cmd
 
     def _handle_select_algo_field(self, ev):
         logger.debug("handle_select_algo_field()")
+        # os.path is the path to the python file that is running this
+        # code (in this case, vis.py) so we need to go up one level
+        # to get to the solutions directory
         logger.debug(f"os.path: {os.path}")
+        # <module 'ntpath' from 'C:\\Users\\bourg\\anaconda3\\envs\\infof308-chrono\\lib\\ntpath.py'>
+        # this means that we are on windows and that the path is a
+        # module from the standard library (ntpath) and not a file
+        # from the project (solutions)
+        # the current path is the path to the python file that is
+        # running this code (in this case, vis.py)
+        # for the current path to be the project root path, we should
+        # have a __main__.py file in the project root directory and
+        # run the project with python -m project_name
 
-        # rootdir = os.path.join("solutions", self.selected_algo)
+        rootdir = os.path.join("solutions", self.selected_algo)
 
         #relative path :
-        relative_path_to_solutions = "../solutions"
-        rootdir = os.path.join(relative_path_to_solutions, self.selected_algo)
+        # relative_path_to_solutions = "../solutions"
+        # rootdir = os.path.join(relative_path_to_solutions, self.selected_algo)
+
         logger.debug(f"rootdir: {rootdir}")
         if os.path.exists(rootdir):
             self._solutions_var.set(os.listdir(rootdir))

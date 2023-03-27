@@ -10,7 +10,10 @@ from loguru import logger
 
 class DataManager:
     def __init__(
-        self, group: str, date: str = None, fail_if_exists: bool = True
+        self
+            , group: str
+            , date: str = None
+            , fail_if_exists: bool = True
     ):
         if date is None:
             date = dt.datetime.now().strftime("%Y%m%d-%H%M%S")

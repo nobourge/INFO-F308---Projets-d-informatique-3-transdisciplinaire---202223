@@ -235,6 +235,8 @@ class GeneticAlgorithm:
             self.progress_sims.close()
 
     def visualize(self):
+        logger.info("Visualizing solution")
+
         forces_list = np.array(self.sim_data["best_solution"]).reshape(
             (
                 self.sim_data["config"].timesteps,

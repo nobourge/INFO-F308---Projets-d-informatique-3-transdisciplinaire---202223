@@ -47,6 +47,8 @@ def main():
                 best_solution, (initial_population_size, 1)
             )
 
+
+        # Increase elitism
         initial_config = initial_config._replace(
             initial_population=initial_population,
             keep_elitism=initial_config.keep_elitism

@@ -51,7 +51,7 @@ class App:
         self.__tabs.add(self.__vis_tab, text="Visualisation")
 
     def _add_debug_borders(self):
-        logger.info("Adding debug borders")
+        logger.debug("Adding debug borders")
         for e in self.__content, self.__win_title:
             e["borderwidth"] = 3
             e["relief"] = "solid"
