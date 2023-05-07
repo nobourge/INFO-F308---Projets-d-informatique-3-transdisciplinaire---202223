@@ -21,3 +21,5 @@ def visualize_ppo(*, date: str, timestep: float = 1e-2, delay: int = 0):
 
     model = PPO_Algo.load(date=date, visualize=True, timestep=timestep)
     model.visualize()
+
+# def main():

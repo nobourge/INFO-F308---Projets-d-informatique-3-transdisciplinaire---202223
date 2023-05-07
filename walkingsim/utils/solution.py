@@ -1,4 +1,5 @@
 # solution manager class
+from walkingsim.utils.data_manager import DataManager
 from walkingsim.utils.pygad_config import PygadConfig
 
 
