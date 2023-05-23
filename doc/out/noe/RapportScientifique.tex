@@ -8,7 +8,7 @@
 
 % some very useful LaTeX packages include:
 
-%\usepackage{cite}      % Written by Donald Arseneau
+\usepackage{cite}      % Written by Donald Arseneau
                         % V1.6 and later of IEEEtran pre-defines the format
                         % of the cite.sty package \cite{} output to follow
                         % that of IEEE. Loading the cite package will
@@ -109,7 +109,9 @@
                         % and documentation can be obtained at:
                         % http://www.ctan.org/tex-archive/macros/latex/required/amslatex/math/
 
-\usepackage{lipsum} % Dummy text
+\usepackage{lipsum}
+\usepackage{hyperref}
+\usepackage{algpseudocode}
 
 
 % Other popular packages for formatting tables and equations include:
@@ -180,8 +182,8 @@
 
 % Define document title and author
 	\title{Template Rapport Scientifique}
-	\author{Prenom Nom
-	\thanks{Superviseur: xxx}}
+	\author{Noé Bourgeois
+	\thanks{Superviseur: Mathieu Defrance}}
 	\markboth{INFO-F308}{}
 	\maketitle
 
@@ -210,40 +212,112 @@
 % Each section begins with a \section{title} command
 \section{Introduction}
 	% \PARstart{}{} creates a tall first letter for this first paragraph
-	\PARstart{C}{ette} section donne une introduction générale du problème scientifique abordé et décrit la structure de l'article. Des questions souvent abordées ici sont :
-	\begin{itemize}
-	\item Quelles sont les applications du problème abordées ?
-	\item Pourquoi la résolution du problème est importante ?
-	\end{itemize}
+%	\PARstart{C}{ette} section donne une
+%	introduction générale du problème scientifique abordé
+	\PARstart{V}{ie} et évolution sont deux concepts intimement liés.
+	Cette force étrange et fascinante s'est répandue jusqu'ici via
+	différentes méthodes de reproduction bien connues, le croisement
+	génétique étant la plus aboutie et la plus adaptée à un monde aussi
+	diversifié que la Terre.
+	Le génome d'un individu est ainsi la matérialisation de
+	l'information vitale transmise par ses ancêtres jusqu'à lui.
+	Cet individu n'a, au départ, aucun autre moyen de transmettre de
+	cette information que la reproduction.
+	L'être vivant développe alors des sens et communique en pr
+	ésentiel. D'importants changements adaptatifs intra-gén
+	érationnels survivalistes peuvent alors être effectués. Une information
+	dont un individu pouvant la communiquer de son vivant n'existe
+	pas est perdue.
+
+	La nature comme l'homme sont des systèmes complexes qui évoluent au cours du temps.
+	L'humanité se caractérise par sa capacité à transmettre une
+	information indépendamment de ces deux canaux. Depuis Les murs
+	des grottes jusqu'aux rayons cosmiques, l'étendue dans le temps et
+	l'espace de l'information humaine est sans commune mesure avec
+	celle de l'information biologique.
+
+	Elle cependant peu de chance de s'étendre au delà des limites du
+	système solaire.
+
+	L'homme devient donc le créateur d'une nouvelle forme de vie, sa
+	descendante héritant de tout son savoir,
+	la vie artificielle.
+
+	Comme tout nouveau né, elle doit apprendre, notamment, à se
+	déplacer.
+
+%	et décrit la structure de l'article.
+%	Des questions souvent abordées ici sont :
+%	\begin{itemize}
+%	\item Quelles sont les applications du problème abordées ?
+%	\item Pourquoi la résolution du problème est importante ?
+%	\end{itemize}
 
 \section{Etat de l'art}
-	Cette section permet de décrire l'état de l'art concernant la question abordée (c-à-d les meilleures solutions disponibles à présent) et de positionner votre travail par rapport à cet état de l'art.
-	Les différents articles que vous avez lus et utilisés doivent être correctement référencés (Exemple: \cite{small},\cite{big}).
-	Les informations bibliographiques doivent être encodées dans le fichier \texttt{References.bib} avec la syntaxe indiquée par les exemples.
-	Articles publiés sur une revue scientifique / dans les conference proceedings, ainsi que des livres, sont des exemples de bonnes références.
-	Par contre, la citation de sources web doit être limitée le plus possible (permis dans le cas de la documentation d'outils informatiques).
+%	Cette section permet de décrire l'état de l'art concernant la question abordée
+%	(c-à-d les meilleures solutions disponibles à présent)
+%	et de positionner votre travail par rapport à cet état de l'art.
+%	Les différents articles que vous avez lus
+%	et utilisés doivent être correctement référencés
+%	(Exemple: \cite{small},\cite{big}).
+%	Les informations bibliographiques doivent être encodées
+%	dans le fichier \texttt{References.bib}
+%	avec la syntaxe indiquée par les exemples.
+%	Articles publiés sur une revue scientifique
+%	/ dans les conference proceedings, ainsi que des livres,
+%	sont des exemples de bonnes références.
+%	Par contre, la citation de sources web doit être limitée le plus possible
+%	(permis dans le cas de la documentation d'outils informatiques).
+
+
 
 % Main Part
 \section{Méthodologie}\label{sec:met}
-	Cette section doit décrire, en manière détaillée:
-	\begin{itemize}
-	\item Les hypothèses de base de votre approche
-	\item Les fondements mathématiques
-	\item La méthode proposée
-	\item Les jeux de données utilisés (si nécessaire)
-	\item Les instructions nécessaires pour pouvoir reproduire les expériences (par exemple pseudo-code),
-	\end{itemize}
+	\subsection{Les hypothèses de base de notre approche}
+	\subsection{Les fondements mathématiques}
 
-	Ici vous pouvez trouver deux exemples de notation mathématique:
-	\begin{equation}
-	 f(x)=(x+a)(x+b)
-	\end{equation}
+	\begin{algorithm}
+  \caption{Genetic Algorithm}\label{alg:ga}
+  \begin{algorithmic}
+    \Require Population size $N$
 
-	Maxwell's equations:
-\begin{align}
-        B'&=-\nabla \times E,\\
-        E'&=\nabla \times B - 4\pi j,
-\end{align}
+	, Mutation rate $p_m$
+
+	, Crossover rate $p_c$
+
+	, Maximum number of generations $G_{\max}$
+    \Ensure Optimal solution
+
+    \State Initialize population $P$ with $N$ individuals
+    \State $g \gets 0$
+
+    \While{$g < G_{\max}$}
+      \State Evaluate fitness of each individual in $P$
+      \State Select parents for reproduction
+      \State Create empty offspring population $Q$
+
+      \While{$|Q| < N$}
+        \State $p_1, p_2 \gets \text{SelectParents}(P)$
+        \State $o_1, o_2 \gets \text{Crossover}(p_1, p_2, p_c)$
+        \State $o_1 \gets \text{Mutate}(o_1, p_m)$
+        \State $o_2 \gets \text{Mutate}(o_2, p_m)$
+        \State Add $o_1$ and $o_2$ to $Q$
+      \EndWhile
+
+      \State $P \gets Q$
+      \State $g \gets g + 1$
+    \EndWhile
+
+    \State \textbf{return} Best individual in $P$
+  \end{algorithmic}
+\end{algorithm}
+
+
+	\subsection{La méthode proposée}
+	\subsection{Les jeux de données utilisés}
+	\subsection{Les instructions nécessaires pour pouvoir reproduire les expériences (par exemple pseudo-code)}
+
+
 
 % Main Part
 \section{Résultats}
@@ -294,8 +368,18 @@
 Cette section contient un rappel des contributions / de résultats importants de votre article et éventuellement une indication sur les perspectives de recherche future dans le même domaine.
 
 
-\bibliographystyle{unsrt}
-\bibliography{bibliography}
+%\bibliographystyle{unsrt}
+%\bibliography{bibliography}
+\begin{thebibliography}{99}
+	\bibitem{Cormier} , Gabriel Cormier \textit{Systèmes Intelligents}, Université de Moncton, 2019.
+	\bibitem{Sims} , Karl Sims \textit{Evolving Virtual Creatures}, 1994.
+	\bibitem{Graham,Lee;Oppacher,Franz} , Graham, Lee; Oppacher, Franz. \textit{
+	Speciation Through Selection and Drift. } Proceedings of The Eleventh IASTED International Conference on Artificial Intelligence and Soft Computing. ACTA Press.
+	\bibitem{Josh-C-Bongard} , Josh C Bongard \textit{The legion
+	system: A novel approach to evolving heterogeneity for collective problem solving}.
+	\bibitem{J.B-H.L} , J. Bongard et H. Lipson \textit{“Simulation de la locomotion par algorithme génétique”}.
+\end{thebibliography}
+
 
 \newpage
 
