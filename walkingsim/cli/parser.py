@@ -1,9 +1,13 @@
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 
-from walkingsim.cli.train import train_ga, train_ppo
-from walkingsim.cli.vis import visualize_ga, visualize_ppo
-from walkingsim.fitness import fitnesses
-from walkingsim.loader import EnvironmentProps
+# from walkingsim.cli.train import train_ga, train_ppo
+# from walkingsim.cli.vis import visualize_ga, visualize_ppo
+# from walkingsim.fitness import fitnesses
+# from walkingsim.loader import EnvironmentProps
+from cli.train import train_ga, train_ppo
+from cli.vis import visualize_ga, visualize_ppo
+from fitness import fitnesses
+from loader import EnvironmentProps
 
 
 class WalkingSimArgumentParser:

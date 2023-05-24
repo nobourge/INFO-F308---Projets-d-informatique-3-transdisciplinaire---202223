@@ -2,11 +2,17 @@ import math
 
 import pychrono as chrono
 
-from walkingsim.creature.bipede import Bipede
-from walkingsim.creature.quadrupede import Quadrupede
-from walkingsim.envs.chrono.creature import ChronoCreatureBody
-from walkingsim.envs.chrono.utils import _tuple_to_chrono_vector
-from walkingsim.envs.chrono.visualizer import ChronoVisualizer
+# from walkingsim.creature.bipede import Bipede
+# from walkingsim.creature.quadrupede import Quadrupede
+# from walkingsim.envs.chrono.creature import ChronoCreatureBody
+# from walkingsim.envs.chrono.utils import _tuple_to_chrono_vector
+# from walkingsim.envs.chrono.visualizer import ChronoVisualizer
+
+from creature.bipede import Bipede
+from creature.quadrupede import Quadrupede
+from envs.chrono.creature import ChronoCreatureBody
+from envs.chrono.utils import _tuple_to_chrono_vector
+from envs.chrono.visualizer import ChronoVisualizer
 
 
 class ChCustomTorqueFunction(chrono.ChFunction_SetpointCallback):

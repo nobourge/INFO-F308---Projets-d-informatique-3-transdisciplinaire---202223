@@ -2,9 +2,10 @@ import typing as t
 
 import pychrono as chrono
 
-from walkingsim.creature.creature import _CreatureBody
-from walkingsim.envs.chrono.utils import _tuple_to_chrono_vector
-
+# from walkingsim.creature.creature import _CreatureBody
+# from walkingsim.envs.chrono.utils import _tuple_to_chrono_vector
+from creature.creature import _CreatureBody
+from envs.chrono.utils import _tuple_to_chrono_vector
 
 class ChronoCreatureBody(_CreatureBody):
     _DENSITY = 1000

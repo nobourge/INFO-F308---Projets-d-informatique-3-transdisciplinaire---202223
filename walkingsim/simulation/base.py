@@ -1,6 +1,8 @@
-from walkingsim.envs.chrono import ChronoEnvironment
-from walkingsim.fitness import fitnesses
+# from walkingsim.envs.chrono import ChronoEnvironment
+# from walkingsim.fitness import fitnesses
 
+from envs.chrono import ChronoEnvironment
+from fitness import fitnesses
 
 class BaseSimulation:
     def __init__(

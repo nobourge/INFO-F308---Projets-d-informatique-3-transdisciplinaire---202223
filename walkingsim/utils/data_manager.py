@@ -83,6 +83,7 @@ class DataManager:
     # load
     def load_local_dat_file(self, filename: str):
         filepath = self.get_local_path(filename)
+        logger.debug(f"Loading {filepath}")
         with open(filepath, "rb") as fp:
             obj = pickle.load(fp)
             logger.info(f"Loaded {obj} in {filepath}")

@@ -5,10 +5,13 @@ import pygad as pygad_
 import tqdm
 from loguru import logger
 
-from walkingsim.simulation.ga import GA_Simulation
-from walkingsim.utils.data_manager import DataManager
-from walkingsim.utils.pygad_config import PygadConfig
+# from walkingsim.simulation.ga import GA_Simulation
+# from walkingsim.utils.data_manager import DataManager
+# from walkingsim.utils.pygad_config import PygadConfig
 
+from simulation.ga import GA_Simulation
+from utils.data_manager import DataManager
+from utils.pygad_config import PygadConfig
 
 class GeneticAlgorithm:
     """
@@ -133,8 +136,9 @@ class GeneticAlgorithm:
 
         """
         self.progress_gens.refresh()
-        logger.debug("Simulation {}".format(solution_idx))
-        logger.debug("Creature genome: {}".format(individual))
+        # logger.debug("Simulation {}".format(solution_idx))
+        # logger.debug("Creature genome: {}".format(individual))
+
         # Simulate the movement of the quadruped based on the movement matrix
         # and the sensor data
 
@@ -233,6 +237,35 @@ class GeneticAlgorithm:
         self.progress_gens.close()
         if self.progress_sims is not None:
             self.progress_sims.close()
+
+        # self._config
+        # title = "
+        initial_population = self._config["initial_population"]
+        population_size = self._config["population_size"]
+        # num_generations = self._config["num_generations"]
+        # Evolution settings
+        num_parents_mating = self._config["num_parents_mating"],
+        mutation_percent_genes = self._config["mutation_percent_genes"],
+        parent_selection_type = self._config["parent_selection_type"],
+        crossover_type = self._config["crossover_type"],
+        mutation_type = self._config["mutation_type"]
+
+        self.ga.plot_fitness(title=
+                                   "Initial population = {} \n"
+                                   "Population size = {} \n"
+                                   "Parents mating quantity = {} "
+                                   " Parent_selection_type = {} "
+                                   " Crossover_type = {} \n"
+                                   " Mutation_percent_genes = {}"
+                                   .format(
+                                                                # num_generations
+                                                                initial_population
+                                                                , population_size
+                                                                 , num_parents_mating
+                                                                 , parent_selection_type
+                                                                 , crossover_type
+                                       , mutation_percent_genes
+                                   ))
 
     def visualize(self):
         logger.info("Visualizing solution")

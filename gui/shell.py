@@ -17,7 +17,7 @@ class ShellCommandDialog(tk.Toplevel):
         self._setup_configuration()
 
     def center(self, width, height):
-        logger.debug("")
+        logger.debug(f'width: {width}, height: {height}')
         x = int((self.winfo_screenwidth() / 2) - (width / 2))
         y = int((self.winfo_screenheight() / 2) - (height / 2))
         self.geometry(f"{width}x{height}+{x}+{y}")

@@ -9,8 +9,11 @@ def train_ga(
     population_size: int,
     num_generations: int,
 ):
-    from walkingsim.algorithms.ga import GeneticAlgorithm
-    from walkingsim.utils.pygad_config import PygadConfig
+    # from walkingsim.algorithms.ga import GeneticAlgorithm
+    # from walkingsim.utils.pygad_config import PygadConfig
+
+    from algorithms.ga import GeneticAlgorithm
+    from utils.pygad_config import PygadConfig
 
     config = PygadConfig(
         num_generations=num_generations,

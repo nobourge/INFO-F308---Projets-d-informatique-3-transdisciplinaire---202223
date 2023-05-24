@@ -1,4 +1,5 @@
-from walkingsim.simulation.base import BaseSimulation
+# from walkingsim.simulation.base import BaseSimulation
+from simulation.base import BaseSimulation
 
 
 class GA_Simulation(BaseSimulation):

@@ -224,16 +224,16 @@
 	Cet individu n'a, au départ, aucun autre moyen de transmettre de
 	cette information que la reproduction.
 	L'être vivant développe alors des sens et communique en pr
-	ésentiel. D'importants changements adaptatifs intra-gén
-	érationnels survivalistes peuvent alors être effectués. Une information
+	ésentiel. D'importantes adaptations survivalistes intra-gén
+	érationnelles  peuvent alors être effectuées. Une information
 	dont un individu pouvant la communiquer de son vivant n'existe
 	pas est perdue.
 
-	La nature comme l'homme sont des systèmes complexes qui évoluent au cours du temps.
 	L'humanité se caractérise par sa capacité à transmettre une
 	information indépendamment de ces deux canaux. Depuis Les murs
-	des grottes jusqu'aux rayons cosmiques, l'étendue dans le temps et
-	l'espace de l'information humaine est sans commune mesure avec
+	des grottes jusqu'aux rayons cosmiques, la portée dans le temps et
+	l'espace de la transmission volontaire d'information humaine est
+	sans commune mesure avec
 	celle de l'information biologique.
 
 	Elle cependant peu de chance de s'étendre au delà des limites du
@@ -276,55 +276,66 @@
 	\subsection{Les hypothèses de base de notre approche}
 	\subsection{Les fondements mathématiques}
 
-	\begin{algorithm}
-  \caption{Genetic Algorithm}\label{alg:ga}
-  \begin{algorithmic}
-    \Require Population size $N$
+		\begin{algorithm}
+		  \caption{Genetic Algorithm}\label{alg:ga}
+		  \begin{algorithmic}
+			\Require Population size $N$
+			\\ , Mutation rate $p_m$
+			\\ , Crossover rate $p_c$
+			\\ , Maximum number of generations $G_{\max}$
+			\Ensure Optimal solution
 
-	, Mutation rate $p_m$
+			\State Initialize population $P$ with $N$ individuals
+			\State $g \gets 0$
 
-	, Crossover rate $p_c$
+			\While{$g < G_{\max}$}
+			  \State Evaluate fitness of each individual in $P$
+			  \State Select parents for reproduction
+			  \State Create empty offspring population $Q$
 
-	, Maximum number of generations $G_{\max}$
-    \Ensure Optimal solution
+			  \While{$|Q| < N$}
+				\State $p_1, p_2 \gets \text{SelectParents}(P)$
+				\State $o_1, o_2 \gets \text{Crossover}(p_1, p_2, p_c)$
+				\State $o_1 \gets \text{Mutate}(o_1, p_m)$
+				\State $o_2 \gets \text{Mutate}(o_2, p_m)$
+				\State Add $o_1$ and $o_2$ to $Q$
+			  \EndWhile
 
-    \State Initialize population $P$ with $N$ individuals
-    \State $g \gets 0$
+			  \State $P \gets Q$
+			  \State $g \gets g + 1$
+			\EndWhile
 
-    \While{$g < G_{\max}$}
-      \State Evaluate fitness of each individual in $P$
-      \State Select parents for reproduction
-      \State Create empty offspring population $Q$
-
-      \While{$|Q| < N$}
-        \State $p_1, p_2 \gets \text{SelectParents}(P)$
-        \State $o_1, o_2 \gets \text{Crossover}(p_1, p_2, p_c)$
-        \State $o_1 \gets \text{Mutate}(o_1, p_m)$
-        \State $o_2 \gets \text{Mutate}(o_2, p_m)$
-        \State Add $o_1$ and $o_2$ to $Q$
-      \EndWhile
-
-      \State $P \gets Q$
-      \State $g \gets g + 1$
-    \EndWhile
-
-    \State \textbf{return} Best individual in $P$
-  \end{algorithmic}
-\end{algorithm}
+			\State \textbf{return} Best individual in $P$
+		  \end{algorithmic}
+	\end{algorithm}
 
 
 	\subsection{La méthode proposée}
+
 	\subsection{Les jeux de données utilisés}
 	\subsection{Les instructions nécessaires pour pouvoir reproduire les expériences (par exemple pseudo-code)}
-
-
+	Notre  simulateur  est  disponible  à  l’adresse  suivante  : https
+	://github.com/nobourge/INFO-F308---Projets-d-informatique-3-transdisciplinaire---202223
 
 % Main Part
 \section{Résultats}
-	Cette section doit contenir les résultats que vous avez obtenu avec la méthodologie décrite dans la section \ref{sec:met}.
-	Les résultats devront être présentés de préférence sous forme de tableau (cf. Table~\ref{tab:simParameters}) et/ou du diagramme (cf. Fig.~\ref{fig:tf_plot}), et correctement référencés.
-	Les conditions d'expérimentation (c-à-d matériel et logiciels utilisés) devront être ainsi indiquées.
-	En plus des résultats mêmes, cette section devra contenir votre propre analyse et discussion de résultats (par exemple comparaison par rapport à une méthode de référence)
+%	Cette section doit contenir les résultats que vous avez obtenu
+%	avec la méthodologie décrite dans la section \ref{sec:met}.
+%	Les résultats devront être présentés de préférence sous forme de tableau
+%	(cf. Table~\ref{tab:simParameters})
+%	et/ou du diagramme (cf. Fig.~\ref{fig:tf_plot}),
+	\begin{figure}
+	  \centering
+	  \includegraphics[width=0.1\textwidth]{image/pop20mut30-1}
+	  \caption{Example Image}
+	  \label{fig:example}
+	\end{figure}
+%	et correctement référencés.
+%	Les conditions d'expérimentation
+%	(c-à-d matériel et logiciels utilisés) devront être ainsi indiquées.
+%	En plus des résultats mêmes, cette section devra contenir
+%	votre propre analyse et discussion de résultats
+%	(par exemple comparaison par rapport à une méthode de référence)
 
 % This is how you define a table: the [!hbt] means that LaTeX is forced (by the !) to place the table exactly here (by h), or if that doesnt work because of a pagebreak or so, it tries to place the table to the bottom of the page (by b) or the top (by t).
 	\begin{table}[!hbt]

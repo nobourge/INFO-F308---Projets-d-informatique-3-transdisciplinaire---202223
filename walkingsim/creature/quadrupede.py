@@ -12,7 +12,8 @@ Description:
 import math
 import typing as t
 
-from walkingsim.creature.creature import Creature, _CreatureBody
+# from walkingsim.creature.creature import Creature, _CreatureBody
+from creature.creature import Creature, _CreatureBody
 
 
 class Quadrupede(Creature):
