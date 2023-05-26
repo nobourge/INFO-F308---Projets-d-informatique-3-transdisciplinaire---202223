@@ -114,6 +114,7 @@ class WalkingFitnessV1(Fitness):
                 last_observation["position"][0]
                 > observations[-2]["position"][0]
             ):
+                # If the robot is moving forward, forward_bonus is positive
                 self._props["forward_bonus"] += 0.02
             else:
                 self._props["forward_bonus"] -= 0.05 * (
@@ -125,6 +126,7 @@ class WalkingFitnessV1(Fitness):
             last_observation["trunk_hit_ground"]
             or last_observation["legs_hit_ground"]
         ):
+            # If the trunk touches the ground, alive_bonus is negative and stops sim
             self._done = True
 
         target = 0.8333  # 3km/h

@@ -4,7 +4,8 @@
 import argparse
 import logging
 
-from walkingsim.cli import parser
+# from walkingsim.cli import parser
+from cli import parser
 
 # meta heuristic class
 class MetaHeuristic:

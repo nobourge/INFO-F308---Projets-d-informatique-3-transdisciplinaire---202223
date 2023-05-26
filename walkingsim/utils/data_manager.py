@@ -92,6 +92,7 @@ class DataManager:
 
     def load_global_dat_file(self, filename: str):
         filepath = self.get_global_path(filename)
+        logger.debug("filepath: ", filepath)
         with open(filepath, "rb") as fp:
             obj = pickle.load(fp)
             logger.info(f"Loaded {obj} in {filepath}")

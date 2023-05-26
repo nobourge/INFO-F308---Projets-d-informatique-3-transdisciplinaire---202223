@@ -75,7 +75,7 @@ class GeneticAlgorithm:
             parallel_processing=config.parallel_processing,
             save_solutions=config.save_solutions,
             # Space
-            gene_space=config.gene_space,
+            # gene_space=config.gene_space,
             init_range_low=config.init_range_low,
             init_range_high=config.init_range_high,
             random_mutation_min_val=config.random_mutation_min_val,
@@ -159,7 +159,7 @@ class GeneticAlgorithm:
         fitness = self._simulation.reward
         fitness_props = self._simulation.reward_props
 
-        logger.debug("Creature fitness: {}".format(fitness))
+        # logger.debug("Creature fitness: {}".format(fitness))
         self.progress_gens.refresh()
         self.progress_sims.update(1)
 
@@ -248,23 +248,42 @@ class GeneticAlgorithm:
         mutation_percent_genes = self._config["mutation_percent_genes"],
         parent_selection_type = self._config["parent_selection_type"],
         crossover_type = self._config["crossover_type"],
-        mutation_type = self._config["mutation_type"]
+        mutation_type = self._config["mutation_type"],
+        keep_elitism = self._config["keep_elitism"],
+        init_range_low = self._config["init_range_low"]
+        init_range_high = self._config["init_range_high"]
+        random_mutation_min_val =self._config["random_mutation_min_val"]
+        random_mutation_max_val =self._config["random_mutation_max_val"]
 
         self.ga.plot_fitness(title=
-                                   "Initial population = {} \n"
-                                   "Population size = {} \n"
-                                   "Parents mating quantity = {} "
-                                   " Parent_selection_type = {} "
-                                   " Crossover_type = {} \n"
-                                   " Mutation_percent_genes = {}"
+                                   # "Initial population = {} \n"
+                                   "Population size = {} "
+                                   "\n"
+                                    "Parents: "
+                                   "Selection type = {} "
+                                   "Mating quantity = {} "
+                                   "\n"
+                                   # " Crossover_type = {} \n"
+                                   "Genes: "
+                                   "Initialisation = [{},{}] "
+                                   "Mutation = [{},{}] "
+                                   "Mutation percentage = {}"
+                                   # "(bad:{},good:{}) 
+                                   "\n"
+                                   "Keep elitism = {} "
                                    .format(
-                                                                # num_generations
-                                                                initial_population
-                                                                , population_size
-                                                                 , num_parents_mating
-                                                                 , parent_selection_type
-                                                                 , crossover_type
-                                       , mutation_percent_genes
+                                                                # initial_population
+                                                                population_size
+                                       , parent_selection_type[0]
+                                        , num_parents_mating[0]
+                                                                 # , crossover_type
+                                       , init_range_low
+                                       , init_range_high
+                                       , random_mutation_min_val
+                                       , random_mutation_max_val
+                                       , mutation_percent_genes[0]
+                                       # , mutation_percent_genes[1]
+                                       , keep_elitism[0]
                                    ))
 
     def visualize(self):

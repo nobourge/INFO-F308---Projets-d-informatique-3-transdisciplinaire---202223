@@ -1,4 +1,4 @@
-# INFO-F308 - Walking simulator - Group G2C
+e# INFO-F308 - Walking simulator - Group G2C
 
 ## Install Chrono
  

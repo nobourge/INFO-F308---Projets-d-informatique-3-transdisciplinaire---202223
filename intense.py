@@ -3,8 +3,10 @@ import pickle
 import numpy as np
 
 import walkingsim.utils._logging  # Configure logging
-from walkingsim.algorithms.ga import GeneticAlgorithm
-from walkingsim.utils.pygad_config import PygadConfig
+# from walkingsim.algorithms.ga import GeneticAlgorithm
+from algorithms.ga import GeneticAlgorithm
+# from walkingsim.utils.pygad_config import PygadConfig
+from utils.pygad_config import PygadConfig
 
 
 def start(config):
