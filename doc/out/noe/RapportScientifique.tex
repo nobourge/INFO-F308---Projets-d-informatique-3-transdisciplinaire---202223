@@ -264,18 +264,30 @@
 	Comme tout nouveau né, elle doit apprendre, notamment, à se
 	déplacer.
 
+	\textbf{le minage extraterrestre} à grande échelle via vaisseau
+	spatial auto-réplicants
 	Von Neumman, conscient des ressources minières terrestres limitées,
-	a présenté le minage extraterrestre à grande échelle via vaisseau
-	spatial auto-réplicants comme solution optimale.
+	a présenté  comme solution optimale.
+	Cette problématique peut sembler lointaine dans le temps ou locale,
+	mais
+	la demande en
+	ressources naturelles ne cesse d'augmenter et l'offre que présentent
+	certains corps célestes represente le plus grand potentiel économique
+	du marché des métaux précieux et rares de l'histoire de l'humanité.
 
 	Dans le cas de corps
-	celestes trop massifs et dont l'atmosphère est trop peu dense, la
-	rentabilité énérgétique d'un objet de minage volant chargé de
-	minerai
-	devient à
-	surface	irrégulière
-	médecine chaise roulante prothèse
-	L'industrie du divertissement, en particulier celle du jeu vidéo,
+	celestes trop massifs et dont l'atmosphère est trop peu dense,
+	une machine
+	de minage chargée de
+	minerai se déplaçant sur une surface irrégulière dont l'aplanissement
+	n'est pas rentable ou même envisageable, la marche est
+	la méthode	de déplacement la plus efficace ou même la seule
+	possible.
+
+	\textbf{La médecine} pourrait bénéficier chaise roulante prothèse
+
+	\textbf{L'industrie du divertissement}, en particulier celle du
+	jeu vidéo,
 	utilise déjà des simulateurs de marche pour créer des personnages
 	plus réalistes de manière procédurale.
 	La Science-Fiction est pleine de robot intelligents pouvant
@@ -291,15 +303,35 @@
 	dans
 	la réalité.
 
+	\textbf{Boston Dynamics \& Tesla} ayant déjà développé des robots
+	à l'équilibre impressionnant, nous pourrions nous demander une
+	quelconque amélioration significative reste à faire.
+	Boston Dynamics dont les algorithmes de marche sont les plus
+	avancés au monde était bien en avance sur son temps et a pourtant
+	encore beaucoup de difficultés par exemple, à rendre le mouvement
+	de
+	ses robots
+	bipèdes fluides en terrain complexe inconnu ce qui rend ladémarche
+	assez peu naturelle car non optimale. Le
+	domaine de recherche est en fait en plein essor.
+
 	\subsubsection{Le simulateur}
+	De tels tests en conditions réelles dans lesquelles la chute
+	d'un robot peut être fatales sont trop co
+	ûteux
+	pour être effectués sur des prototypes.
+	Ce prototypage est donc réalisé dans un environnement virtuel où les
+	conditions de test peuvent être répétées à l'infini en omettant les
+	aspects déjà maîtrisés pour concentrer les ressources sur les
+	problèmes critiques.
 
 
-
-	\subsection{Pourquoi un algorithme génétique?}
-	Jhon Holland et son équipe, en 1975,~\cite{systems-adaptation}
-
-	l'algorithme génétique
-	est un algorithme très puissant pour résoudre des problèmes
+	\subsection{Pourquoi un algorithme génétique?}\label{subsec:pourquoi-un-algorithme-genetique?}
+	John Holland et son équipe, en 1975,
+	l'algorithme génétique\cite{systems-adaptation} comme une
+	interprétation mathématique directe de la théorie de l'évolution de
+	Darwin.
+	Celui-ci est très puissant pour résoudre des problèmes
 	d'optimisation combinatoire complexe.
 	Sa nature stochastique lui permet de trouver des solutions souvent
 	inattendues. Il est donc particulièrement adapté à la phase de
@@ -312,7 +344,7 @@
 %	\item Pourquoi la résolution du problème est importante ?
 %	\end{itemize}
 
-\section{Etat de l'art}
+\section{Etat de l'art}\label{sec:etat-de-l'art}
 %	Cette section permet de décrire l'état de l'art concernant la question abordée
 %	(c-à-d les meilleures solutions disponibles à présent)
 %	et de positionner votre travail par rapport à cet état de l'art.
@@ -332,7 +364,7 @@
 
 % Main Part
 \section{Méthodologie}\label{sec:met}
-	\subsection{Les hypothèses de base de notre approche}
+	\subsection{Les hypothèses de base de notre approche}\label{subsec:les-hypotheses-de-base-de-notre-approche}
 
 %	Le but de ce projet étant de créer un simulateur de marche,
 %	parvenir à y faire marcher une créature est
@@ -367,9 +399,9 @@
 
 
 	\subsubsection{Algorithme génétique}
-	\subsection{Les fondements mathématiques}
+	\subsection{Les fondements mathématiques}\label{subsec:les-fondements-mathematiques}
 
-		\begin{algorithm}
+	\begin{algorithm}
 		  \caption{Genetic Algorithm}\label{alg:ga}
 		  \begin{algorithmic}
 			\Require Population size $N$
@@ -403,13 +435,26 @@
 	\end{algorithm}
 
 
-	\subsection{La méthode proposée}
+	\subsection{La méthode proposée}\label{subsec:la-methode-proposee}
+	La méthode que nous présentons ici a été développée sur base de
+	choix d'implémentation grandement influencés par le contexte du
+	projet.
+	Celui-ci était séparé en 3 parties:
+	\begin{itemize}
+		\item 1.Recherche
+		\item 2.Développement
+		\item 3.Présentation d'une version vulgarisée du projet au
+		Printemps des Sciences
+	\end{itemize}
+	Cette troisième partie rendait primordiale l'obtention d'un
+	résultat
+	fonctionnel et visuellement attrayant.
+	Nous avons donc décidé d'utiliser la librairie PyGAD\cite{pygad}
+	pour nous libérer de l'écriture de l'algorithme lui-même et nous
+	concentrer sur son adaptation à notre problèmatique et
+	l'optimisations des paramètres.
+
 	\subsubsection{Fitness Function}
-
-		Un élément clé d'un bon apprentissage avec algorithme génétique est la définition de la fitness function. C'est la formule qui va évaluer l'aptitude de chaque individu et leur attribuer plus ou moins de points selon les critères choisis.
-		Notre fitness function est la suivante. Elle représente la valeur de la fitness pour un individu à un instant $i$.
-
-
 		Une créature est évaluée sur 5 critères :
 		\begin{itemize}
 			\item La distance entre le tronc et le sol \text{{alive\_bonus}}
@@ -423,7 +468,8 @@
 			\item La hauteur maximale atteinte : maintient de la verticalité
 			pour éviter une posture menant à la chute
 		\end{itemize}
-		\begin{equation}
+
+		\begin{equation}\label{eq:equation}
 			\text{{Fitness}} =
 			\text{{alive\_bonus}}
 			+ ($H_{i-1}$ - $H_{i}$) * 0 .1
@@ -431,23 +477,10 @@
 			+ \text{{ forces }}
 		\end{equation}
 
-		Ce calcul est effectué à chaque génération de la simulation sur chaque individu. \\
+		Ce calcul est effectué sur chaque individu de chaque gén
+		ération de la simulation . \\
 
-	La méthode que nous présentons ici a été développée sur base de
-	choix d'implémentation grandement influencés par le contexte du
-	projet. Celui-ci était séparé en 3 parties:
-	\begin{itemize}
-		\item 1.Recherche
-		\item 2.Développement
-		\item 3.Présentation d'une version vulgarisée du projet au
-		Printemps des Sciences
-	\end{itemize}
-	Cette troisième partie rendait primordiale l'obtention d'un
-	résultat
-	fonctionnel et visuellement attrayant.
-	Nous avons donc décidé d'utiliser la librairie PyGAD\cite{pygad}
-	pour nous libérer de l'écriture de l'algorithme lui-même et nous
-	concentrer sur l'optimisations des paramètres.
+
 	\
 
 %		\text{num_parents_mating}: & \text{Number of solutions to be selected as parents.} \
@@ -474,31 +507,18 @@
 %		\text{random_mutation_max_val=1.0}: & \text{The end value of the range for random mutation.} \
 %		\text{gene_space=None}: & \text{Specifies the possible values for each gene.}
 %	\end{align*}
-	\subsection{Les jeux de données utilisés}
-	\subsection{Les instructions nécessaires pour pouvoir reproduire les expériences (par exemple pseudo-code)}
+	\subsection{Les jeux de données utilisés}\label{subsec:les-jeux-de-donnees-utilises}
+
+	\subsection{Les instructions nécessaires pour pouvoir reproduire les expériences (par exemple pseudo-code)}\label{subsec:les-instructions-necessaires-pour-pouvoir-reproduire-les-experiences-(par-exemple-pseudo-code)}
 	Notre  simulateur  est  disponible  à  l’adresse  suivante  : https
 	://github.com/nobourge/INFO-F308---Projets-d-informatique-3-transdisciplinaire---202223
 
 % Main Part
-\section{Résultats}
+\section{Résultats}\label{sec:resultats}
 %	Cette section doit contenir les résultats que vous avez obtenu
 %	avec la méthodologie décrite dans la section \ref{sec:met}.
 %	Les résultats devront être présentés de préférence sous forme de tableau
 %	(cf. Table~\ref{tab:simParameters})
-%	et/ou du diagramme (cf. Fig.~\ref{fig:tf_plot}),
-	\begin{figure}
-	  \centering
-	  \includegraphics[width=0.5\textwidth]{image/pop20mut60-10}
-%	  \includegraphics[width=\textwidth/2]{image/pop20mut30-1}
-	  \caption{Example Image}
-	  \label{fig:example}
-	\end{figure}
-%	et correctement référencés.
-%	Les conditions d'expérimentation
-%	(c-à-d matériel et logiciels utilisés) devront être ainsi indiquées.
-%	En plus des résultats mêmes, cette section devra contenir
-%	votre propre analyse et discussion de résultats
-%	(par exemple comparaison par rapport à une méthode de référence)
 
 % This is how you define a table: the [!hbt] means that LaTeX is forced (by the !) to place the table exactly here (by h), or if that doesnt work because of a pagebreak or so, it tries to place the table to the bottom of the page (by b) or the top (by t).
 	\begin{table}[!hbt]
@@ -545,6 +565,21 @@
 			\end{tabular}
 		\end{center}
 	\end{table}
+%	et/ou du diagramme (cf. Fig.~\ref{fig:tf_plot}),
+	\begin{figure}
+	  \centering
+	  \includegraphics[width=0.5\textwidth]{image/pop20mut60-10}
+%	  \includegraphics[width=\textwidth/2]{image/pop20mut30-1}
+	  \caption{Example Image}
+	  \label{fig:example}
+	\end{figure}
+%	et correctement référencés.
+%	Les conditions d'expérimentation
+%	(c-à-d matériel et logiciels utilisés) devront être ainsi indiquées.
+%	En plus des résultats mêmes, cette section devra contenir
+%	votre propre analyse et discussion de résultats
+%	(par exemple comparaison par rapport à une méthode de référence)
+
 
 %	% This is how you include a eps figure in your document. LaTeX only accepts EPS or TIFF files.
 %	\begin{figure}[!hbt]
@@ -559,7 +594,7 @@
 %		\end{center}
 %	\end{figure}
 
-\section{Conclusion}
+\section{Conclusion}\label{sec:conclusion}
 %Cette section contient un rappel des contributions
 %/ de résultats importants de votre article
 	Notre simulateur permet de trouver en temps raisonnable des
@@ -576,7 +611,7 @@
 	L'algorithme génétique nous semble donc adapté à la pose de
 	larges fondations.
 
-	\subsubsection{Limites}
+\subsection{Limites}\label{subsec:limites}
 	Les limites de notre simulateur sont les suivantes :
 	\begin{itemize}
 		\item La fonction de fitness est très difficile à définir
@@ -593,32 +628,33 @@
 
 
 
-\subsection{Optimisations futures}
-
-
-
+\subsection{Optimisations futures}\label{subsec:optimisations-futures}
 
 
 %et éventuellement une indication sur les perspectives de recherche future dans le même domaine.
-\subsection{Perspectives de recherche future}
+\subsection{Perspectives de recherche future}\label{subsec:perspectives-de-recherche-future}
 
-	\subsubsection{Paramètres}
+\subsubsection{Paramètres}
 	L'étendue des paramètres de PyGAD est très large et au vu de nos
 	résultats obtenus après les tests présentés,
 	une solution
-	optimale est probablement réalisable en temps raisonnable via
+	optimale est probablement accessible en temps raisonnable via
 	la bonne combinaison de paramètres.
 	Pour la trouver, nous avons commencé la création d'une
 	méta heuristique disponible très prochainement, l'idée est
 	d'utiliser du scrapping pour récupérer les résultats de chaque
 	utilisateur de PyGAD et de les comparer afin de trouver les
 	meilleurs paramètres puis d'itérer sur cette base pour affiner
-	les paramètres dont les valeurs sont des intervalles.
+	les paramètres dont les valeurs sont des intervalles. Il s'agit
+	pour ainsi dire d'un algorithme génétique basique à gén
+	ération unique appliqué sur
+	la population des param
+	ètres.
 
 	Un dictionnaire de génomes à éviter, tels qu'une suite de zéros
 	entraînant l'absence d'action, et/ou assurément trop loin d'une
 	solution viable
-	\subsubsection{Fonction de fitness}
+\subsubsection{Fonction de fitness}
 	\textbf{correction} d'un mauvais comportement, en plus de
 	l'attribution	de score, nous
 	pourrions implémenter une fonction de correction pour identifier
@@ -637,28 +673,30 @@
 	automatiquement en fonction des comportements observés en liant
 	les poids de chaque composante aux actions pour lesquelles elles
 	entrent en jeu.
-	\subsubsection{Réseau neuronal}
+\subsubsection{Réseau neuronal}
 	Ces perspectives de développement de la fonction de fitness gén
 	érationnelle
 	mènent rapidement aux prémices d'un réseau neuronal.
 	Lié à des capteurs, il permettrait à la créature de réagir
 	à son environnement et de se déplacer de manière autonome
 
-	\subsubsection{Environnement}
+\subsubsection{Environnement}
 
-	\subsubsection{Adaptation intra-générationelle}
+\subsubsection{Adaptation intra-générationelle}
+	\textbf{épigenetique}
+	\
 
-	\subsubsection{Parallélisation}
+\subsubsection{Parallélisation}
 
-	\subsubsection{Autres domaines}
+\subsubsection{Autres domaines}
 	Le goulot d'étranglement de l'algorithme génétique est la somme
 	des opérations sur le génome des individus, leur croisement et
 	mutation.
 	Dans un autre registre que le nôtre, la physique quantique ouvre le
-	champ	des
-	possibilités d'action en permettant la superposition et
+	champ d'action en permettant la superposition et
 	l'intrication
-	d'états. Ces propriétés pourraient être utilisées pour simuler
+	d'états.
+	Ces propriétés pourraient être utilisées pour simuler
 	l'équivalent de multiples créatures en \("\)parallèle\("\) et ainsi accél
 	érer la convergence
 	de l'algorithme génétique.\cite{quantum-computing}
@@ -668,11 +706,10 @@
 %\bibliography{bibliography}
 %\bibliography{references}
 \begin{thebibliography}{99}
-	\bibitem{replicating-automata} , John von Neumann \textit{Theory of
-	Self
-	-Reproducing Automata}, 1966.
-	\bibitem{near-term_self-replicating} , Olivia Borgue and Andreas M
-	. Hein \textit{Near-Term Self-replicating Probes - A Concept Design}, 2005.
+	\bibitem{replicating-automata} , John von Neumann
+	\textit{Theory of Self-Reproducing Automata}, 1966.
+	\bibitem{near-term_self-replicating} , Olivia Borgue and Andreas M.
+	Hein \textit{Near-Term Self-replicating Probes - A Concept Design}, 2005.
 %	\bibitem{genetic-algorithms} , Melanie Mitchell \textit{An Introduction to Genetic Algorithms}, 1998.
 %	\bibitem{Bongard} , Josh C. Bongard \textit{Evolving modular genetic regulatory networks}, 2002.
 	\bibitem{systems-adaptation} , John Holland \textit{Adaptation in
@@ -697,7 +734,7 @@
 \newpage
 
 \appendices
-\section{Consignes}
+\section{Consignes}\label{sec:consignes}
 % Main Part
 \subsection*{Document}
 	% LaTeX takes complete care of your document layout ...
