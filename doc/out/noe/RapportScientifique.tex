@@ -182,7 +182,7 @@
 \begin{document}
 
 % Define document title and author
-	\title{Template Rapport Scientifique}
+	\title{Algorithme génétique et importance des données d'entrée}
 	\author{Noé Bourgeois
 	\thanks{Superviseur: Mathieu Defrance}}
 	\markboth{INFO-F308}{}
@@ -237,20 +237,73 @@
 	sans commune mesure avec
 	celle de l'information biologique.
 
-	Elle cependant peu de chance de s'étendre au delà des limites du
+	Elle a cependant peu de chance de s'étendre au delà des limites du
 	système solaire.
 
-	L'homme devient donc le créateur d'une nouvelle forme de vie, sa
+	L'humanité devient alors la génitrice d'une nouvelle forme de vie
+	, sa
 	descendante héritant de tout son savoir,
 	la vie artificielle.
 
+	Le concept de machine auto-réplicante a été introduit par John
+	von Neumann en 1940~\cite{replicating-automata}.
+%	Il s'agit d'un modèle
+%	mathématique d'un système dynamique discret qui évolue en fonction
+%	d'un ensemble d'états et d'un ensemble de règles de transition
+
+	La nécessité ultime de la vie artificielle ayant été établie, il
+
+	replicants
+	champs des possibles limité par ce que nous savons possible
+	ne pas reinventer la roue
+	nature pas de roue
+	genetique amelioree
+
 	\subsection{Pourquoi un simulateur de marche?}
+	\subsubsection{La marche}
 	Comme tout nouveau né, elle doit apprendre, notamment, à se
 	déplacer.
 
+	Von Neumman, conscient des ressources minières terrestres limitées,
+	a présenté le minage extraterrestre à grande échelle via vaisseau
+	spatial auto-réplicants comme solution optimale.
+
+	Dans le cas de corps
+	celestes trop massifs et dont l'atmosphère est trop peu dense, la
+	rentabilité énérgétique d'un objet de minage volant chargé de
+	minerai
+	devient à
+	surface	irrégulière
+	médecine chaise roulante prothèse
+	L'industrie du divertissement, en particulier celle du jeu vidéo,
+	utilise déjà des simulateurs de marche pour créer des personnages
+	plus réalistes de manière procédurale.
+	La Science-Fiction est pleine de robot intelligents pouvant
+	marcher ayant différentes fonctions.
+	La proposition probablement la plus proche de nous dans le
+	temps est celle présentée dans \textit{"Westworld"}, où des parcs
+	d'attraction peuplés de robots humanoïdes sont proposés aux
+	touristes. Ces simulateurs grandeur nature pourraient être
+	utilisés pour rentabiliser l'investissement dans la recherche
+	et grandement accélérer son développement par l'introduction dans
+	un envirronement contrôlé de
+	pertubations similaires à celles que les robots pourront rencontrer
+	dans
+	la réalité.
+
+	\subsubsection{Le simulateur}
+
+
+
 	\subsection{Pourquoi un algorithme génétique?}
-	Problème d'optimisation combinatoire complexe
-	Jhon Holland 1975\cite{systems-adaptation}
+	Jhon Holland et son équipe, en 1975,~\cite{systems-adaptation}
+
+	l'algorithme génétique
+	est un algorithme très puissant pour résoudre des problèmes
+	d'optimisation combinatoire complexe.
+	Sa nature stochastique lui permet de trouver des solutions souvent
+	inattendues. Il est donc particulièrement adapté à la phase de
+	recherche d'un projet.
 
 %	et décrit la structure de l'article.
 %	Des questions souvent abordées ici sont :
@@ -280,6 +333,40 @@
 % Main Part
 \section{Méthodologie}\label{sec:met}
 	\subsection{Les hypothèses de base de notre approche}
+
+%	Le but de ce projet étant de créer un simulateur de marche,
+%	parvenir à y faire marcher une créature est
+
+	\subsubsection{Marche}
+	Tout d'abord, il est important de rappeler que la marche est un
+	mouvement cyclique, c'est à dire qu'il se répète à intervalles
+	réguliers. Il est donc possible de décrire un cycle de marche
+	comme une séquence d'états, chacun étant une description de la
+	position et de l'orientation du robot à un instant donné.
+	Un pas est une chute contrôlée en avant, suivie d'une récupération
+	de l'équilibre par la pose d'un membre au sol.
+	La présence de plus de deux membres semble donc importante en début
+	et fin de marche seulement. Elle n'est jamais indispensable si l'on
+	se réfère à bon nombre d'animaux bipèdes et pourtant très stables et
+	rapides.
+	Une contrainte importante du projet étant la puissance de calcul
+	de nos machines, et la notre nous permettant d'estimer que
+	modifier des forces sur 2 pattes sera 2 fois plus rapide que sur 4,
+	la marche bipède semble être un bon compromis.
+
+	\subsubsection{Paramètres}
+
+	\subsubsection{Heuristique}
+
+	La composante de base la plus évidente pour l'agent est de se
+	déplacer vite, nous récompensons donc la distance parcourue
+	divisée par le temps mis pour la parcourir. La
+	Cependant, il est
+	important de noter que la vitesse n'est pas le seul paramètre
+	important. En effet, un robot qui se déplace à une vitesse
+
+
+	\subsubsection{Algorithme génétique}
 	\subsection{Les fondements mathématiques}
 
 		\begin{algorithm}
@@ -340,12 +427,11 @@
 			\text{{Fitness}} =
 			\text{{alive\_bonus}}
 			+ ($H_{i-1}$ - $H_{i}$) * 0 .1
-			+ $\dfrac{D_{i} - {D_{i-1}}}{time}$
+			+ \dfrac{D_{i} - {D_{i-1}}}{time}
 			+ \text{{ forces }}
 		\end{equation}
 
 		Ce calcul est effectué à chaque génération de la simulation sur chaque individu. \\
-		. \\
 
 	La méthode que nous présentons ici a été développée sur base de
 	choix d'implémentation grandement influencés par le contexte du
@@ -476,13 +562,119 @@
 \section{Conclusion}
 %Cette section contient un rappel des contributions
 %/ de résultats importants de votre article
-	Nous avons pu constater que l'algorithme génétique est
-%et éventuellement une indication sur les perspectives de recherche future dans le même domaine.
+	Notre simulateur permet de trouver en temps raisonnable des
+	solutions permettant à des créatures de se maintenir debout sans
+	chuter et	se déplacer le temps de la simulation.
+	Cependant, la qualité des solutions trouvées est très variable et
+	la posture des créatures est toujours sous-optimale.
+	Nous avons pu constater qu'il est très difficile
+	de trouver les bons paramètres pour que l'algorithme converge
+	vers une solution optimale. De plus, il est très difficile
+	de trouver une fonction de fitness qui permette de bien
+	évaluer les solutions.
 
+	L'algorithme génétique nous semble donc adapté à la pose de
+	larges fondations.
+
+	\subsubsection{Limites}
+	Les limites de notre simulateur sont les suivantes :
+	\begin{itemize}
+		\item La fonction de fitness est très difficile à définir
+		\item Les paramètres de l'algorithme génétique sont très difficiles
+		à définir
+		\item L'algorithme génétique est très lent
+	\end{itemize}
+	L'envirronement physique est le plus simple possible: un sol plat.
+	La moindre irrégularité introduite pourrait faire chuter la cr
+	éature.
+	Les forces à appliquer sur les articulations étant inscrites dans
+	le génome, et la créature étant dépourvue de sens, aucune adaptation
+	intra-générationelle n'est possible.
+
+
+
+\subsection{Optimisations futures}
+
+
+
+
+
+%et éventuellement une indication sur les perspectives de recherche future dans le même domaine.
+\subsection{Perspectives de recherche future}
+
+	\subsubsection{Paramètres}
+	L'étendue des paramètres de PyGAD est très large et au vu de nos
+	résultats obtenus après les tests présentés,
+	une solution
+	optimale est probablement réalisable en temps raisonnable via
+	la bonne combinaison de paramètres.
+	Pour la trouver, nous avons commencé la création d'une
+	méta heuristique disponible très prochainement, l'idée est
+	d'utiliser du scrapping pour récupérer les résultats de chaque
+	utilisateur de PyGAD et de les comparer afin de trouver les
+	meilleurs paramètres puis d'itérer sur cette base pour affiner
+	les paramètres dont les valeurs sont des intervalles.
+
+	Un dictionnaire de génomes à éviter, tels qu'une suite de zéros
+	entraînant l'absence d'action, et/ou assurément trop loin d'une
+	solution viable
+	\subsubsection{Fonction de fitness}
+	\textbf{correction} d'un mauvais comportement, en plus de
+	l'attribution	de score, nous
+	pourrions implémenter une fonction de correction pour identifier
+	la région du génome commandant une action non désirée et la
+	remplacer par des valeurs plus adaptées.
+	La force de l'algorithme génétique étant sa souplesse, il est possible
+	que des conditions plus laxistes permettent d'éviter de rester coincé
+	dans un maximum local.
+	L'objectif de hauteur du centre de masse est
+	actuellement un maximum en un point et peut entraîner un dés
+	équilibre limitant les possibilités de mouvement.
+	Cet objectif pourrait être remplacé par	un intervalle de hauteur
+	global allouant plus de liberté à la créature.
+
+	La fonction de fitness pourrait elle-même être modifiée
+	automatiquement en fonction des comportements observés en liant
+	les poids de chaque composante aux actions pour lesquelles elles
+	entrent en jeu.
+	\subsubsection{Réseau neuronal}
+	Ces perspectives de développement de la fonction de fitness gén
+	érationnelle
+	mènent rapidement aux prémices d'un réseau neuronal.
+	Lié à des capteurs, il permettrait à la créature de réagir
+	à son environnement et de se déplacer de manière autonome
+
+	\subsubsection{Environnement}
+
+	\subsubsection{Adaptation intra-générationelle}
+
+	\subsubsection{Parallélisation}
+
+	\subsubsection{Autres domaines}
+	Le goulot d'étranglement de l'algorithme génétique est la somme
+	des opérations sur le génome des individus, leur croisement et
+	mutation.
+	Dans un autre registre que le nôtre, la physique quantique ouvre le
+	champ	des
+	possibilités d'action en permettant la superposition et
+	l'intrication
+	d'états. Ces propriétés pourraient être utilisées pour simuler
+	l'équivalent de multiples créatures en \("\)parallèle\("\) et ainsi accél
+	érer la convergence
+	de l'algorithme génétique.\cite{quantum-computing}
+%	Cette idée est déjà exploitée, notamment par
 
 %\bibliographystyle{unsrt}
 %\bibliography{bibliography}
+%\bibliography{references}
 \begin{thebibliography}{99}
+	\bibitem{replicating-automata} , John von Neumann \textit{Theory of
+	Self
+	-Reproducing Automata}, 1966.
+	\bibitem{near-term_self-replicating} , Olivia Borgue and Andreas M
+	. Hein \textit{Near-Term Self-replicating Probes - A Concept Design}, 2005.
+%	\bibitem{genetic-algorithms} , Melanie Mitchell \textit{An Introduction to Genetic Algorithms}, 1998.
+%	\bibitem{Bongard} , Josh C. Bongard \textit{Evolving modular genetic regulatory networks}, 2002.
 	\bibitem{systems-adaptation} , John Holland \textit{Adaptation in
 	Natural
 	and artificial Systems}, 1975.
@@ -496,6 +688,9 @@
 
 	\bibitem{pygad} \url{https://pygad.readthedocs
 	.io/en/latest/}
+
+	\bibitem{quantum-computing} , Bart Rylander, Terence Soule,
+	James Foster and Jim Alves-Foss \textit{Quantum Genetic Algorithms}, 2000
 \end{thebibliography}
 
 
