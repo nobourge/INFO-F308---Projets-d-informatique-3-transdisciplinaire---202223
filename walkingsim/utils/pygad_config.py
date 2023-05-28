@@ -10,6 +10,7 @@ class PygadConfig(NamedTuple):
     num_parents_mating: int
     mutation_percent_genes: tuple
     parent_selection_type: str
+    k_tournament: int
     keep_elitism: int
     crossover_type: str
     mutation_type: str
@@ -17,7 +18,7 @@ class PygadConfig(NamedTuple):
     parallel_processing: bool
     save_solutions: bool
     # Search space
-    # gene_space: dict
+    gene_space: dict
     init_range_low: int
     init_range_high: int
     random_mutation_min_val: int

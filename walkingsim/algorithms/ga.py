@@ -1,5 +1,6 @@
 import copy
 
+import matplotlib
 import numpy as np
 import pygad as pygad_
 import tqdm
@@ -75,7 +76,7 @@ class GeneticAlgorithm:
             parallel_processing=config.parallel_processing,
             save_solutions=config.save_solutions,
             # Space
-            # gene_space=config.gene_space,
+            gene_space=config.gene_space,
             init_range_low=config.init_range_low,
             init_range_high=config.init_range_high,
             random_mutation_min_val=config.random_mutation_min_val,
@@ -247,26 +248,31 @@ class GeneticAlgorithm:
         num_parents_mating = self._config["num_parents_mating"],
         mutation_percent_genes = self._config["mutation_percent_genes"],
         parent_selection_type = self._config["parent_selection_type"],
+        k_tournament = self._config["k_tournament"],
         crossover_type = self._config["crossover_type"],
         mutation_type = self._config["mutation_type"],
         keep_elitism = self._config["keep_elitism"],
+        gene_space = self._config["gene_space"],
         init_range_low = self._config["init_range_low"]
         init_range_high = self._config["init_range_high"]
         random_mutation_min_val =self._config["random_mutation_min_val"]
         random_mutation_max_val =self._config["random_mutation_max_val"]
+
 
         self.ga.plot_fitness(title=
                                    # "Initial population = {} \n"
                                    "Population size = {} "
                                    "\n"
                                     "Parents: "
-                                   "Selection type = {} "
+                                   "Selection type = {}, "
+                                   "K tournament = {}, "
                                    "Mating quantity = {} "
                                    "\n"
                                    # " Crossover_type = {} \n"
                                    "Genes: "
-                                   "Initialisation = [{},{}] "
-                                   "Mutation = [{},{}] "
+                                   "Space = {}, "
+                                   "Initialisation = [{},{}], "
+                                   "Mutation = [{},{}], "
                                    "Mutation percentage = {}"
                                    # "(bad:{},good:{}) 
                                    "\n"
@@ -275,8 +281,10 @@ class GeneticAlgorithm:
                                                                 # initial_population
                                                                 population_size
                                        , parent_selection_type[0]
+                                        , k_tournament[0]
                                         , num_parents_mating[0]
                                                                  # , crossover_type
+                                       , gene_space
                                        , init_range_low
                                        , init_range_high
                                        , random_mutation_min_val
@@ -285,6 +293,12 @@ class GeneticAlgorithm:
                                        # , mutation_percent_genes[1]
                                        , keep_elitism[0]
                                    ))
+        # save plot
+        # self.ga.save_plot("fitness_evolution.png") # fixme: save exist not
+        # matplotlib.pyplot.figure()
+        # matplotlib.pyplot.plot(ga_instance.best_solutions_fitness)
+        # matplotlib.pyplot.savefig("PyGAD_figure.jpg")
+        # matplotlib.pyplot.show()
 
     def visualize(self):
         logger.info("Visualizing solution")

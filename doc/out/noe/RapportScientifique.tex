@@ -304,14 +304,14 @@
 	la réalité.
 
 	\textbf{Boston Dynamics \& Tesla} ayant déjà développé des robots
-	à l'équilibre impressionnant, nous pourrions nous demander une
-	quelconque amélioration significative reste à faire.
+	à l'équilibre impressionnant, nous pourrions nous demander si un
+	quelconque progrès significatif reste à réaliser dans ce domaine.
 	Boston Dynamics dont les algorithmes de marche sont les plus
 	avancés au monde était bien en avance sur son temps et a pourtant
 	encore beaucoup de difficultés par exemple, à rendre le mouvement
 	de
 	ses robots
-	bipèdes fluides en terrain complexe inconnu ce qui rend ladémarche
+	bipèdes fluides en terrain complexe inconnu ce qui rend la démarche
 	assez peu naturelle car non optimale. Le
 	domaine de recherche est en fait en plein essor.
 
@@ -327,10 +327,14 @@
 
 
 	\subsection{Pourquoi un algorithme génétique?}\label{subsec:pourquoi-un-algorithme-genetique?}
-	John Holland et son équipe, en 1975,
+	John Holland et son équipe, en 1975, introduisent
 	l'algorithme génétique\cite{systems-adaptation} comme une
 	interprétation mathématique directe de la théorie de l'évolution de
 	Darwin.
+	Il s'agit d'un algorithme stochastique itératif, qui, par
+	échantillonage de population, progresse par génération
+	vers	un optimum global d’une fonction objectif.
+%	qui progressent vers un optimum global (c'est-à-dire l'extremum global d'une fonction), par échantillonnage d’une fonction objectif
 	Celui-ci est très puissant pour résoudre des problèmes
 	d'optimisation combinatoire complexe.
 	Sa nature stochastique lui permet de trouver des solutions souvent
@@ -381,8 +385,8 @@
 	et fin de marche seulement. Elle n'est jamais indispensable si l'on
 	se réfère à bon nombre d'animaux bipèdes et pourtant très stables et
 	rapides.
-	Une contrainte importante du projet étant la puissance de calcul
-	de nos machines, et la notre nous permettant d'estimer que
+	Une contrainte importante du projet étant les puissances de calcul
+	de nos ordinateurs, et les nôtres nous permettant d'estimer que
 	modifier des forces sur 2 pattes sera 2 fois plus rapide que sur 4,
 	la marche bipède semble être un bon compromis.
 
@@ -392,13 +396,31 @@
 
 	La composante de base la plus évidente pour l'agent est de se
 	déplacer vite, nous récompensons donc la distance parcourue
-	divisée par le temps mis pour la parcourir. La
-	Cependant, il est
-	important de noter que la vitesse n'est pas le seul paramètre
-	important. En effet, un robot qui se déplace à une vitesse
-
+	divisée par le temps mis pour la parcourir. Cette composante,
+	la plus importante n'est cependant valable que si l'agent ne tombe
+	pas. Une composante à caractère invalidateur sur une chute semble
+	donc indispensable
 
 	\subsubsection{Algorithme génétique}
+
+	Le but est de conserver une diversité la plus large possible
+	tout en convergeant vers une solution optimale.
+	La diversité est assurée par la sélection des parents
+	et la convergence par la sélection des enfants.
+	La sélection des parents est réalisée par un tournoi
+	entre individus choisis aléatoirement dans la population.
+
+	Dans un algorithme génétique classique,
+	l'exécution est divisée en générations -
+	à chaque génération, le résultat du processus de sélection
+	et de reproduction remplace l'ensemble (ou du moins la plupart)
+	de la population existante ; seuls les enfants survivent.
+	Cependant, dans un algorithme génétique à état stable (steady state),
+	seuls quelques individus sont remplacés à chaque fois,
+	ce qui signifie que la plupart des individus sont conservés pour
+	la génération suivante ;
+	il n'y a pas de notion de génération à proprement parler.
+
 	\subsection{Les fondements mathématiques}\label{subsec:les-fondements-mathematiques}
 
 	\begin{algorithm}
@@ -451,8 +473,82 @@
 	fonctionnel et visuellement attrayant.
 	Nous avons donc décidé d'utiliser la librairie PyGAD\cite{pygad}
 	pour nous libérer de l'écriture de l'algorithme lui-même et nous
-	concentrer sur son adaptation à notre problèmatique et
+	concentrer sur son adaptation à notre problematique et
 	l'optimisations des paramètres.
+
+	\subsubsection{Paramètres}
+	\newline
+
+	\\
+    \\ \textbf{gene space}: Il s'agit de l'espace des gènes où les
+	valeurs des gènes individuels de la population doivent se situer. Dans ce cas, l'espace des gènes va de -1 à 1 avec un pas de 0.1.
+
+    \\ \textbf{init range low}: C'est la valeur minimale autorisée
+	pour l'initialisation des gènes individuels dans la population.
+
+    \\ \textbf{init range high}: C'est la valeur maximale autorisée
+	pour l'initialisation des gènes individuels dans la population.
+
+    \\ \textbf{random mutation min val}: C'est la valeur minimale
+	autorisée pour la mutation aléatoire d'un gène individuel.
+
+    \\ \textbf{random mutation max val}: C'est la valeur maximale
+	autorisée pour la mutation aléatoire d'un gène individuel.
+
+    \\ \textbf{initial population}: C'est la population initiale
+	qui peut être fournie à l'algorithme génétique. %Dans ce cas, aucune population initiale n'est spécifiée.
+
+    \\ \textbf{population size}: C'est la taille de la population,
+	c'est-à-dire le nombre d'individus dans une génération.
+
+    \\ \textbf{num generations}: C'est le nombre de générations sur
+	lesquelles l'algorithme génétique va s'exécuter.
+
+    \\ \textbf{num parents mating}: C'est le nombre de parents
+	sélectionnés pour la reproduction à chaque génération.
+
+    \\ \textbf{parallel processing}: Indique si le traitement
+	parallèle doit être utilisé.
+	%Dans ce cas, aucune méthode de traitement parallèle n'est spécifiée.
+
+    \\ \textbf{parent selection type}: C'est le type de méthode
+	utilisée pour sélectionner les parents qui se reproduiront.
+	Dans notre cas, la méthode de sélection par tournoi est utilisée
+	car elle fonctionne avec des valeurs de fitness négatives.
+	. La sélection par tournoi fonctionne en sélectionnant
+	aléatoirement K (taille du tournoi) individus, puis en choisissant
+	le plus apte parmi eux (le gagnant) pour la reproduction.
+
+	La pression de sélection dépend de K : plus K est grand,
+	plus la pression est forte, car les individus les plus faibles
+	auront plus d'adversaires et auront donc plus de chances de perdre.
+
+    La taille du tournoi est contrôlée par le paramètre K\_tournament.
+
+    \\ \textbf{keep elitism}: C'est le nombre d'individus élites
+	qui sont conservés sans mutation dans la gén
+	ération suivante. C'est utile dans la situation où la fitness d'un
+	individu est largement supérieure à celle des autres individus.
+	Altérer son génome avec un autre, potentiellement le pire, puis
+	muter aléatoirement ce résultat signifierait la perte de cette
+	progression fulgurante. Garder intact une grande quantité de
+	génomes
+	signifie également que la population ne se renouvelle pas assez.
+	Dans notre cas, 2 individus
+	élites sont conservés afin de laisser la possibilité qu'ils se
+	reproduisent entre eux.
+
+
+    \\ \textbf{crossover type}: C'est le type de croisement utilisé
+	pour la reproduction des parents. Dans ce cas, le croisement uniforme est utilisé.
+
+    \\ \textbf{mutation type}: C'est le type de mutation appliqué aux
+	gènes individuels. Dans ce cas, la mutation adaptative est utilisée.
+
+    \\ \textbf{mutation percent genes}: Il s'agit du pourcentage de
+	gènes sujets à la mutation. Dans ce cas, 60 % des gènes individuels peuvent être mutés lors d'une génération et 10 % des gènes mutés peuvent être adaptativement modifiés.
+%	\end{itemize}
+
 
 	\subsubsection{Fitness Function}
 		Une créature est évaluée sur 5 critères :
@@ -480,33 +576,6 @@
 		Ce calcul est effectué sur chaque individu de chaque gén
 		ération de la simulation . \\
 
-
-	\
-
-%		\text{num_parents_mating}: & \text{Number of solutions to be selected as parents.} \
-%		\text{fitness_func}: & \text{Accepts a function/method and returns the fitness value of the solution.} \
-%		\text{fitness_batch_size=None}: & \text{A new optional parameter to calculate the fitness function in batches.} \
-%		\text{initial_population}: & \text{A user-defined initial population.} \
-%		\text{sol_per_pop}: & \text{Number of solutions (i.e., chromosomes) within the population.} \
-%		\text{num_genes}: & \text{Number of genes in the solution/chromosome.} \
-%		\text{gene_type=float}: & \text{Controls the gene type.} \
-%		\text{init_range_low=-4}: & \text{The lower value of the random range for gene values.} \
-%		\text{init_range_high=4}: & \text{The upper value of the random range for gene values.} \
-%		\text{parent_selection_type="sss"}: & \text{The parent selection type.} \
-%		\text{keep_parents=-1}: & \text{Number of parents to keep in the current population.} \
-%		\text{keep_elitism=1}: & \text{Number of solutions to keep in the next generation.} \
-%		\text{K_tournament=3}: & \text{The number of parents participating in tournament selection.} \
-%		\text{crossover_type="single_point"}: & \text{Type of the crossover operation.} \
-%		\text{crossover_probability=None}: & \text{The probability of selecting a parent for crossover.} \
-%		\text{mutation_type="random"}: & \text{Type of the mutation operation.} \
-%		\text{mutation_probability=None}: & \text{The probability of selecting a gene for mutation.} \
-%		\text{mutation_by_replacement=False}: & \text{Whether to replace the gene or add a random value in random mutation.} \
-%		\text{mutation_percent_genes="default"}: & \text{Percentage of genes to mutate.} \
-%		\text{mutation_num_genes=None}: & \text{Number of genes to mutate.} \
-%		\text{random_mutation_min_val=-1.0}: & \text{The start value of the range for random mutation.} \
-%		\text{random_mutation_max_val=1.0}: & \text{The end value of the range for random mutation.} \
-%		\text{gene_space=None}: & \text{Specifies the possible values for each gene.}
-%	\end{align*}
 	\subsection{Les jeux de données utilisés}\label{subsec:les-jeux-de-donnees-utilises}
 
 	\subsection{Les instructions nécessaires pour pouvoir reproduire les expériences (par exemple pseudo-code)}\label{subsec:les-instructions-necessaires-pour-pouvoir-reproduire-les-experiences-(par-exemple-pseudo-code)}
@@ -571,7 +640,15 @@
 	  \includegraphics[width=0.5\textwidth]{image/pop20mut60-10}
 %	  \includegraphics[width=\textwidth/2]{image/pop20mut30-1}
 	  \caption{Example Image}
-	  \label{fig:example}
+	  \label{fig:pop20mut60-10}
+	\end{figure}
+
+	\begin{figure}
+%	  \centering
+	  \includegraphics[width=0.5\textwidth]{image/sss500}
+%	  \includegraphics[width=\textwidth/2]{image/pop20mut30-1}
+	  \caption{Example Image}
+	  \label{fig:sss500}
 	\end{figure}
 %	et correctement référencés.
 %	Les conditions d'expérimentation
@@ -579,6 +656,16 @@
 %	En plus des résultats mêmes, cette section devra contenir
 %	votre propre analyse et discussion de résultats
 %	(par exemple comparaison par rapport à une méthode de référence)
+Si la population est trop petite, le nombre de solutions différentes
+est faible.
+Si l'élitisme est trop important ou la compétition est trop sélective,
+les solutions
+ne sont pas assez diversifiées.
+%Si la mutation est trop importante, les solutions ne convergent pas.
+Si la mutation est trop faible, les solutions convergent trop rapidement.
+Lorsqu'une ou plusieurs de ces conditions sont réunies, l'évolution
+atteint un maximum local et la progression est fortement ralentie.
+Ce phénomène se traduit visuellement par les plateaux observés
 
 
 %	% This is how you include a eps figure in your document. LaTeX only accepts EPS or TIFF files.
@@ -611,24 +698,30 @@
 	L'algorithme génétique nous semble donc adapté à la pose de
 	larges fondations.
 
+	Des valeurs de mutation aléatoires trop grandes reviennent à
+	ignorer les parents et à générer une population aléatoire.
+	Celles-ci doivent donc être comprises dans un
+	intervalle très restreint.
+
 \subsection{Limites}\label{subsec:limites}
 	Les limites de notre simulateur sont les suivantes :
 	\begin{itemize}
-		\item La fonction de fitness est très difficile à définir
-		\item Les paramètres de l'algorithme génétique sont très difficiles
-		à définir
-		\item L'algorithme génétique est très lent
+		\item Les paramètres par défaut de PyGAD ont à peine été
+		modifiés. La vision globale du traitement de la problématique
+		offerte par l'espace de notre parametrisation est très étroite.
+		\item La majeure partie du temps d'execution du programme est
+		consacrée à la simulation physique dont nous ne valorisons que
+		très peu les informations que nous en retirons.
+		\item Il est très difficile de définir si la fonction de fitness
+		est trop sévère par rapport au principe stochastique de l'algorithme
+		génétique ou trop laxiste vis-à-vis de la simulation physique.
 	\end{itemize}
-	L'envirronement physique est le plus simple possible: un sol plat.
-	La moindre irrégularité introduite pourrait faire chuter la cr
-	éature.
 	Les forces à appliquer sur les articulations étant inscrites dans
 	le génome, et la créature étant dépourvue de sens, aucune adaptation
 	intra-générationelle n'est possible.
-
-
-
-\subsection{Optimisations futures}\label{subsec:optimisations-futures}
+	L'envirronement physique est le plus simple possible: un sol plat.
+	La moindre irrégularité introduite pourrait faire chuter la cr
+	éature.
 
 
 %et éventuellement une indication sur les perspectives de recherche future dans le même domaine.
@@ -640,18 +733,24 @@
 	une solution
 	optimale est probablement accessible en temps raisonnable via
 	la bonne combinaison de paramètres.
-	Pour la trouver, nous avons commencé la création d'une
-	méta heuristique disponible très prochainement, l'idée est
-	d'utiliser du scrapping pour récupérer les résultats de chaque
-	utilisateur de PyGAD et de les comparer afin de trouver les
+	Pour la trouver, l'idée serait de nous épargner une batterie de
+	tests interminable en
+	utilisant du scrapping pour récupérer les paramétrisations de chaque
+	projet PyGAD similaire au notre et comparer leurs résultats afin de
+	trouver
+	les
 	meilleurs paramètres puis d'itérer sur cette base pour affiner
-	les paramètres dont les valeurs sont des intervalles. Il s'agit
-	pour ainsi dire d'un algorithme génétique basique à gén
-	ération unique appliqué sur
+	les paramètres dont les valeurs sont des intervalles. Il s'agirait
+	pour ainsi dire d'un meta algorithme génétique appliqué sur
 	la population des param
 	ètres.
 
-	Un dictionnaire de génomes à éviter, tels qu'une suite de zéros
+	\textbf{Eviter les maximum locaux} en remplaçant les paramètres
+	d'élitisme et de compétition par des intervalles contrôlés par une
+	fonction réagissant à la stagnation de la population.
+
+	\textbf{Un dictionnaire de génomes à éviter}, tels qu'une suite
+	de zéros
 	entraînant l'absence d'action, et/ou assurément trop loin d'une
 	solution viable
 \subsubsection{Fonction de fitness}
@@ -673,18 +772,41 @@
 	automatiquement en fonction des comportements observés en liant
 	les poids de chaque composante aux actions pour lesquelles elles
 	entrent en jeu.
-\subsubsection{Réseau neuronal}
+	\subsubsection{Adaptation intra-générationelle}
+\textbf{Réseau neuronal}
 	Ces perspectives de développement de la fonction de fitness gén
 	érationnelle
 	mènent rapidement aux prémices d'un réseau neuronal.
 	Lié à des capteurs, il permettrait à la créature de réagir
 	à son environnement et de se déplacer de manière autonome
+	\textbf{épigenetique}
+
 
 \subsubsection{Environnement}
+	Dès lors que la créature est capable de réagir à son environnement,
+	celui-ci peut être modifié pour augmenter la difficulté.
+	Parmi les modifications les plus intéressantes :
+	\textbf{Générales}:
+	\begin{itemize}
+			\item Des pentes
+			\item Des obstacles
+			\item Des projectiles
+			\item Des créatures adverses
+		\end{itemize}
 
-\subsubsection{Adaptation intra-générationelle}
-	\textbf{épigenetique}
-	\
+	\textbf{A finalité réelle}:
+	Se concentrer sur les envirronements encore mal maîtrisés par les
+	robots actuels:
+	\begin{itemize}
+			\item Des surfaces à solidité variable ( boue, etc.)
+			\item Des surfaces glissantes ( verglas, etc.)
+			\item Des surfaces instables ( sable, etc.)
+		\end{itemize}
+	\textbf{A finalité virtuelle}:
+	\begin{itemize}
+			\item Environnement de jeux vidéo déjà existant
+			\item Environnement de jeux vidéo généré aléatoirement
+			\end{itemize}
 
 \subsubsection{Parallélisation}
 

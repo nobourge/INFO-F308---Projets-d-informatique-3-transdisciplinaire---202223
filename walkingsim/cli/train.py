@@ -1,3 +1,6 @@
+import datetime
+
+
 def train_ga(
     *,
     creature: str,
@@ -17,29 +20,41 @@ def train_ga(
 
     config = PygadConfig(
         num_generations=num_generations,
-        num_parents_mating=(population_size//4)+1,  # TODO: Add
+        # num_parents_mating=(population_size//2)+1,  # TODO: Add
+        num_parents_mating=(population_size//4)+2,  # TODO: Add
+        # num_parents_mating=(population_size//10)+1,  # TODO: Add
+        # num_parents_mating=2,  # TODO: Add
+        # num_parents_mating=4,  # TODO: Add
     # argument
-        mutation_percent_genes=(60, 10),  # TODO: Add argument
+        mutation_percent_genes=(60, 10),
         parallel_processing=None,
-        parent_selection_type="tournament",  # TODO: Add argument
+        parent_selection_type="tournament",
         # parent_selection_type="sss",
-        keep_elitism=population_size//10 +1,  # TODO:
+        # k_tournament=population_size//10 +2,
+        # k_tournament=population_size//10 +2,
+        k_tournament=population_size//4 +2,
+        keep_elitism=2,  # 2 because minimum to preserve best sol
+        # lineage TODO:
         # Add argument
-        crossover_type="uniform",  # TODO: Add argument
-        mutation_type="adaptive",  # TODO: Add argument
-        initial_population=None,  # TODO: Add argument
+        crossover_type="uniform",
+        mutation_type="adaptive",
+        initial_population=None,
         population_size=population_size,
         num_joints=8,  # FIXME: Load this from the creature
         save_solutions=False,
-        # gene_space={"low": -1, "high": 1, "step": 0.1},
+        gene_space={"low": -5, "high": 5, "step": 0.1},
+        # gene_space={"low": -2, "high": 2, "step": 0.01},
         # init_range_low=-1,
-        init_range_low=-2,
+        # init_range_low=-2,
+        init_range_low=-5,
+
         # init_range_high=1,
-        init_range_high=2,
-        # random_mutation_min_val=-1,
-        random_mutation_min_val=-5,
-        # random_mutation_max_val=1,
-        random_mutation_max_val=5,
+        # init_range_high=2,
+        init_range_high=5,
+        random_mutation_min_val=-1,
+        # random_mutation_min_val=-3,
+        random_mutation_max_val=1,
+        # random_mutation_max_val=3,
         timesteps=timesteps,
     )
     model = GeneticAlgorithm(
@@ -52,6 +67,8 @@ def train_ga(
     )
     model.train()
     model.save()
+    # print datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"
+    print(datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
 
 
 def train_ppo(
