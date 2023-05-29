@@ -161,7 +161,7 @@
 %        \fontsize{8pt}{10pt}\selectfont
 %        \sffamily\color{Pantone287}
 %        FACULTÉ DES SCIENCES       \\
-%        DÉPARTEMENT D'INFORMATIQUE
+%        DÉPARTEMENT distance'INFORMATIQUE
 %      }
 %    }
 %  }
@@ -286,6 +286,16 @@
 
 	\textbf{La médecine} pourrait bénéficier chaise roulante prothèse
 
+	\textbf{Les jeux de plateaux} sont un domaine où l'IA est
+	déjà très présente. Les jeux de stratégie en temps réel
+	ont été un des premiers domaines où l'IA a été utilisée.
+	Le jeu de Go, bien que plus ancien, a été un des derniers
+	jeux à damier à être résolu par une IA. La marche est un des
+	moyens de déplacement les plus utilisés dans les jeux de
+	plateaux. Les pions matériels, jusqu'ici déplacés à la main,
+	pourraient être remplacés par des robots semi-autonomes.
+
+
 	\textbf{L'industrie du divertissement}, en particulier celle du
 	jeu vidéo,
 	utilise déjà des simulateurs de marche pour créer des personnages
@@ -364,7 +374,18 @@
 %	Par contre, la citation de sources web doit être limitée le plus possible
 %	(permis dans le cas de la documentation d'outils informatiques).
 
-
+\subsubsection{Autres domaines}
+	Le goulot d'étranglement de l'algorithme génétique est la somme
+	des opérations sur le génome des individus, leur croisement et
+	mutation.
+	Dans un autre registre que le nôtre, la physique quantique ouvre le
+	champ d'action en permettant la superposition et
+	l'intrication
+	d'états.
+	Ces propriétés pourraient être utilisées pour simuler
+	l'équivalent de multiples créatures en \("\)parallèle\("\) et ainsi accél
+	érer la convergence
+	de l'algorithme génétique.\cite{quantum-computing}
 
 % Main Part
 \section{Méthodologie}\label{sec:met}
@@ -421,8 +442,12 @@
 	la génération suivante ;
 	il n'y a pas de notion de génération à proprement parler.
 
+
+
+
 	\subsection{Les fondements mathématiques}\label{subsec:les-fondements-mathematiques}
 
+	\subsubsection{Algorithme génétique}
 	\begin{algorithm}
 		  \caption{Genetic Algorithm}\label{alg:ga}
 		  \begin{algorithmic}
@@ -456,6 +481,22 @@
 		  \end{algorithmic}
 	\end{algorithm}
 
+	\subsubsection{Extrema locaux}\label{subsec:extrema-locaux}
+		\begin{figure}
+	  \centering
+	  \includegraphics[width=\columnwidth]{image/extrema-global-local}
+	  \caption{Extrema globaux et locaux de
+		  \(f(x) = \frac{\cos(3\pi x)}{x}\), \quad \(0.1 \leq x \leq 1.1\)
+		\cite{extrema-global-local}}
+	  \label{fig:extrema-global-local}
+	\end{figure}
+	Dans notre cas, la fonction objectif est une maximisation.
+	Les minima locaux ne sont donc pas un problème.
+	En effet, si l'on considère une fonction $f$ à maximiser,
+	et un minimum local $x_0$ tel que $f(x_0) < f(x)$ pour tout $x$
+	dans un voisinage de $x_0$, alors $-f(x_0) > -f(x)$ pour tout $x$
+	dans le même voisinage, et $-f(x_0)$ est donc un maximum local
+	de $-f$.
 
 	\subsection{La méthode proposée}\label{subsec:la-methode-proposee}
 	La méthode que nous présentons ici a été développée sur base de
@@ -481,7 +522,8 @@
 
 	\\
     \\ \textbf{gene space}: Il s'agit de l'espace des gènes où les
-	valeurs des gènes individuels de la population doivent se situer. Dans ce cas, l'espace des gènes va de -1 à 1 avec un pas de 0.1.
+	valeurs des gènes individuels de la population doivent se situer.
+	Dans notre cas, l'espace des gènes va de -1 à 1 avec un pas de 0.1.
 
     \\ \textbf{init range low}: C'est la valeur minimale autorisée
 	pour l'initialisation des gènes individuels dans la population.
@@ -588,11 +630,15 @@
 %	avec la méthodologie décrite dans la section \ref{sec:met}.
 %	Les résultats devront être présentés de préférence sous forme de tableau
 %	(cf. Table~\ref{tab:simParameters})
+Pour réaliser nos tests, nous avons réduit l'aléatoire au maximum en
+	paramétrant les simulations de la manière suivante :
+	Avec PI la population initiale commune à toutes les
+		simulations, d'elle découle population\_size
 
 % This is how you define a table: the [!hbt] means that LaTeX is forced (by the !) to place the table exactly here (by h), or if that doesnt work because of a pagebreak or so, it tries to place the table to the bottom of the page (by b) or the top (by t).
 	\begin{table}[!hbt]
 		% Center the table
-		\begin{center}
+%		\begin{center}
 		% Title of the table
 		\caption{Paramètre par défaut des simulations}
 		\label{tab:simParameters}
@@ -611,7 +657,7 @@
 			\hline
 			random mutation max val & 1 \\
 			\hline
-			initial population & None \\
+			initial population & PI \\
 			\hline
 			population size & 100 \\
 			\hline
@@ -632,20 +678,25 @@
 			mutation percent genes & (60, 10) \\
 			\hline
 			\end{tabular}
-		\end{center}
+
+%		\end{center}
 	\end{table}
 %	et/ou du diagramme (cf. Fig.~\ref{fig:tf_plot}),
+	\subsection{Pourcentage de mutation des genes}
 	\begin{figure}
 	  \centering
-	  \includegraphics[width=0.5\textwidth]{image/pop20mut60-10}
+%	  \includegraphics[width=\columnwidth]{image/pop20mut60-10}
 %	  \includegraphics[width=\textwidth/2]{image/pop20mut30-1}
 	  \caption{Example Image}
 	  \label{fig:pop20mut60-10}
 	\end{figure}
 
+	\subsection{Sélection des parents}
+
 	\begin{figure}
 %	  \centering
-	  \includegraphics[width=0.5\textwidth]{image/sss500}
+%	  \includegraphics[width=0.5\textwidth]{image/sss500}
+	  \includegraphics[width=\columnwidth]{image/pop100gen100/sss500/sss500}
 %	  \includegraphics[width=\textwidth/2]{image/pop20mut30-1}
 	  \caption{Example Image}
 	  \label{fig:sss500}
@@ -680,13 +731,7 @@ Ce phénomène se traduit visuellement par les plateaux observés
 %		\label{fig:tf_plot}
 %		\end{center}
 %	\end{figure}
-
-\section{Conclusion}\label{sec:conclusion}
-%Cette section contient un rappel des contributions
-%/ de résultats importants de votre article
-	Notre simulateur permet de trouver en temps raisonnable des
-	solutions permettant à des créatures de se maintenir debout sans
-	chuter et	se déplacer le temps de la simulation.
+	\section{Discussion}
 	Cependant, la qualité des solutions trouvées est très variable et
 	la posture des créatures est toujours sous-optimale.
 	Nous avons pu constater qu'il est très difficile
@@ -695,13 +740,27 @@ Ce phénomène se traduit visuellement par les plateaux observés
 	de trouver une fonction de fitness qui permette de bien
 	évaluer les solutions.
 
-	L'algorithme génétique nous semble donc adapté à la pose de
-	larges fondations.
-
 	Des valeurs de mutation aléatoires trop grandes reviennent à
 	ignorer les parents et à générer une population aléatoire.
 	Celles-ci doivent donc être comprises dans un
-	intervalle très restreint.
+	intervalle autour de zéro très restreint.
+
+\section{Conclusion}\label{sec:conclusion}
+%Cette section contient un rappel des contributions
+%/ de résultats importants de votre article
+	Notre simulateur permet de trouver en temps raisonnable des
+	solutions permettant à des créatures de se maintenir debout sans
+	chuter et	se déplacer le temps de la simulation.
+
+
+
+	L'algorithme génétique nous semble donc adapté à la pose de
+	larges fondations.
+
+
+
+	Les valeurs d'entrée ont un impact important sur la qualité
+	des solutions trouvées.
 
 \subsection{Limites}\label{subsec:limites}
 	Les limites de notre simulateur sont les suivantes :
@@ -712,7 +771,8 @@ Ce phénomène se traduit visuellement par les plateaux observés
 		\item La majeure partie du temps d'execution du programme est
 		consacrée à la simulation physique dont nous ne valorisons que
 		très peu les informations que nous en retirons.
-		\item Il est très difficile de définir si la fonction de fitness
+		\item Il est très difficile de déterminer si la fonction de
+		fitness
 		est trop sévère par rapport au principe stochastique de l'algorithme
 		génétique ou trop laxiste vis-à-vis de la simulation physique.
 	\end{itemize}
@@ -748,6 +808,29 @@ Ce phénomène se traduit visuellement par les plateaux observés
 	\textbf{Eviter les maximum locaux} en remplaçant les paramètres
 	d'élitisme et de compétition par des intervalles contrôlés par une
 	fonction réagissant à la stagnation de la population.
+\subsubsection{Bibliothèque}
+	L'humanité
+	L'information de marche n'est actuellement portée que par la
+	population vivante à un instant donné. L'intérêt d'une population
+	vivante est qu'elle expérimente. L'intérêt d'une bibliothèque
+	est qu'elle conserve l'information.
+	Il serait	intéressant de permettre à la population de se
+	renseigner sur les solutions notables trouvées par des individus
+	qui lui sont antérieurs de plus d'une génération.
+	Cette bibliothèque serait alimentée par les solutions que nous
+	sauvegardons
+	déja pour la post-visualisation ou l'assignation du paramètre
+	\texttt{initial\_population}.
+	Elle remplirait le rôle déjà joué par la population élite, mais
+	ne présenterait pas les défauts de la mutation à taux réduit et
+	de la
+	consanguinité.
+	Contrairement à la population élite qui partage son information à
+	des individus en quantité limitée, et l'impose, la bibliothèque,
+	puisqu'accessible à tous les individus, permettrait une diffusion
+	du savoir bien plus large et harmonieuse chacun libre d'en
+	assimiler
+	ce qui lui convient.
 
 	\textbf{Un dictionnaire de génomes à éviter}, tels qu'une suite
 	de zéros
@@ -810,18 +893,18 @@ Ce phénomène se traduit visuellement par les plateaux observés
 
 \subsubsection{Parallélisation}
 
-\subsubsection{Autres domaines}
-	Le goulot d'étranglement de l'algorithme génétique est la somme
-	des opérations sur le génome des individus, leur croisement et
-	mutation.
-	Dans un autre registre que le nôtre, la physique quantique ouvre le
-	champ d'action en permettant la superposition et
-	l'intrication
-	d'états.
-	Ces propriétés pourraient être utilisées pour simuler
-	l'équivalent de multiples créatures en \("\)parallèle\("\) et ainsi accél
-	érer la convergence
-	de l'algorithme génétique.\cite{quantum-computing}
+%\subsubsection{Autres domaines}
+%	Le goulot d'étranglement de l'algorithme génétique est la somme
+%	des opérations sur le génome des individus, leur croisement et
+%	mutation.
+%	Dans un autre registre que le nôtre, la physique quantique ouvre le
+%	champ d'action en permettant la superposition et
+%	l'intrication
+%	d'états.
+%	Ces propriétés pourraient être utilisées pour simuler
+%	l'équivalent de multiples créatures en \("\)parallèle\("\) et ainsi accél
+%	érer la convergence
+%	de l'algorithme génétique.\cite{quantum-computing}
 %	Cette idée est déjà exploitée, notamment par
 
 %\bibliographystyle{unsrt}
@@ -845,6 +928,7 @@ Ce phénomène se traduit visuellement par les plateaux observés
 	system: A novel approach to evolving heterogeneity for collective problem solving}.
 	\bibitem{J.B-H.L} , J. Bongard et H. Lipson \textit{“Simulation de la locomotion par algorithme génétique”}.
 
+	\bibitem{extrema-global-local} , By KSmrq -  \url{http://commons.wikimedia.org/wiki/File:Extrema_example.svg, GFDL 1.2, https://commons.wikimedia.org/w/index.php?curid=6870865}
 	\bibitem{pygad} \url{https://pygad.readthedocs
 	.io/en/latest/}
 

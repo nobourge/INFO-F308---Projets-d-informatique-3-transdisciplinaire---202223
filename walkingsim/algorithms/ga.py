@@ -242,7 +242,8 @@ class GeneticAlgorithm:
         # self._config
         # title = "
         initial_population = self._config["initial_population"]
-        population_size = self._config["population_size"]
+        # population_size = self._config["population_size"]
+        population_size = len(self.ga.solutions)
         # num_generations = self._config["num_generations"]
         # Evolution settings
         num_parents_mating = self._config["num_parents_mating"],

@@ -1,0 +1,14 @@
+initial_population,population_size,num_generations,num_parents_mating,mutation_percent_genes,parent_selection_type,k_tournament,keep_elitism,crossover_type,mutation_type,parallel_processing,save_solutions,gene_space,init_range_low,init_range_high,random_mutation_min_val,random_mutation_max_val,num_joints,timesteps
+"[[ 0.35037336 -0.6431922   0.810694   ... -0.44877377 -0.41305806
+  -0.0414464 ]
+ [-0.81034691 -0.98896489  0.87323737 ...  0.22032992  0.96023939
+  -0.68460125]
+ [ 0.37546731  0.96444841  0.04758989 ...  0.15254806 -0.0475092
+  -0.35787259]
+ ...
+ [-0.31654518  0.27820599  0.75131726 ... -0.32214373 -0.0014873
+  -0.26521005]
+ [ 0.15600161  0.98151436  0.4455553  ...  0.86857063 -0.67943802
+  -0.91273465]
+ [-0.90650083 -0.80122394  0.40728648 ... -0.82625145  0.5051138
+  -0.1060766 ]]",,1,27,"(60, 10)",tournament,27,2,uniform,adaptive,,False,"{'low': -5, 'high': 5}",-5,5,-1,1,8,500

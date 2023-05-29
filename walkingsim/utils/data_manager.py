@@ -17,7 +17,7 @@ class DataManager:
     ):
         if date is None:
             date = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
-
+            # date = dt.datetime.now().strftime("%Y%m%d-%m
         self.__date = date
 
         self.__root_dir = os.path.join("solutions", group)
