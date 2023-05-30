@@ -1,7 +1,9 @@
+import os
+
 import numpy as np
 
-def get_random_initial_population(population_size,
-                                  extremum
+def get_random_initial_population(population_size=50,
+                                  extremum=2
     ,format="string"):
     if format == "string":
         initial_population = ""
@@ -28,11 +30,15 @@ def get_random_initial_population(population_size,
     return initial_population
 
 
-def create_random_initial_population_file(population_size, extremum):
-    # sring
-    initial_population = get_random_initial_population(population_size, extremum)
-    with open("../cli/random_initial_population.txt", "w") as f:
-        f.write(str(initial_population))
+def create_random_initial_population_file(population_size=50
+                                          , extremum=2):
+    if not os.path.exists("../cli/random_initial_population.txt"):
+        initial_population = get_random_initial_population(population_size, extremum)
+        with open("../cli/random_initial_population.txt", "w") as f:
+            f.write(str(initial_population))
+    else:
+        print("File already exists")
 
 if __name__ == "__main__":
-    create_random_initial_population_file(100, 2)
+    create_random_initial_population_file()
+    # create_random_initial_population_file(100, 2)

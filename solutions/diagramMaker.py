@@ -29,26 +29,29 @@ class DiagramMaker:
                      , path
                      , configuration_file
                      , results_file):
-        configuration_path = os.path.join(path, configuration_file)
-        # Read the configuration file
-        config_data = pd.read_csv(configuration_path)
+        # configuration_path = os.path.join(path, configuration_file)
+        # # Read the configuration file
+        # config_data = pd.read_csv(configuration_path)
+
+
+
+        # # Extract configuration values
+        # population_size = config_data['population_size'][0]
+        # num_generations = config_data['num_generations'][0]
+        # num_parents_mating = config_data['num_parents_mating'][0]
+        # mutation_percent_genes = eval(
+        #     config_data['mutation_percent_genes'][0])
+        # parent_selection_type = config_data['parent_selection_type'][0]
+        # crossover_type = config_data['crossover_type'][0]
+        # mutation_type = config_data['mutation_type'][0]
+        # # gene_space = eval(config_data['gene_space'][0])
+        # num_joints = config_data['num_joints'][0]
+        # keep_elitism = config_data['keep_elitism'][0]
 
         results_path = os.path.join(path, results_file)
-        # Read the results file
+        # Read the results file and extract data as a pandas
+        # dataframe which
         results_data = pd.read_csv(results_path)
-
-        # Extract configuration values
-        population_size = config_data['population_size'][0]
-        num_generations = config_data['num_generations'][0]
-        num_parents_mating = config_data['num_parents_mating'][0]
-        mutation_percent_genes = eval(
-            config_data['mutation_percent_genes'][0])
-        parent_selection_type = config_data['parent_selection_type'][0]
-        crossover_type = config_data['crossover_type'][0]
-        mutation_type = config_data['mutation_type'][0]
-        # gene_space = eval(config_data['gene_space'][0])
-        num_joints = config_data['num_joints'][0]
-        keep_elitism = config_data['keep_elitism'][0]
 
         # Extract results values
         generation = results_data['generation']
@@ -105,9 +108,9 @@ class DiagramMaker:
         # Hide the empty subplot
         # axes[2, 1].axis('off')
 
-        plt.suptitle(
+        # plt.suptitle(
             # ', '
-            'Parent Selection: {}'
+            # 'Parent Selection: {}'
             # ', '
             # 'Parents Mating: {}'
             # ', '
@@ -122,8 +125,8 @@ class DiagramMaker:
             # 'Gene Space: {}'
             # '\n'
             # 'Number of Joints: {}'
-            .format(
-                parent_selection_type
+            # .format(
+                # parent_selection_type
                 # , num_parents_mating
                 # , mutation_percent_genes
                 # , crossover_type
@@ -131,7 +134,7 @@ class DiagramMaker:
                 # , gene_space
                 # , num_joints
                 # , keep_elitism
-            ))
+            # ))
         plt.savefig('results.png', dpi=300, bbox_inches='tight')
 
         plt.show()
@@ -258,9 +261,11 @@ if __name__ == "__main__":
     # solution_date = "20230528-140208"
     # solution_date = "20230528-155230"
     # solution_date = "20230528-171518"
-    # solution_date = "20230529-Mayeight0954"
-    solution_date = "20230529-Mayeight3449"
-    # solution_date = "20230529-Mayeight4058"
+    # solution_date = "20230530-175129"
+    # solution_date = "20230530-132100"
+    # solution_date = "20230530-193507"
+    # solution_date = "20230530-195455"
+    solution_date = "20230530-201525"
     # path = "ga/20230320-112004/logs"
     solution_path = "ga/" + solution_date + "/"
     path = "ga/" + solution_date + "/logs/"

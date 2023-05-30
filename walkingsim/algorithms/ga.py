@@ -14,6 +14,7 @@ from simulation.ga import GA_Simulation
 from utils.data_manager import DataManager
 from utils.pygad_config import PygadConfig
 
+
 class GeneticAlgorithm:
     """
     crossover_type: uniform | single_point | two_points | random
@@ -23,16 +24,16 @@ class GeneticAlgorithm:
     _dm_group = "ga"
 
     def __init__(
-        self,
-        config: PygadConfig,
-        env_props: dict,
-        creature: str = "quadrupede",
-        fitness: str = "walking-v0",
-        visualize: bool = False,
-        duration: int = 5,
-        ending_delay: int = 0,
-        timestep: float = 1e-2,
-        best_solution=None,
+            self,
+            config: PygadConfig,
+            env_props: dict,
+            creature: str = "quadrupede",
+            fitness: str = "walking-v0",
+            visualize: bool = False,
+            duration: int = 5,
+            ending_delay: int = 0,
+            timestep: float = 1e-2,
+            best_solution=None,
     ):
         self._dm = DataManager(self._dm_group)
         self._config = config._asdict()
@@ -62,25 +63,26 @@ class GeneticAlgorithm:
         self.ga = pygad_.GA(
             # Population & generations settings
             initial_population=config.initial_population,
-            sol_per_pop=config.population_size,
+            # sol_per_pop=config.population_size,
             num_generations=config.num_generations,
             num_genes=self._simulation.creature_shape * config.timesteps,
             # Evolution settings
             num_parents_mating=config.num_parents_mating,
             mutation_percent_genes=config.mutation_percent_genes,
             parent_selection_type=config.parent_selection_type,
-            crossover_type=config.crossover_type,
+            K_tournament=config.K_tournament,
+            # crossover_type=config.crossover_type,
             mutation_type=config.mutation_type,
             keep_elitism=config.keep_elitism,
             # Execution settings
-            parallel_processing=config.parallel_processing,
+            # parallel_processing=config.parallel_processing,
             save_solutions=config.save_solutions,
             # Space
-            gene_space=config.gene_space,
-            init_range_low=config.init_range_low,
-            init_range_high=config.init_range_high,
-            random_mutation_min_val=config.random_mutation_min_val,
-            random_mutation_max_val=config.random_mutation_max_val,
+            # gene_space=config.gene_space,
+            # init_range_low=config.init_range_low,
+            # init_range_high=config.init_range_high,
+            # random_mutation_min_val=config.random_mutation_min_val,
+            # random_mutation_max_val=config.random_mutation_max_val,
             # Callbacks
             fitness_func=self.fitness_function,
             on_crossover=self.on_crossover,
@@ -104,21 +106,25 @@ class GeneticAlgorithm:
         )
 
     def on_crossover(self, ga_instance, offspring_crossover):
+        # Reset the progress bar
         self.progress_sims.reset(len(offspring_crossover))
         self.progress_sims.set_description(
             f"({self.ga.generations_completed}) Crossover"
         )
 
     def on_mutation(self, ga_instance, offspring_mutation):
+        # Reset the progress bar
         self.progress_sims.reset(len(offspring_mutation))
         self.progress_sims.set_description(
             f"({self.ga.generations_completed}) Mutation"
         )
 
     def _on_generation(self, ga_instance):
+        # Update the progress bar
         self.progress_gens.update(1)
 
     def on_stop(self, ga_instance, last_population_fitness):
+        # Update the progress bar
         self.progress_sims.reset(
             len(self.ga.last_generation_offspring_mutation)
         )
@@ -189,22 +195,25 @@ class GeneticAlgorithm:
         self._dm.save_global_dat_file("last_sim.dat", self._dm.date)
 
         try:
-            best_sim_date = self._dm.load_global_dat_file("best_sim.dat")
+            best_sim_date = self._dm.load_global_dat_file(
+                "best_sim.dat")
             best_sim_data = DataManager(
                 self._dm_group, best_sim_date, False
             ).load_local_dat_file("sim_data.dat")
-            if best_sim_data["best_fitness"] < self.sim_data["best_fitness"]:
-                self._dm.save_global_dat_file("best_sim.dat", self._dm.date)
+            if best_sim_data["best_fitness"] < self.sim_data[
+                "best_fitness"]:
+                self._dm.save_global_dat_file("best_sim.dat",
+                                              self._dm.date)
         except (EOFError, FileNotFoundError):
             self._dm.save_global_dat_file("best_sim.dat", self._dm.date)
 
     @classmethod
     def load(
-        cls,
-        date: str = None,
-        visualize: bool = False,
-        timestep: float = 1e-2,
-        ending_delay: int = 0,
+            cls,
+            date: str = None,
+            visualize: bool = False,
+            timestep: float = 1e-2,
+            ending_delay: int = 0,
     ):
         dm = DataManager(cls._dm_group, date, False)
         if date is None:
@@ -224,6 +233,8 @@ class GeneticAlgorithm:
 
     # train & visualize
     def train(self):
+        print("Training...")
+        print(self.ga.valid_parameters)
         self.ga.run()
         self._simulation.close()
 
@@ -244,58 +255,64 @@ class GeneticAlgorithm:
         initial_population = self._config["initial_population"]
         # population_size = self._config["population_size"]
         population_size = len(self.ga.solutions)
-        # num_generations = self._config["num_generations"]
         # Evolution settings
         num_parents_mating = self._config["num_parents_mating"],
         mutation_percent_genes = self._config["mutation_percent_genes"],
         parent_selection_type = self._config["parent_selection_type"],
-        k_tournament = self._config["k_tournament"],
+        K_tournament = self._config["K_tournament"],
         crossover_type = self._config["crossover_type"],
         mutation_type = self._config["mutation_type"],
         keep_elitism = self._config["keep_elitism"],
         gene_space = self._config["gene_space"],
         init_range_low = self._config["init_range_low"]
         init_range_high = self._config["init_range_high"]
-        random_mutation_min_val =self._config["random_mutation_min_val"]
-        random_mutation_max_val =self._config["random_mutation_max_val"]
-
+        random_mutation_min_val = self._config[
+            "random_mutation_min_val"]
+        random_mutation_max_val = self._config[
+            "random_mutation_max_val"]
 
         self.ga.plot_fitness(title=
-                                   # "Initial population = {} \n"
-                                   "Population size = {} "
-                                   "\n"
-                                    "Parents: "
-                                   "Selection type = {}, "
-                                   "K tournament = {}, "
-                                   "Mating quantity = {} "
-                                   "\n"
-                                   # " Crossover_type = {} \n"
-                                   "Genes: "
-                                   "Space = {}, "
-                                   "Initialisation = [{},{}], "
-                                   "Mutation = [{},{}], "
-                                   "Mutation percentage = {}"
-                                   # "(bad:{},good:{}) 
-                                   "\n"
-                                   "Keep elitism = {} "
-                                   .format(
-                                                                # initial_population
-                                                                population_size
-                                       , parent_selection_type[0]
-                                        , k_tournament[0]
-                                        , num_parents_mating[0]
-                                                                 # , crossover_type
-                                       , gene_space
-                                       , init_range_low
-                                       , init_range_high
-                                       , random_mutation_min_val
-                                       , random_mutation_max_val
-                                       , mutation_percent_genes[0]
-                                       # , mutation_percent_genes[1]
-                                       , keep_elitism[0]
-                                   ))
+        # "Initial population = {} \n"
+        # "Population size = {} "
+        # "\n"
+        "Parents: "
+        "Selection type = {}"
+        ", "
+        "K tournament = {}"
+        # ", "
+        # "Mating quantity = {} "
+        # "\n"
+        # " Crossover_type = {} "
+        "\n"
+        "Genes: "
+        # "Space = {}"
+        # ", "
+        # "Initialisation = [{},{}]"
+        # ", "
+        # "Mutation = [{},{}]"
+        # ", "
+        "Mutation percentage = {}"
+        "\n"
+        "Keep elitism = {} "
+        .format(
+            # initial_population
+            # population_size
+            # ,
+            parent_selection_type[0]
+            , K_tournament[0]
+            # , num_parents_mating[0]
+            # , crossover_type
+            # , gene_space
+            # , init_range_low
+            # , init_range_high
+            # , random_mutation_min_val
+            # , random_mutation_max_val
+            ,
+            mutation_percent_genes[0]
+            , keep_elitism[0]
+        ))
         # save plot
-        # self.ga.save_plot("fitness_evolution.png") # fixme: save exist not
+        # self.ga.save_plot("fitness_evolution.png") # fixme: save function
         # matplotlib.pyplot.figure()
         # matplotlib.pyplot.plot(ga_instance.best_solutions_fitness)
         # matplotlib.pyplot.savefig("PyGAD_figure.jpg")

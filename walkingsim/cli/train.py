@@ -28,21 +28,41 @@ def train_ga(
 
     print("initial_population", initial_population)
 
+    gen_space_low = -2
+    gen_space_high = 2
+    gen_space_span = gen_space_high - gen_space_low
+    gen_space_step = 1 / num_generations
+
+    print("gen_space_low", gen_space_low)
+    print("gen_space_high", gen_space_high)
+    print("gen_space_span", gen_space_span)
+    print("gen_space_step", gen_space_step)
+
+    random_mutation_min_val = -gen_space_span / num_generations
+    random_mutation_max_val = gen_space_span / num_generations
+
+    print("random_mutation_min_val", random_mutation_min_val)
+    print("random_mutation_max_val", random_mutation_max_val)
+
+
     config = PygadConfig(
         num_generations=num_generations,
-        # num_parents_mating=(population_size//2)+1,  # TODO: Add
-        num_parents_mating=(population_size // 4) + 2,  # TODO: Add
+        num_parents_mating=(population_size//2)+2,  # TODO: Add
+        # num_parents_mating=(population_size // 4) + 2,  # TODO: Add
         # num_parents_mating=(population_size//10)+1,  # TODO: Add
         # num_parents_mating=2,  # TODO: Add
         # num_parents_mating=4,  # TODO: Add
         # argument
-        mutation_percent_genes=(60, 10),
+        mutation_percent_genes=(30, 10),
         parallel_processing=None,
         parent_selection_type="tournament",
         # parent_selection_type="sss",
         # k_tournament=population_size//10 +2,
         # k_tournament=population_size//10 +2,
-        k_tournament=population_size // 4 + 2,
+        K_tournament=population_size // 2 + 2,
+        # keep_elitism=population_size//2,
+        # keep_elitism=population_size//3, # todo elit must be
+        #  maximal but < mutating pop
         keep_elitism=2,  # 2 because minimum to preserve best sol
         # lineage TODO:
         # Add argument
@@ -50,27 +70,16 @@ def train_ga(
         mutation_type="adaptive",
         # initial_population=None,
         initial_population=initial_population,
-        # population_size=population_size,
-        population_size=None,
+        population_size=population_size,
+        # population_size=None,
         num_joints=8,  # FIXME: Load this from the creature
         save_solutions=False,
-        gene_space={"low": -5, "high": 5},
-        # gene_space={"low": -2, "high": 2},
-        # gene_space={"low": -5, "high": 5, "step": 0.1},
-        # gene_space={"low": -2, "high": 2, "step": 0.01},
-        # init_range_low=-1,
-        # init_range_low=-2,
-        init_range_low=-2,
-
-        # init_range_high=1,
-        # init_range_high=2,
-        init_range_high=2,
-        # random_mutation_min_val=-0.01,
-        random_mutation_min_val=-1,
-        # random_mutation_min_val=-3,
-        # random_mutation_max_val=0.01,
-        random_mutation_max_val=1,
-        # random_mutation_max_val=3,
+        gene_space={"low": gen_space_low, "high": gen_space_high, "step":
+            gen_space_step},
+        init_range_low=gen_space_low,
+        init_range_high=gen_space_high,
+        random_mutation_min_val=random_mutation_min_val,
+        random_mutation_max_val=random_mutation_max_val,
         timesteps=timesteps,
     )
     model = GeneticAlgorithm(
@@ -82,6 +91,8 @@ def train_ga(
         timestep=timestep,
     )
     model.train()
+    print(datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+
     model.save()
     # print datetime.datetime.now().strftime("%Y-%m-%d %height:%M:%S"
     print(datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))

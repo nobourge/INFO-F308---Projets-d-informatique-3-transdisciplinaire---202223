@@ -10,7 +10,7 @@ class PygadConfig(NamedTuple):
     num_parents_mating: int
     mutation_percent_genes: tuple
     parent_selection_type: str
-    k_tournament: int
+    K_tournament: int
     keep_elitism: int
     crossover_type: str
     mutation_type: str

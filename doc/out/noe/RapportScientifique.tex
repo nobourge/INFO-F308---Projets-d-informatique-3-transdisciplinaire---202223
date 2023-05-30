@@ -111,8 +111,12 @@
 
 \usepackage{lipsum}
 \usepackage{hyperref}
+\usepackage{algorithm}
+%\usepackage{algpseudocode}
+\usepackage{amstex} % for \text macro (in math mode)
+\usepackage{lstdoc}
+\usepackage{algorithmicx}
 \usepackage{algpseudocode}
-\usepackage{amstex}
 
 
 % Other popular packages for formatting tables and equations include:
@@ -182,7 +186,9 @@
 \begin{document}
 
 % Define document title and author
-	\title{Algorithme génétique et importance des données d'entrée}
+%	\title{Algorithme génétique et importance des données d'entrée}
+	\title{Algorithme génétique \\ et importance de la diffusion du
+	savoir}
 	\author{Noé Bourgeois
 	\thanks{Superviseur: Mathieu Defrance}}
 	\markboth{INFO-F308}{}
@@ -202,12 +208,22 @@
 	.
 	Nous avons ensuite utilisé ce simulateur pour étudier l'impact de
 	différents paramètres sur la vitesse d'évolution de populations
-	de cr
-	éature.
-	Une population de départ générée aléatoirement ayant évolué au long
-	d'une
-	simulation, nous conservons ses individus et les replaçons comme population de départ
-	dans la simulation suivante.
+	de créatures.
+%	Une population de départ générée aléatoirement ayant évolué au long
+%	d'une
+%	simulation, nous conservons ses individus et les replaçons comme population de départ
+%	dans la simulation suivante.
+	Nous concluons que la reconnaissance d'un savoir hors-norme acquis
+	par
+	un individu et une diffusion de ce savoir au sein de sa population
+	de manière à assurer sa conservation
+	est
+	le facteur le plus
+	important
+	pour l'évolution de cette population.
+	Nous parvenons à satisfaire cette condition en conservant un petit
+	nombre de tels d'individus intacts à chaque génération et en
+	favorisant leur reproduction avec le reste de la population.
 \end{abstract}
 
 % Each section begins with a \section{title} command
@@ -247,17 +263,10 @@
 
 	Le concept de machine auto-réplicante a été introduit par John
 	von Neumann en 1940~\cite{replicating-automata}.
-%	Il s'agit d'un modèle
-%	mathématique d'un système dynamique discret qui évolue en fonction
-%	d'un ensemble d'états et d'un ensemble de règles de transition
-
-	La nécessité ultime de la vie artificielle ayant été établie, il
-
-	replicants
-	champs des possibles limité par ce que nous savons possible
-	ne pas reinventer la roue
-	nature pas de roue
-	genetique amelioree
+	Il s'agit d'un modèle
+	mathématique d'un système dynamique discret qui évolue en fonction
+	d'un ensemble d'états et d'un ensemble de règles de transition,
+	ce qui est une définition de la vie.
 
 	\subsection{Pourquoi un simulateur de marche?}
 	\subsubsection{La marche}
@@ -284,8 +293,6 @@
 	la méthode	de déplacement la plus efficace ou même la seule
 	possible.
 
-	\textbf{La médecine} pourrait bénéficier chaise roulante prothèse
-
 	\textbf{Les jeux de plateaux} sont un domaine où l'IA est
 	déjà très présente. Les jeux de stratégie en temps réel
 	ont été un des premiers domaines où l'IA a été utilisée.
@@ -294,7 +301,6 @@
 	moyens de déplacement les plus utilisés dans les jeux de
 	plateaux. Les pions matériels, jusqu'ici déplacés à la main,
 	pourraient être remplacés par des robots semi-autonomes.
-
 
 	\textbf{L'industrie du divertissement}, en particulier celle du
 	jeu vidéo,
@@ -373,6 +379,14 @@
 %	sont des exemples de bonnes références.
 %	Par contre, la citation de sources web doit être limitée le plus possible
 %	(permis dans le cas de la documentation d'outils informatiques).
+	\subsubsection{Décomposition - Recomposition}
+	La plus grande difficulté de l'optimisation multi-objectif est
+	l'équilibrage des objectifs.
+	MOEA/D\cite{MOEA/D} est un algorithme génétique qui divise la
+	population en
+	sous-populations, chacune résolvant un sous-problème de mani
+	ère indépendante,
+	puis combine les solutions pour obtenir un ensemble optimal de solutions.
 
 \subsubsection{Autres domaines}
 	Le goulot d'étranglement de l'algorithme génétique est la somme
@@ -390,10 +404,6 @@
 % Main Part
 \section{Méthodologie}\label{sec:met}
 	\subsection{Les hypothèses de base de notre approche}\label{subsec:les-hypotheses-de-base-de-notre-approche}
-
-%	Le but de ce projet étant de créer un simulateur de marche,
-%	parvenir à y faire marcher une créature est
-
 	\subsubsection{Marche}
 	Tout d'abord, il est important de rappeler que la marche est un
 	mouvement cyclique, c'est à dire qu'il se répète à intervalles
@@ -408,10 +418,13 @@
 	rapides.
 	Une contrainte importante du projet étant les puissances de calcul
 	de nos ordinateurs, et les nôtres nous permettant d'estimer que
-	modifier des forces sur 2 pattes sera 2 fois plus rapide que sur 4,
+	modifier des forces sur 2 membres sera 2 fois plus rapide que sur 4,
 	la marche bipède semble être un bon compromis.
-
-	\subsubsection{Paramètres}
+	Nous réaliserons par la suite que le mouvement des membres de nos cr
+	éatures
+	étant contraints sur le seul axe de la marche, la gestion de
+	l'équilibre sur 2 pattes s'avère trop compliquée.
+	Nous ne considérerons donc ici que des créatures quadrupèdes.
 
 	\subsubsection{Heuristique}
 
@@ -426,31 +439,15 @@
 
 	Le but est de conserver une diversité la plus large possible
 	tout en convergeant vers une solution optimale.
-	La diversité est assurée par la sélection des parents
-	et la convergence par la sélection des enfants.
-	La sélection des parents est réalisée par un tournoi
-	entre individus choisis aléatoirement dans la population.
-
-	Dans un algorithme génétique classique,
-	l'exécution est divisée en générations -
-	à chaque génération, le résultat du processus de sélection
-	et de reproduction remplace l'ensemble (ou du moins la plupart)
-	de la population existante ; seuls les enfants survivent.
-	Cependant, dans un algorithme génétique à état stable (steady state),
-	seuls quelques individus sont remplacés à chaque fois,
-	ce qui signifie que la plupart des individus sont conservés pour
-	la génération suivante ;
-	il n'y a pas de notion de génération à proprement parler.
-
-
-
+	La diversité est assurée par la mutation aléatoire
+	et la convergence par la sélection.
 
 	\subsection{Les fondements mathématiques}\label{subsec:les-fondements-mathematiques}
 
 	\subsubsection{Algorithme génétique}
+	\begin{center}
 	\begin{algorithm}
 		  \caption{Genetic Algorithm}\label{alg:ga}
-		  \begin{algorithmic}
 			\Require Population size $N$
 			\\ , Mutation rate $p_m$
 			\\ , Crossover rate $p_c$
@@ -478,38 +475,42 @@
 			\EndWhile
 
 			\State \textbf{return} Best individual in $P$
-		  \end{algorithmic}
 	\end{algorithm}
+	\end{center}
 
-	\subsubsection{Extrema locaux}\label{subsec:extrema-locaux}
-		\begin{figure}
-	  \centering
-	  \includegraphics[width=\columnwidth]{image/extrema-global-local}
-	  \caption{Extrema globaux et locaux de
-		  \(f(x) = \frac{\cos(3\pi x)}{x}\), \quad \(0.1 \leq x \leq 1.1\)
-		\cite{extrema-global-local}}
-	  \label{fig:extrema-global-local}
-	\end{figure}
+	\subsubsection{Optima locaux}\label{subsec:extrema-locaux}
+%
+%		\begin{figure}
+%	  \centering
+%	  \includegraphics[width=\columnwidth]{image/extrema-global-local}
+%	  \caption{Extrema globaux et locaux de
+%		  \(f(x) = \frac{\cos(3\pi x)}{x}\), \quad \(0.1 \leq x \leq 1.1\)
+%		\cite{extrema-global-local}}
+%	  \label{fig:extrema-global-local}
+%	\end{figure}
+
+	Dans une population, si certains individus affichent une fitness
+	plus élevée que les autres, ils sont dits \emph{dominants}.
+	Si les dominés convergent vers l'état des dominants à une vitesse
+	telle que l'information génétique des dominés est perdue,
+	l'exploration de l'espace des solutions est limitée à l'espace
+	de celle des dominants. Si cet espace n'est pas un optimum global,
+	l'exploration doit continuer mais
 	Dans notre cas, la fonction objectif est une maximisation.
 	Les minima locaux ne sont donc pas un problème.
-	En effet, si l'on considère une fonction $f$ à maximiser,
-	et un minimum local $x_0$ tel que $f(x_0) < f(x)$ pour tout $x$
-	dans un voisinage de $x_0$, alors $-f(x_0) > -f(x)$ pour tout $x$
-	dans le même voisinage, et $-f(x_0)$ est donc un maximum local
-	de $-f$.
+	Les maxima locaux, en revanche, peuvent être problématiques.
 
 	\subsection{La méthode proposée}\label{subsec:la-methode-proposee}
 	La méthode que nous présentons ici a été développée sur base de
 	choix d'implémentation grandement influencés par le contexte du
 	projet.
-	Celui-ci était séparé en 3 parties:
+	Celui-ci était séparé en 2 parties:
 	\begin{itemize}
-		\item 1.Recherche
-		\item 2.Développement
-		\item 3.Présentation d'une version vulgarisée du projet au
+		\item 1.Recherche \& Développement
+		\item 2.Présentation d'une version vulgarisée du projet au
 		Printemps des Sciences
 	\end{itemize}
-	Cette troisième partie rendait primordiale l'obtention d'un
+	Cette deuxième partie rendait primordiale l'obtention d'un
 	résultat
 	fonctionnel et visuellement attrayant.
 	Nous avons donc décidé d'utiliser la librairie PyGAD\cite{pygad}
@@ -519,23 +520,21 @@
 
 	\subsubsection{Paramètres}
 	\newline
-
-	\\
-    \\ \textbf{gene space}: Il s'agit de l'espace des gènes où les
-	valeurs des gènes individuels de la population doivent se situer.
-	Dans notre cas, l'espace des gènes va de -1 à 1 avec un pas de 0.1.
-
-    \\ \textbf{init range low}: C'est la valeur minimale autorisée
-	pour l'initialisation des gènes individuels dans la population.
-
-    \\ \textbf{init range high}: C'est la valeur maximale autorisée
-	pour l'initialisation des gènes individuels dans la population.
-
-    \\ \textbf{random mutation min val}: C'est la valeur minimale
-	autorisée pour la mutation aléatoire d'un gène individuel.
-
-    \\ \textbf{random mutation max val}: C'est la valeur maximale
-	autorisée pour la mutation aléatoire d'un gène individuel.
+%    \\ \textbf{gene space}: Il s'agit de l'espace des gènes où les
+%	valeurs des gènes individuels de la population doivent se situer.
+%	Dans notre cas, l'espace des gènes va de -1 à 1 avec un pas de 0.1.
+%
+%    \\ \textbf{init range low}: C'est la valeur minimale autorisée
+%	pour l'initialisation des gènes individuels dans la population.
+%
+%    \\ \textbf{init range high}: C'est la valeur maximale autorisée
+%	pour l'initialisation des gènes individuels dans la population.
+%
+%    \\ \textbf{random mutation min val}: C'est la valeur minimale
+%	autorisée pour la mutation aléatoire d'un gène individuel.
+%
+%    \\ \textbf{random mutation max val}: C'est la valeur maximale
+%	autorisée pour la mutation aléatoire d'un gène individuel.
 
     \\ \textbf{initial population}: C'est la population initiale
 	qui peut être fournie à l'algorithme génétique. %Dans ce cas, aucune population initiale n'est spécifiée.
@@ -549,10 +548,6 @@
     \\ \textbf{num parents mating}: C'est le nombre de parents
 	sélectionnés pour la reproduction à chaque génération.
 
-    \\ \textbf{parallel processing}: Indique si le traitement
-	parallèle doit être utilisé.
-	%Dans ce cas, aucune méthode de traitement parallèle n'est spécifiée.
-
     \\ \textbf{parent selection type}: C'est le type de méthode
 	utilisée pour sélectionner les parents qui se reproduiront.
 	Dans notre cas, la méthode de sélection par tournoi est utilisée
@@ -565,32 +560,52 @@
 	plus la pression est forte, car les individus les plus faibles
 	auront plus d'adversaires et auront donc plus de chances de perdre.
 
-    La taille du tournoi est contrôlée par le paramètre K\_tournament.
+	\\ \textbf{K\_tournament}: contrôle la taille du tournoi.
 
-    \\ \textbf{keep elitism}: C'est le nombre d'individus élites
+    \\ \textbf{keep elitism}: C'est le nombre d'individus dont les
+	solutions sont les meilleures
 	qui sont conservés sans mutation dans la gén
 	ération suivante. C'est utile dans la situation où la fitness d'un
-	individu est largement supérieure à celle des autres individus.
+	individu est hautement supérieure à celle des autres individus.
 	Altérer son génome avec un autre, potentiellement le pire, puis
 	muter aléatoirement ce résultat signifierait la perte de cette
 	progression fulgurante. Garder intact une grande quantité de
 	génomes
-	signifie également que la population ne se renouvelle pas assez.
-	Dans notre cas, 2 individus
-	élites sont conservés afin de laisser la possibilité qu'ils se
-	reproduisent entre eux.
-
+	signifie également que la population ne se renouvelle pas assez,
+	cette quantité doit donc rester limitée.
+%	Dans notre cas, 2 individus
+%	élites sont conservés afin d'assurer la conservation des
+%	meilleurs solutions, pas plus car cela ralentirait trop le
+%	renouvellement de la population, pas moins pour leur permettre
+%	reproduisent entre eux.
 
     \\ \textbf{crossover type}: C'est le type de croisement utilisé
-	pour la reproduction des parents. Dans ce cas, le croisement uniforme est utilisé.
+	pour la reproduction des parents. Le croisement à un point
+	choisit un point de croisement aléatoire dans le génome des
+	parents et échange les parties du génome
+	après le point.
 
     \\ \textbf{mutation type}: C'est le type de mutation appliqué aux
-	gènes individuels. Dans ce cas, la mutation adaptative est utilisée.
+	gènes individuels. La mutation aléatoire remplace la valeur d'un
+	gène choisi aléatoirement par une valeur aléatoire dans l'espace
+	des
+	gènes.
+	La mutation adaptative est une mutation aléatoire dont la valeur
+	est déterminée par la fitness de l'individu. Plus la fitness est
+	élevée, plus la valeur de la mutation est faible. Cela permet
+	d'éviter que les individus ne s'éloignent trop de la solution
+	optimale.
 
     \\ \textbf{mutation percent genes}: Il s'agit du pourcentage de
-	gènes sujets à la mutation. Dans ce cas, 60 % des gènes individuels peuvent être mutés lors d'une génération et 10 % des gènes mutés peuvent être adaptativement modifiés.
-%	\end{itemize}
+	gènes sujets à la mutation. Peut être un tuple, la première valeur
+	est alors le pourcentage chez les dominés et la seconde chez les
+	dominants.
 
+%	\subsection{Les jeux de données utilisés}\label{subsec:les-jeux-de-donnees-utilises}
+
+	\subsection{Les instructions nécessaires pour pouvoir reproduire les expériences (par exemple pseudo-code)}\label{subsec:les-instructions-necessaires-pour-pouvoir-reproduire-les-experiences-(par-exemple-pseudo-code)}
+	Notre  simulateur  est  disponible  à  l’adresse  suivante  :
+	\href{https://github.com/nobourge/INFO-F308---Projets-d-informatique-3-transdisciplinaire---202223}{https://github.com/nobourge/INFO-F308---Projets-d-informatique-3-transdisciplinaire---202223}.
 
 	\subsubsection{Fitness Function}
 		Une créature est évaluée sur 5 critères :
@@ -610,20 +625,14 @@
 		\begin{equation}\label{eq:equation}
 			\text{{Fitness}} =
 			\text{{alive\_bonus}}
-			+ ($H_{i-1}$ - $H_{i}$) * 0 .1
+			+ (H_{i} - H_{i-1}) * 0 .1
 			+ \dfrac{D_{i} - {D_{i-1}}}{time}
 			+ \text{{ forces }}
 		\end{equation}
 
-		Ce calcul est effectué sur chaque individu de chaque gén
-		ération de la simulation . \\
-
-	\subsection{Les jeux de données utilisés}\label{subsec:les-jeux-de-donnees-utilises}
-
-	\subsection{Les instructions nécessaires pour pouvoir reproduire les expériences (par exemple pseudo-code)}\label{subsec:les-instructions-necessaires-pour-pouvoir-reproduire-les-experiences-(par-exemple-pseudo-code)}
-	Notre  simulateur  est  disponible  à  l’adresse  suivante  : https
-	://github.com/nobourge/INFO-F308---Projets-d-informatique-3-transdisciplinaire---202223
-
+		Ce calcul est effectué sur chaque individu à chaque génération
+		de la simulation . \\
+%\newpage
 % Main Part
 \section{Résultats}\label{sec:resultats}
 %	Cette section doit contenir les résultats que vous avez obtenu
@@ -631,135 +640,211 @@
 %	Les résultats devront être présentés de préférence sous forme de tableau
 %	(cf. Table~\ref{tab:simParameters})
 Pour réaliser nos tests, nous avons réduit l'aléatoire au maximum en
-	paramétrant les simulations de la manière suivante :
-	Avec PI la population initiale commune à toutes les
+	 assignant une population initiale commune PI à toutes les
 		simulations, d'elle découle population\_size
-
-% This is how you define a table: the [!hbt] means that LaTeX is forced (by the !) to place the table exactly here (by h), or if that doesnt work because of a pagebreak or so, it tries to place the table to the bottom of the page (by b) or the top (by t).
+\subsection{Paramètrage minimal}\label{subsec:parametrage-minimal}
+	Pour évaluer notre paramétrage, nous le comparons tout d'abord
+	à un paramétrage minimal, c'est-à-dire avec les paramètres par
+	défaut de PyGAD augmentés du minimum requis.
+%\subsubsection{Paramètres par défaut de PyGAD}%\label{subsec:parametres-par-defaut-de-pygad}
 	\begin{table}[!hbt]
 		% Center the table
-%		\begin{center}
 		% Title of the table
-		\caption{Paramètre par défaut des simulations}
+		\caption{Paramètres par défaut de PyGAD}
+		\label{tab:PyGAD_parameters_default}
+		% Table itself: here we have two columns which are centered and have lines to the left, right and in the middle: |c|c|
+		\begin{tabular}{|l|l|}
+			\hline
+			\textbf{Parameter} & \textbf{Value} \\
+			\hline
+			population size & 50 \\
+			\hline
+			num parents mating & 4 \\
+			\hline
+			parent selection type & random \\
+			\hline
+			crossover type & single point \\
+			\hline
+			mutation type & random \\
+			\hline
+			mutation percent genes & 10 \\
+			\hline
+			random mutation min val & -1 \\
+			\hline
+			random mutation max val & 1 \\
+			\hline
+			\end{tabular}
+	\end{table}
+
+%\subsubsection{Paramètrage minimum requis}%\label{subsec:parametres-minimum-requis}
+	\begin{table}[!hbt]
+		% Center the table
+		\begin{center}
+		% Title of the table
+		\caption{Paramètrage minimum requis}
+		\label{tab:Parametrage_minimum_requis}
+		% Table itself: here we have two columns which are centered and have lines to the left, right and in the middle: |c|c|
+		\begin{tabular}{|l|l|}
+			\hline
+			\textbf{Parameter} & \textbf{Value} \\
+			\hline
+			num genes & 8 joints * 500 time steps = 4000 \\
+			\hline
+			initial population & PI \\
+			\hline
+			num parents mating & (population\_size // 4) + 2 \\
+			\hline
+			fitness function & Equation\ref{eq:equation} \\
+			\hline
+			num generations & 100 \\
+			\hline
+			\end{tabular}
+		\end{center}
+	\end{table}
+	Les résultats obtenus sont présentés dans la figure\ref{fig:parameter_minimum_requis}
+	et la figure\ref{fig:parameter_minimum_requis2}.
+	Nous remarquons que les solutions présentant une avancée majeure
+	ne semblent pas tirer les autres vers le haut.
+	Le nombre d'individus avec lesquels se reproduisent les dominants
+	est trop faible. Leur génome est ensuite muté au même taux que celui
+	des dominés.
+
+% This is how you define a table: the [!hbt] means that LaTeX is forced
+% 	(by the !) to place the table exactly here (by h),
+% 	or if that doesnt work because of a pagebreak or so, it tries to
+% 	place the table to the bottom of the page (by b) or the top (by t).
+
+\subsection{Importance de la diffusion du savoir}
+	Nous ajoutons le parametrage suivant (table\ref{tab:simParameters}):
+	\begin{table}[!hbt]
+		% Center the table
+		\begin{center}
+		% Title of the table
+		\caption{Paramètrage pour la diffusion du savoir}
 		\label{tab:simParameters}
 		% Table itself: here we have two columns which are centered and have lines to the left, right and in the middle: |c|c|
 		\begin{tabular}{|l|l|}
 			\hline
 			\textbf{Parameter} & \textbf{Value} \\
 			\hline
-			gene space & {low: -1, high: 1, step: 0.1} \\
-			\hline
-			init range low & -1 \\
-			\hline
-			init range high & 1 \\
-			\hline
-			random mutation min val & -1 \\
-			\hline
-			random mutation max val & 1 \\
-			\hline
-			initial population & PI \\
-			\hline
-			population size & 100 \\
-			\hline
-			num generations & 100 \\
-			\hline
-			num parents mating & 4 \\
-			\hline
-			parallel processing & None \\
+			num parents mating & (population size // 2) + 2 \\
 			\hline
 			parent selection type & tournament \\
 			\hline
-			keep elitism & 5 \\
+			K tournament & population size // 2 + 2 \\
 			\hline
-			crossover type & uniform \\
+			keep elitism & 2 \\
 			\hline
 			mutation type & adaptive \\
 			\hline
-			mutation percent genes & (60, 10) \\
+			mutation percent genes & (30, 10) \\
 			\hline
 			\end{tabular}
-
-%		\end{center}
+		\end{center}
 	\end{table}
-%	et/ou du diagramme (cf. Fig.~\ref{fig:tf_plot}),
-	\subsection{Pourcentage de mutation des genes}
-	\begin{figure}
-	  \centering
-%	  \includegraphics[width=\columnwidth]{image/pop20mut60-10}
-%	  \includegraphics[width=\textwidth/2]{image/pop20mut30-1}
-	  \caption{Example Image}
-	  \label{fig:pop20mut60-10}
-	\end{figure}
 
-	\subsection{Sélection des parents}
+%\newpage
 
-	\begin{figure}
-%	  \centering
-%	  \includegraphics[width=0.5\textwidth]{image/sss500}
-	  \includegraphics[width=\columnwidth]{image/pop100gen100/sss500/sss500}
-%	  \includegraphics[width=\textwidth/2]{image/pop20mut30-1}
-	  \caption{Example Image}
-	  \label{fig:sss500}
-	\end{figure}
+	Nous obtenons les résultats suivants (figure\ref{fig:300tournament14elit2} et figure\ref{fig:300tournament14elit2()}):
+\begin{figure}[!hbt]
+  \centering
+  \includegraphics[width=\columnwidth]{image/pop50=default/100gen/initialpop375/300-10-10}
+  \caption{fitness par génération pour un paramétrage minimal}
+  \label{fig:parameter_minimum_requis}
+\end{figure}
+\begin{figure}[!hbt]
+  \centering
+  \includegraphics[width=\columnwidth]{image/pop50=default/100gen/initialpop375/300-10-10()}
+  \caption{plages de valeurs par génération pour un paramétrage minimal}
+  \label{fig:parameter_minimum_requis2}
+\end{figure}
+
+\begin{figure}[!hbt]
+%  \includegraphics[width=\columnwidth]{image/pop50=default/100gen/initialpop375/300tournament14elit2}
+  \includegraphics[width=\columnwidth]{image/pop50=default/100gen/initialpop375/500}
+  \caption{fitness par génération pour notre paramétrage}
+  \label{fig:300tournament14elit2}
+\end{figure}
+
+\begin{figure}[!hbt]
+  \includegraphics[width=\columnwidth]{image/pop50=default/100gen/initialpop375/500()}
+  \caption{plages de valeurs par génération pour notre paramétrage}
+  \label{fig:300tournament14elit2()}
+\end{figure}
 %	et correctement référencés.
 %	Les conditions d'expérimentation
 %	(c-à-d matériel et logiciels utilisés) devront être ainsi indiquées.
 %	En plus des résultats mêmes, cette section devra contenir
 %	votre propre analyse et discussion de résultats
 %	(par exemple comparaison par rapport à une méthode de référence)
-Si la population est trop petite, le nombre de solutions différentes
-est faible.
-Si l'élitisme est trop important ou la compétition est trop sélective,
-les solutions
-ne sont pas assez diversifiées.
-%Si la mutation est trop importante, les solutions ne convergent pas.
-Si la mutation est trop faible, les solutions convergent trop rapidement.
-Lorsqu'une ou plusieurs de ces conditions sont réunies, l'évolution
-atteint un maximum local et la progression est fortement ralentie.
-Ce phénomène se traduit visuellement par les plateaux observés
 
+%\newpage
 
-%	% This is how you include a eps figure in your document. LaTeX only accepts EPS or TIFF files.
-%	\begin{figure}[!hbt]
-%		% Center the figure.
-%		\begin{center}
-%		% Include the eps file, scale it such that it's width equals the column width. You can also put width=8cm for example...
-%		%\includegraphics[width=\columnwidth]{plot_tf}
-%		% Create a subtitle for the figure.
-%		\caption{Simulation results on the AWGN channel. Average throughput $k/n$ vs $E_s/N_0$.}
-%		% Define the label of the figure. It's good to use 'fig:title', so you know that the label belongs to a figure.
-%		\label{fig:tf_plot}
-%		\end{center}
-%	\end{figure}
-	\section{Discussion}
-	Cependant, la qualité des solutions trouvées est très variable et
-	la posture des créatures est toujours sous-optimale.
-	Nous avons pu constater qu'il est très difficile
+\section{Discussion}
+	Nous pouvons observer une nette amélioration de la qualité des solutions
+	grâce à notre paramétrage.
+	La progression faite à la génération 40 est immédiatemment répandue
+	à l'ensemble de la population.
+	Cependant, la borne inférieure de la fitness générale
+	correspondante n'évolue pas en conséquence.
+	Cela traduit une sous-estimation de la distance parcourue par
+	rapport à la vitesse.
+	Les bonnes solutions étant indiscernables des mauvaises par leur fitness,
+	la progression s'annule à la génération 70 et s'inverse par la suite.
+
+	Nous avons également pu constater qu'il est très difficile
 	de trouver les bons paramètres pour que l'algorithme converge
-	vers une solution optimale. De plus, il est très difficile
-	de trouver une fonction de fitness qui permette de bien
-	évaluer les solutions.
+	vers une solution optimale.
+	Même sur une population initiale commune et un paramétrage identique
+	, la qualité des solutions trouvées est très variable.
+%	De plus, il est très difficile
+%	de trouver une fonction de fitness qui permette de bien
+%	évaluer les solutions.
+	Nous pouvons cependant affirmer certains faits:
 
+	La mutation doit opérer prioritairement sur les dominés mais
+	ne doit pas épargner les dominants ou un maximum local est atteint.
 	Des valeurs de mutation aléatoires trop grandes reviennent à
-	ignorer les parents et à générer une population aléatoire.
+	ignorer les parents et par là même, l'évolution par transmission
+	des gènes.
 	Celles-ci doivent donc être comprises dans un
 	intervalle autour de zéro très restreint.
+
+	Si l'élitisme est trop important ou la compétition est trop sélective,
+	les solutions
+	ne sont pas assez diversifiées.
+	Si la mutation est trop forte, les solutions convergent trop rapidement.
+	Lorsqu'une ou plusieurs de ces conditions sont réunies, l'évolution
+	atteint un maximum local et la progression est fortement ralentie.
+	Ce phénomène se traduit visuellement par les plateaux observés.
 
 \section{Conclusion}\label{sec:conclusion}
 %Cette section contient un rappel des contributions
 %/ de résultats importants de votre article
 	Notre simulateur permet de trouver en temps raisonnable des
 	solutions permettant à des créatures de se maintenir debout sans
-	chuter et	se déplacer le temps de la simulation.
+	chuter et se déplacer le temps de la simulation.
 
+	De tout système, ce que nous attribuons au hasard est sa partie
+	incomprise.
+	Dans notre simulateur, un système quasi-totalement compris,
+	l'aspect stochastique	de
+	l'algorithme génétique est donc fondamentalement sous-optimal.
+	Cependant, nous le contrôlons très peu, et même si nous en avions
+	la
+	complète maîtrise, la taille de l'algorithme déterministe optimal
+	serait (beaucoup) plus grande que celle de l'algorithme génétique.
 
+	L'algorithme génétique nous semble donc être le parfait compromis
+	entre les objectifs suivants :
+	\begin{itemize}
+		\item algorithme compact
+		\item adaptabilité au type d'information disponible
+		\item robustesse
+		\item exhaustivité des solutions (fonction du temps d'execution)
+	\end{itemize}
 
-	L'algorithme génétique nous semble donc adapté à la pose de
-	larges fondations.
-
-
-
-	Les valeurs d'entrée ont un impact important sur la qualité
+	Les valeurs d'entrée ont un impact minime sur la qualité
 	des solutions trouvées.
 
 \subsection{Limites}\label{subsec:limites}
@@ -771,19 +856,16 @@ Ce phénomène se traduit visuellement par les plateaux observés
 		\item La majeure partie du temps d'execution du programme est
 		consacrée à la simulation physique dont nous ne valorisons que
 		très peu les informations que nous en retirons.
-		\item Il est très difficile de déterminer si la fonction de
+		\item Il est difficile de déterminer si la fonction de
 		fitness
 		est trop sévère par rapport au principe stochastique de l'algorithme
-		génétique ou trop laxiste vis-à-vis de la simulation physique.
+		ou trop laxiste vis-à-vis de la simulation physique.
 	\end{itemize}
 	Les forces à appliquer sur les articulations étant inscrites dans
 	le génome, et la créature étant dépourvue de sens, aucune adaptation
 	intra-générationelle n'est possible.
-	L'envirronement physique est le plus simple possible: un sol plat.
-	La moindre irrégularité introduite pourrait faire chuter la cr
-	éature.
-
-
+	La moindre irrégularité introduite dans l'envirronement
+	pourrait faire chuter la créature.
 %et éventuellement une indication sur les perspectives de recherche future dans le même domaine.
 \subsection{Perspectives de recherche future}\label{subsec:perspectives-de-recherche-future}
 
@@ -809,7 +891,6 @@ Ce phénomène se traduit visuellement par les plateaux observés
 	d'élitisme et de compétition par des intervalles contrôlés par une
 	fonction réagissant à la stagnation de la population.
 \subsubsection{Bibliothèque}
-	L'humanité
 	L'information de marche n'est actuellement portée que par la
 	population vivante à un instant donné. L'intérêt d'une population
 	vivante est qu'elle expérimente. L'intérêt d'une bibliothèque
@@ -835,13 +916,15 @@ Ce phénomène se traduit visuellement par les plateaux observés
 	\textbf{Un dictionnaire de génomes à éviter}, tels qu'une suite
 	de zéros
 	entraînant l'absence d'action, et/ou assurément trop loin d'une
-	solution viable
+	solution viable par rapport au nombre de générations restantes.
+
 \subsubsection{Fonction de fitness}
-	\textbf{correction} d'un mauvais comportement, en plus de
-	l'attribution	de score, nous
-	pourrions implémenter une fonction de correction pour identifier
-	la région du génome commandant une action non désirée et la
-	remplacer par des valeurs plus adaptées.
+%	\textbf{correction} d'un mauvais comportement, en plus de
+%	l'attribution	de score, nous
+%	pourrions implémenter une fonction de correction pour identifier
+%	la région du génome commandant une action non désirée et la
+%	remplacer par des valeurs plus adaptées.
+
 	La force de l'algorithme génétique étant sa souplesse, il est possible
 	que des conditions plus laxistes permettent d'éviter de rester coincé
 	dans un maximum local.
@@ -855,80 +938,73 @@ Ce phénomène se traduit visuellement par les plateaux observés
 	automatiquement en fonction des comportements observés en liant
 	les poids de chaque composante aux actions pour lesquelles elles
 	entrent en jeu.
-	\subsubsection{Adaptation intra-générationelle}
-\textbf{Réseau neuronal}
+
+\subsubsection{Adaptation intra-générationelle}
+	\textbf{Réseau neuronal}
 	Ces perspectives de développement de la fonction de fitness gén
 	érationnelle
 	mènent rapidement aux prémices d'un réseau neuronal.
 	Lié à des capteurs, il permettrait à la créature de réagir
-	à son environnement et de se déplacer de manière autonome
-	\textbf{épigenetique}
+	à son environnement et de se déplacer de manière autonome.
+	Il s'agirait dans notre cas d'une forme d'\textbf{épigenetique}
+%
+%\subsubsection{Environnement}
+%	Dès lors que la créature est capable de réagir à son environnement,
+%	celui-ci peut être modifié pour augmenter la difficulté.
+%	Parmi les modifications les plus intéressantes :
+%	\textbf{Générales}:
+%	\begin{itemize}
+%			\item pentes
+%			\item obstacles
+%			\item projectiles
+%			\item créatures adverses
+%		\end{itemize}
+%
+%	\textbf{A finalité réelle}:
+%	Se concentrer sur les surfaces encore mal appréhendées par les
+%	robots actuels:
+%	\begin{itemize}
+%			\item à solidité variable ( boue, etc.)
+%			\item glissantes ( verglas, etc.)
+%			\item instables ( sable, etc.)
+%		\end{itemize}
+%	\textbf{A finalité virtuelle}:
+%	\\Environnement de jeux vidéo
+%	\begin{itemize}
+%			\item déjà existant
+%			\item généré aléatoirement
+%			\end{itemize}
 
-
-\subsubsection{Environnement}
-	Dès lors que la créature est capable de réagir à son environnement,
-	celui-ci peut être modifié pour augmenter la difficulté.
-	Parmi les modifications les plus intéressantes :
-	\textbf{Générales}:
-	\begin{itemize}
-			\item Des pentes
-			\item Des obstacles
-			\item Des projectiles
-			\item Des créatures adverses
-		\end{itemize}
-
-	\textbf{A finalité réelle}:
-	Se concentrer sur les envirronements encore mal maîtrisés par les
-	robots actuels:
-	\begin{itemize}
-			\item Des surfaces à solidité variable ( boue, etc.)
-			\item Des surfaces glissantes ( verglas, etc.)
-			\item Des surfaces instables ( sable, etc.)
-		\end{itemize}
-	\textbf{A finalité virtuelle}:
-	\begin{itemize}
-			\item Environnement de jeux vidéo déjà existant
-			\item Environnement de jeux vidéo généré aléatoirement
-			\end{itemize}
-
-\subsubsection{Parallélisation}
-
-%\subsubsection{Autres domaines}
-%	Le goulot d'étranglement de l'algorithme génétique est la somme
-%	des opérations sur le génome des individus, leur croisement et
-%	mutation.
-%	Dans un autre registre que le nôtre, la physique quantique ouvre le
-%	champ d'action en permettant la superposition et
-%	l'intrication
-%	d'états.
-%	Ces propriétés pourraient être utilisées pour simuler
-%	l'équivalent de multiples créatures en \("\)parallèle\("\) et ainsi accél
-%	érer la convergence
-%	de l'algorithme génétique.\cite{quantum-computing}
-%	Cette idée est déjà exploitée, notamment par
-
+%	Ce rapport est un écrit original dans la mesure où toute idée
+%	apportée est soit originale, soit trop transformée soit documentée
+%L'écriture du code et du rapport a été accélérée (et non générée) à
+%	l'aide d'un correcteur orthographique et du
+%plugin \href{https://copilot.github.com/}{Github Copilot}
+%
+%La recherche relative à l'écriture du rapport a été accélérée à l'aide
+%de \href{https://chat.openai.com/?model=text-davinci-002-render-sha}{ChatGPT 3.5}
+%	La recherche de l'état de l'art
 %\bibliographystyle{unsrt}
 %\bibliography{bibliography}
-%\bibliography{references}
+%\bibliography{References}
 \begin{thebibliography}{99}
-	\bibitem{replicating-automata} , John von Neumann
+	\bibitem{replicating-automata} John von Neumann
 	\textit{Theory of Self-Reproducing Automata}, 1966.
-	\bibitem{near-term_self-replicating} , Olivia Borgue and Andreas M.
+	\bibitem{near-term_self-replicating} Olivia Borgue and Andreas M.
 	Hein \textit{Near-Term Self-replicating Probes - A Concept Design}, 2005.
-%	\bibitem{genetic-algorithms} , Melanie Mitchell \textit{An Introduction to Genetic Algorithms}, 1998.
-%	\bibitem{Bongard} , Josh C. Bongard \textit{Evolving modular genetic regulatory networks}, 2002.
-	\bibitem{systems-adaptation} , John Holland \textit{Adaptation in
+	\bibitem{systems-adaptation} John Holland \textit{Adaptation in
 	Natural
 	and artificial Systems}, 1975.
-	\bibitem{Cormier} , Gabriel Cormier \textit{Systèmes Intelligents}, Université de Moncton, 2019.
-	\bibitem{Sims} , Karl Sims \textit{Evolving Virtual Creatures}, 1994.
-	\bibitem{Graham,Lee;Oppacher,Franz} , Graham, Lee; Oppacher, Franz. \textit{
+	\bibitem{Cormier} Gabriel Cormier \textit{Systèmes Intelligents}, Université de Moncton, 2019.
+	\bibitem{MOEA/D} Qingfu Zhang and Hui Li \textit{MOEA/D: A Multiobjective Evolutionary Algorithm Based on Decomposition}, 2008.
+	\bibitem{Sims} Karl Sims \textit{Evolving Virtual Creatures}, 1994.
+	\bibitem{Graham,Lee;Oppacher,Franz} Graham, Lee; Oppacher, Franz. \textit{
 	Speciation Through Selection and Drift. } Proceedings of The Eleventh IASTED International Conference on Artificial Intelligence and Soft Computing. ACTA Press.
-	\bibitem{Josh-C-Bongard} , Josh C Bongard \textit{The legion
+	\bibitem{Josh-C-Bongard} Josh C Bongard \textit{The legion
 	system: A novel approach to evolving heterogeneity for collective problem solving}.
-	\bibitem{J.B-H.L} , J. Bongard et H. Lipson \textit{“Simulation de la locomotion par algorithme génétique”}.
+	\bibitem{J.B-H.L} J. Bongard et H. Lipson \textit{“Simulation de la locomotion par algorithme génétique”}.
 
-	\bibitem{extrema-global-local} , By KSmrq -  \url{http://commons.wikimedia.org/wiki/File:Extrema_example.svg, GFDL 1.2, https://commons.wikimedia.org/w/index.php?curid=6870865}
+	\bibitem{extrema-global-local} By KSmrq -  \url{http://commons.wikimedia.org/wiki/File:Extrema_example.svg, GFDL 1.2, https://commons.wikimedia.org/w/index.php?curid=6870865}
 	\bibitem{pygad} \url{https://pygad.readthedocs
 	.io/en/latest/}
 
@@ -936,17 +1012,17 @@ Ce phénomène se traduit visuellement par les plateaux observés
 	James Foster and Jim Alves-Foss \textit{Quantum Genetic Algorithms}, 2000
 \end{thebibliography}
 
-
-\newpage
-
-\appendices
-\section{Consignes}\label{sec:consignes}
-% Main Part
-\subsection*{Document}
-	% LaTeX takes complete care of your document layout ...
-	Le rapport doit être rédigé en \LaTeX{} en utilisant ce template.
-	La longueur du rapport ne devra pas, en tout cas, dépasser les 6 pages.
-	Ce rapport doit être \emph{self-contained}, c-à-d il doit pouvoir être lu et compris sans avoir besoin de se documenter ailleurs.
+%
+%\newpage
+%
+%\appendices
+%\section{Consignes}\label{sec:consignes}
+%% Main Part
+%\subsection*{Document}
+%	% LaTeX takes complete care of your document layout ...
+%	Le rapport doit être rédigé en \LaTeX{} en utilisant ce template.
+%	La longueur du rapport ne devra pas, en tout cas, dépasser les 6 pages.
+%	Ce rapport doit être \emph{self-contained}, c-à-d il doit pouvoir être lu et compris sans avoir besoin de se documenter ailleurs.
 
 
 
